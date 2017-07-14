@@ -1,0 +1,45 @@
+{
+  "title": "电子设计大赛",
+  "openKeys": [],
+  "defaultSelectedKeys": [
+    "/admin/competition"
+  ],
+  "menus": [
+    {
+      "key": "/admin/competition",
+      "value": "赛事管理",
+      "icon": "calendar"
+    },
+    {
+      "key": "/admin/problem",
+      "value": "竞赛题目管理",
+      "icon": "file-unknown"
+    },
+    {
+      "key": "/admin/school",
+      "value": "学校管理",
+      "icon": "home"
+    },
+    {
+      "key": "/admin/schoolAdmin",
+      "value": "学校管理员管理",
+      "icon": "solution"
+    },{
+      "key": "/admin/team",
+      "value": "参赛队伍管理",
+      "icon": "team"
+    },{
+      "key": "/admin/recording",
+      "value": "成绩录入",
+      "icon": "book"
+    },{
+      "key": "/admin/privilege",
+      "value": "用户权限管理",
+      "icon": "lock"
+    },{
+      "key": "/admin/message",
+      "value": "短信群发",
+      "icon": "mail"
+    }
+  ]
+}
