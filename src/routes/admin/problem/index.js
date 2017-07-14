@@ -3,14 +3,14 @@
  */
 import React, { Component } from 'react'
 
-class CompetitionManage extends Component {
+class ProblemManage extends Component {
   render () {
     return (
       <div className='content-inner' >
-        学校管理员管理
+        竞赛题目管理
       </div>
     )
   }
 }
 
-export default CompetitionManage
+export default ProblemManage

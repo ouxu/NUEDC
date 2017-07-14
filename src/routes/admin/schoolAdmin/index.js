@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react'
 
-class CompetitionManage extends Component {
+class SchoolAdminManage extends Component {
   render () {
     return (
       <div className='content-inner' >
@@ -13,4 +13,4 @@ class CompetitionManage extends Component {
   }
 }
 
-export default CompetitionManage
+export default SchoolAdminManage

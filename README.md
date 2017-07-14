@@ -1,43 +1,79 @@
-#大拇哥官网展示
+#电子设计竞赛系统前台
 
 ### 开发须知
 
 #### 目录结构
 
 ```bash
-src
-├── components					// 放一些共有组件
-│   ├── Footer
+./src
+├── components
+│   ├── Layout
+│   │   ├── Bread
+│   │   │   ├── index.js
+│   │   │   └── index.less
+│   │   ├── Footer
+│   │   │   ├── index.js
+│   │   │   └── index.less
+│   │   ├── Header
+│   │   │   ├── index.js
+│   │   │   └── index.less
+│   │   ├── Sider
+│   │   │   └── index.js
 │   │   ├── index.js
 │   │   └── index.less
-│   ├── Header
-│   ├── config					// 共有组件数据 json 源文件
-│   │   ├── footer.json
-│   │   └── header.json
-│   └── index.js				// 导出入口
+│   └── Markdown
+│       ├── index.js
+│       └── index.less
 ├── config
-│   └── app.json				// 全局配置文件
-├── index.html					// 项目入口 html
-├── index.js					// 项目入口 js
-├── mock						// 项目请求 mock 
-├── router.js					// 路由入口文件
-├── routes						// 路由下对应的组件
-│   ├── app.js					// 根路由
-│   ├── app.less		
-│   ├── home					// home 路由下的相关组件
-│   │   ├── Banner		
-│   │   │   └── index.js
-│   │   ├── index.js			// home 路由根组件
-│   │   ├── index.less			
-│   │   └── route.js			// home 路由绑定文件
-│   ├── about						
+│   ├── api.js
+│   └── app.json
+├── index.html
+├── index.js
+├── mock
+├── models
+│   ├── app.js
+│   └── login.js
+├── router.js
+├── routes
+│   ├── 404.js
 │   ├── admin
-│   ├── product
-│   ├── sale
-│   └── service
-├── theme.js
-├── themes						//less全局主题变量 
-└── utils						//工具方法
+│   │   ├── competition
+│   │   │   ├── index.js
+│   │   │   ├── model.js
+│   │   │   └── route.js
+│   │   ├── config
+│   │   │   └── menu.json
+│   │   ├── index.js
+│   │   └── routes.js
+│   ├── app.js
+│   ├── app.less
+│   ├── home
+│   │   ├── index.js
+│   │   ├── index.less
+│   │   └── route.js
+│   ├── login
+│   │   ├── index.js
+│   │   └── index.less
+│   ├── school
+│   └── student
+├── services
+│   ├── app.js
+│   └── login.js
+├── themes
+│   ├── default.less
+│   ├── index.less
+│   ├── mixin.less
+│   └── vars.less
+└── utils
+    ├── arrayAbout.js
+    ├── codeHelper.js
+    ├── config.js
+    ├── dateAbout.js
+    ├── enquireScreen.js
+    ├── index.js
+    ├── request.js
+    ├── routerAbout.js
+    └── theme.js
 ```
 
 #### 开发
@@ -62,10 +98,8 @@ src
 	+ [less](http://lesscss.cn/)
 	+ [axios](https://github.com/mzabriskie/axios)
 + 参考网站
-	+ [凯迪仕](http://www.kaadas.com/index.asp)
 
 + 开发UI库
 	+ [antd](https://ant.design/docs/react/introduce-cn)
-	+ [ant motion](https://motion.ant.design/)
 + 其他资料
-	+ [wiki 资源](http://wiki.hrsoft.net/docs/show/206)  
+	+ [wiki 资源](http://wiki.hrsoft.net/docs/show/214)  

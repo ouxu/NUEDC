@@ -32,7 +32,6 @@ const Header = ({user, dispatch, location}) => {
           <Menu.Item key='logout'>
             <Icon type='logout' />
           </Menu.Item>
-
         </Menu>
       </div>
     </div>
