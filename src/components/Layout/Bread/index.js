@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Breadcrumb } from 'antd'
 import './index.less'
-const Bread = () => {
-
+const Bread = ({location}) => {
+  console.log(location)
   return (
-    <div className="bread">
+    <div className='bread'>
       <Breadcrumb>
         <Breadcrumb.Item key={12}>
           12321
@@ -19,7 +19,7 @@ const Bread = () => {
 }
 
 Bread.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.array
 }
 
 export default Bread

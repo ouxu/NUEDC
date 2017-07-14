@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Icon, Menu } from 'antd'
+import { Icon, Menu, Tooltip } from 'antd'
 import { Link } from 'dva/router'
 import './index.less'
 
@@ -30,7 +30,9 @@ const Header = ({user, dispatch, location}) => {
             <Icon type='mail' />
           </Menu.Item>
           <Menu.Item key='logout'>
-            <Icon type='logout' />
+            <Tooltip title="登出">
+              <Icon type='logout' />
+            </Tooltip>
           </Menu.Item>
         </Menu>
       </div>

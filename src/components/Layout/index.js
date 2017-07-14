@@ -6,23 +6,21 @@ import './index.less'
 import Sider from './Sider'
 import Header from './Header'
 import Footer from './Footer'
-
 const Layout = ({menuConfig, children, app, dispatch, location}) => (
   <div
     className='layout'>
     <Header {...app} dispatch={dispatch} />
-    <aside className='sider light'>
-      <Sider menuConfig={menuConfig} location={location} />
-    </aside>
-    <div className='main'>
-      {/* <Bread location={location} /> */}
-      <div className='container'>
-        <div className='content'>
-          {children}
-        </div>
+    <div className='main-wrapper'>
+      <sider className='sider light'>
+        <Sider menuConfig={menuConfig} location={location} />
+      </sider>
+
+      <div className='main-container'>
+        {children}
       </div>
-      <Footer />
+
     </div>
+    <Footer />
   </div>
 )
 
