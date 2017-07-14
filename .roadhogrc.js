@@ -9,12 +9,14 @@ export default {
       'extraBabelPlugins': [
         'dva-hmr',
         'transform-runtime',
+        'transform-decorators-legacy',
         ['import', {'libraryName': 'antd', 'style': true}]
       ],
     },
     'production': {
       'extraBabelPlugins': [
         'transform-runtime',
+        'transform-decorators-legacy',
         ['import', {'libraryName': 'antd', 'style': true}]
       ],
       // 'publicPath':'http://osxp7rsod.bkt.clouddn.com/',

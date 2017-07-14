@@ -12,6 +12,8 @@ export default {
   tokenVerify: apiMaker('token-verify'),
   register: apiMaker('user/register'),
 
+
+  deleteCompetition: apiMaker(''),
   contestsMine: apiMaker('contests/mine'),
 
   news: apiMaker('news')

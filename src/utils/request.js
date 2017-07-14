@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { getToken } from './'
+import { message } from 'antd'
+import { codeHelper } from './'
 const TIMEOUT = 15000
 
 const fetch = options => {
@@ -27,17 +28,29 @@ const fetch = options => {
     default:
       return axios(options)
   }
+
 }
 export default async options => {
-  const timer = await setTimeout(() => {
-    return {
-      code: '-1'
+  try {
+    const timer = await setTimeout(() => {
+      return {
+        code: '-1'
+      }
+    }, TIMEOUT)
+
+    const res = await fetch(options)
+    clearTimeout(timer)
+    const {data} = res
+    if (data.code !== 0) {
+      return data
+    } else {
+      codeHelper(data.code)
+      return data
     }
-  }, TIMEOUT)
-
-  const res = await fetch(options)
-  clearTimeout(timer)
-  const {data} = res
-
-  return data
+  } catch (e) {
+    message.error('网络错误，请刷新页面重试')
+    return {
+      code: -1
+    }
+  }
 }

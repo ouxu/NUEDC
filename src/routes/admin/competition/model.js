@@ -1,24 +1,28 @@
-
+import { edit } from './service'
 export default {
   namespace: 'competition',
-  state: {},
+  state: {
+    targetId: undefined
+  },
   effects: {
-
-    *logout ({payload,}, {call, put}) {
-      const data = yield call(logout, parse(payload))
-      if (data.success) {
-        yield put({type: 'query'})
-      } else {
-        throw (data)
-      }
+    * edit ({payload}, {call}) {
+      console.log(payload)
+      console.log('edit')
+      const data = yield call(edit, payload)
     },
+    * delete ({payload}, {put}) {
+      console.log('delete')
+    },
+    * delete ({payload}, {put}) {
+      console.log('delete')
+    }
   },
   reducers: {
-    querySuccess (state, {payload: user}) {
+    test (state, {payload: targetId}) {
       return {
         ...state,
-        user,
+        targetId
       }
-    },
-  },
+    }
+  }
 }

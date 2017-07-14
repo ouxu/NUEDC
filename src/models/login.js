@@ -1,6 +1,6 @@
 import { login } from '../services/login'
 import { routerRedux } from 'dva/router'
-import { codeHelper, queryURL } from '../utils'
+import { queryURL } from '../utils'
 
 export default {
   namespace: 'login',
@@ -12,16 +12,15 @@ export default {
       yield put({type: 'showLoginLoading'})
       const data = yield call(login, payload)
       yield put({type: 'hideLoginLoading'})
-      if (data.code === '0') {
+      if (data.code === 0) {
+        yield put(routerRedux.push('/admin'))
         const from = queryURL('from')
-        yield put({type: 'app/query'})
+        // yield put({type: 'app/query'})
         if (from) {
           yield put(routerRedux.push(from))
         } else {
           yield put(routerRedux.push('/admin'))
         }
-      } else {
-        codeHelper(data.code)
       }
     }
   },
