@@ -1,0 +1,23 @@
+{
+  "title": "",
+  "openKeys": [],
+  "defaultSelectedKeys": [
+  ],
+  "menus": [
+    {
+      "key": "/school/joinedTeams",
+      "value": "管理本校参赛队伍",
+      "icon": "team"
+    },
+    {
+      "key": "/school/schoolResult",
+      "value": "查看本校队伍赛果",
+      "icon": "bulb"
+    },
+    {
+      "key": "/school/recommendExperts",
+      "value": "推荐本校专家",
+      "icon": "user"
+    }
+  ]
+}

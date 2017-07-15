@@ -1,7 +1,7 @@
 import React from 'react'
 import { IndexRoute, Route, Router } from 'dva/router'
 import App from './routes/app'
-import Login from './routes/user/login'
+import Login from './routes/login'
 import NotFound from './routes/404'
 import {
   AdminPage,
@@ -22,6 +22,12 @@ import {
   TeamManage,
   TeamModel
 } from './routes/admin/routes'
+import {
+  SchoolPage,
+  JoinedTeamsManage, JoinedTeamsModel,
+  RecommendExpertsManage, RecommendExpertsModel,
+  SchoolResultManage, SchoolResultModel
+} from './routes/school/routes'
 import Home from './routes/home'
 
 const registerModel = (app, model) => {
@@ -77,8 +83,20 @@ const Routers = ({history, app}) => (
       <Route path='student' component={AdminPage}>
         <Route path='' />
       </Route>
-      <Route path='school' component={AdminPage} onEnter={() => registerModel(app, AdminModel)}>
-        <Route path='' />
+      <Route path='school' component={SchoolPage}>
+        <IndexRoute getComponent={JoinedTeamsManage} onEnter={() => registerModel(app, JoinedTeamsModel)} />
+        <Route
+          path='joinedteams' getComponent={JoinedTeamsManage}
+          onEnter={() => registerModel(app, JoinedTeamsModel)}
+        />
+        <Route
+          path='schoolresult' getComponent={SchoolResultManage}
+          onEnter={() => registerModel(app, SchoolResultModel)}
+        />
+        <Route
+          path='recommendexperts' getComponent={RecommendExpertsManage}
+          onEnter={() => registerModel(app, RecommendExpertsModel)}
+        />
       </Route>
     </Route>
     <Route path='*' component={NotFound} />
