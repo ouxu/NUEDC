@@ -8,9 +8,8 @@ import './index.less'
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
-
 const confirm = Modal.confirm
-const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const ContestManage = ({contest, loading, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, table} = contest
 
   const onMenuClick = (key, record) => {
@@ -90,7 +89,6 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         </Select>
         <Button type='primary' onClick={onCreateClick}>创建比赛</Button>
       </div>
-
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 1500}}
@@ -101,6 +99,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
             <span>{record.description}</span>
           </div>
         )}
+        key='1'
       />
       <Modal
         title={`${modal === 'edit' ? '编辑竞赛' : '创建竞赛'}`}
@@ -117,4 +116,4 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
   )
 }
 
-export default connect(({app, contest}) => ({app, contest}))(Form.create()(ContestManage))
+export default connect(({app, loading, contest}) => ({app, loading, contest}))(Form.create()(ContestManage))

@@ -1,7 +1,7 @@
 import React from 'react'
 import { IndexRoute, Route, Router } from 'dva/router'
 import App from './routes/app'
-import Login from './routes/login'
+import Login from './routes/user/login'
 import NotFound from './routes/404'
 import {
   AdminPage,

@@ -59,6 +59,7 @@ class Header extends React.Component {
   }
   onClickLogout = (e) => {
     e.preventDefault()
+    const {dispatch} = this.props
     Modal.confirm({
       title: '登出确认',
       content: '是否登出？登出后下次进入需要重新登录',
@@ -70,7 +71,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const {location, app, dispatch} = this.props
+    const {location, app} = this.props
     const {navItem = []} = navConfig
     const navToRender = navItem.map((item) => {
       const className = this.props.activeKey === item.key ? 'active' : ''
@@ -88,17 +89,6 @@ class Header extends React.Component {
         </li>
       )
     })
-    const menu = (
-      <Menu theme='dark' style={{width: 90, float: 'right'}}>
-        <Menu.Item key=''>
-          <Link to={`/${app.user.privilege}`}> 进入后台 </Link>
-        </Menu.Item>
-        <Menu.Item key='2'>
-          <Link onClick={this.onClickLogout}> 退出登录 </Link>
-        </Menu.Item>
-        <Menu.Divider />
-      </Menu>
-    )
     return (
       <header
         id='nav-header'
@@ -142,18 +132,28 @@ class Header extends React.Component {
                 <ul>
                   {navToRender}
                   <li key='login'>
-                    {app.user.token ? (
+                    {app.user.id ? (
+                      <Dropdown overlay={(
+                        <Menu theme='dark' style={{width: 90, float: 'right'}}>
+                          <Menu.Item key=''>
+                            <Link to={`/${app.user.privilege}`}> 进入后台 </Link>
+                          </Menu.Item>
+                          <Menu.Item key='2'>
+                            <Link onClick={this.onClickLogout}> 退出登录 </Link>
+                          </Menu.Item>
+                          <Menu.Divider />
+                        </Menu>
+                      )}>
+                        <a>
+                          <Icon type='user' /> {app.user.name} <Icon type='down' />
+                        </a>
+                      </Dropdown>
+                    ) : (
                       <Link
                         to={`/login?from=${location.pathname}`}
                       >
                         登录注册
                       </Link>
-                    ) : (
-                      <Dropdown overlay={menu}>
-                        <a>
-                          <Icon type='user' /> {app.user.username} <Icon type='down' />
-                        </a>
-                      </Dropdown>
                     )}
                   </li>
 

@@ -1,11 +1,17 @@
 import React from 'react'
 import menuConfig from './config/menu.json'
+import Sider from '../../components/Layout/Sider'
+
 import { connect } from 'dva'
-import Layout from '../../components/Layout'
 const SchoolPage = (props) => (
-  <Layout {...props} menuConfig={menuConfig}>
-    {props.children}
-  </Layout>
+  <div className='main-wrapper'>
+    <sider className='sider light'>
+      <Sider menuConfig={menuConfig} location={location} />
+    </sider>
+    <div className='main-container'>
+      {props.children}
+    </div>
+  </div>
 )
 
 export default connect(({app}) => ({app}))(SchoolPage)

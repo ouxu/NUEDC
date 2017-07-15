@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { fetchDate } from './service'
+import { routerRedux } from 'dva/router'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'contest',
@@ -9,6 +10,7 @@ export default modelExtend(modalModel, tableModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
+        console.log(pathname)
         const match = pathname === '/admin/contest' || pathname === '/admin'
         if (match) {
           dispatch({type: 'fetchTable'})
@@ -40,6 +42,7 @@ export default modelExtend(modalModel, tableModel, {
     },
     * delete ({payload}, {put, select}) {
       const input = yield select(({contest}) => contest.input)
+      yield put(routerRedux.push(`/admin?${input}`))
       console.log(input)
     },
     * create ({payload}, {put}) {
