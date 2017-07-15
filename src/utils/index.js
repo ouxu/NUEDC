@@ -3,9 +3,10 @@ import { color } from './theme'
 import enquireScreen from './enquireScreen'
 import { dateFormat, newDate } from './dateAbout'
 import config from './config'
-import { goto, queryURL, windowScroll } from './routerAbout'
+import { goto, queryURL, sleep, windowScroll } from './routerAbout'
 import { arrayToTree, queryArray, withInArray } from './arrayAbout'
 import API from '../config/api'
+import verify from './verify'
 import codeHelper from './codeHelper'
 export {
   request,
@@ -21,5 +22,7 @@ export {
   windowScroll,
   API,
   queryURL,
-  codeHelper
+  codeHelper,
+  sleep,
+  verify
 }

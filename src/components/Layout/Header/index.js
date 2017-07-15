@@ -2,12 +2,24 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Icon, Menu, Tooltip } from 'antd'
+import { Icon, Menu, Tooltip,Modal } from 'antd'
 import { Link } from 'dva/router'
 import './index.less'
 
 const Header = ({user, dispatch, location}) => {
-  let handleClickMenu = e => e.key === 'logout' && dispatch({type: 'app/logout'})
+  let handleClickMenu = e => {
+    if(e.key === 'logout') {
+      Modal.confirm({
+        title: '登出确认',
+        content: '是否登出？登出后下次进入需要重新登录',
+        onOk() {
+          dispatch({type: 'login/logout'})
+        },
+        onCancel() {},
+      });
+
+    }
+  }
   return (
     <div className='header' id='navigation'>
       <Link to='/'>
@@ -30,7 +42,7 @@ const Header = ({user, dispatch, location}) => {
             <Icon type='mail' />
           </Menu.Item>
           <Menu.Item key='logout'>
-            <Tooltip title="登出">
+            <Tooltip title='登出'>
               <Icon type='logout' />
             </Tooltip>
           </Menu.Item>

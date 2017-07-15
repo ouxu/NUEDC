@@ -7,41 +7,40 @@ const fetch = options => {
   let {
     method = 'get',
     data,
-    url
+    url,
+    token = false
   } = options
-
+  const header = token ? {'token': window.localStorage.getItem('nuedcToken')} : {}
+  console.log(header)
+  const myAxios = axios.create({
+    timeout: 1000,
+    headers: header
+  })
   switch (method.toLowerCase()) {
     case 'get':
-      return axios.get(url, {
+      return myAxios.get(url, {
         params: data
       })
     case 'delete':
-      return axios.delete(url, {
+      return myAxios.delete(url, {
         data: data
       })
     case 'post':
-      return axios.post(url, data)
+      return myAxios.post(url, data)
     case 'put':
-      return axios.put(url, data)
+      return myAxios.put(url, data)
     case 'patch':
-      return axios.patch(url, data)
+      return myAxios.patch(url, data)
     default:
-      return axios(options)
+      return myAxios(options)
   }
-
 }
+
 export default async options => {
   try {
-    const timer = await setTimeout(() => {
-      return {
-        code: '-1'
-      }
-    }, TIMEOUT)
-
     const res = await fetch(options)
-    clearTimeout(timer)
     const {data} = res
-    if (data.code !== 0) {
+    if (data.code === 0) {
       return data
     } else {
       codeHelper(data.code)

@@ -5,7 +5,7 @@ import Login from './routes/login'
 import NotFound from './routes/404'
 import {
   AdminPage,
-  CompetitionManage, CompetitionModel,
+  ContestManage,ContestModel,
   ProblemManage, ProblemModel,
   SchoolManage, SchoolModel,
   SchoolAdminManage, SchoolAdminModel,
@@ -28,10 +28,10 @@ const Routers = ({history, app}) => (
       <Route path='home' component={Home} />
       <Route path='login' component={Login} />
       <Route path='admin' component={AdminPage}>
-        <IndexRoute getComponent={CompetitionManage} onEnter={() => registerModel(app, CompetitionModel)} />
+        <IndexRoute getComponent={ContestManage} onEnter={() => registerModel(app, ContestModel)} />
         <Route
-          path='competition' getComponent={CompetitionManage}
-          onEnter={() => registerModel(app, CompetitionModel)}
+          path='contest' getComponent={ContestManage}
+          onEnter={() => registerModel(app, ContestModel)}
         />
         <Route
           path='problem' getComponent={ProblemManage}

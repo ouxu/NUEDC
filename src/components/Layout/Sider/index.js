@@ -4,7 +4,7 @@ import { Link } from 'dva/router'
 
 const {SubMenu} = Menu
 const Sider = ({menuConfig, location}) => {
-  const {menus = [], openKeys = []} = menuConfig
+  const {menus = [], openKeys = [], defaultSelectedKeys} = menuConfig
   const renderMenus = menus => (
     menus.map(item => {
       const {subMenus = []} = item
@@ -28,6 +28,7 @@ const Sider = ({menuConfig, location}) => {
         mode='inline'
         defaultSelectedKeys={[menus[0].key + '']}
         defaultOpenKeys={openKeys}
+        selectedKeys={[location.pathname]}
         style={{height: '100%', borderRight: 0}}
       >
         {renderMenus(menus)}

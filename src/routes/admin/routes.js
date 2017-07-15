@@ -3,7 +3,7 @@
  */
 import AdminPage from './index'
 
-import { CompetitionManage, CompetitionModel } from './competition/route'
+import { ContestManage,ContestModel } from './contest/route'
 import { ProblemManage, ProblemModel } from './problem/route'
 import { SchoolManage, SchoolModel } from './school/route'
 import { SchoolAdminManage, SchoolAdminModel } from './schoolAdmin/route'
@@ -14,7 +14,7 @@ import { MessageManage, MessageModel } from './message/route'
 
 export {
   AdminPage,
-  CompetitionManage, CompetitionModel,
+  ContestManage,ContestModel,
   ProblemManage, ProblemModel,
   SchoolManage, SchoolModel,
   SchoolAdminManage, SchoolAdminModel,

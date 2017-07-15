@@ -2,13 +2,19 @@
  * Created by out_xu on 17/7/14.
  */
 import { API, request } from '../../../utils'
+
+const fetchTable = async (data) => request({
+  url: API.deleteCompetition,
+  method: 'get',
+  data
+})
 const remove = async (data) => request({
   url: API.deleteCompetition,
   method: 'get',
   data
 })
 
-const edit = async (data) => request({
+const update = async (data) => request({
   url: API.deleteCompetition,
   method: 'post',
   data
@@ -20,4 +26,4 @@ const create = async (data) => request({
   data
 })
 
-export { remove, edit, create }
+export { remove, update, create,fetchTable }

@@ -27,5 +27,6 @@ const queryURL = (name) => {
   if (r !== null) return decodeURI(r[2])
   return null
 }
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-export { goto, windowScroll, queryURL }
+export { goto, windowScroll, queryURL, sleep }

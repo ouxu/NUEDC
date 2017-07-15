@@ -2,11 +2,10 @@
   "title": "电子设计大赛",
   "openKeys": [],
   "defaultSelectedKeys": [
-    "/admin/competition"
   ],
   "menus": [
     {
-      "key": "/admin/competition",
+      "key": "/admin",
       "value": "赛事管理",
       "icon": "calendar"
     },
