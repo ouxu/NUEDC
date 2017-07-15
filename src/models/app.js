@@ -9,10 +9,8 @@ export default {
   state: {
     user: {
       id: 1,
-      permissions: {
-        visit: [1, 2, 3]
-      },
-      username: 'guest'
+      privilege: 'admin',
+      username: '东北大学秦皇岛分校'
     },
     location: []
   },

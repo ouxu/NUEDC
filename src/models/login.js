@@ -14,11 +14,12 @@ export default {
       yield sleep(1000)
       yield put({type: 'hideLoginLoading'})
       if (data.code === 0) {
+        window.localStorage.setItem('nuedcToken', data.data.token)
         const from = queryURL('from')
-        // yield put({type: 'app/query'})
         if (from) {
           yield put(routerRedux.push(from))
         } else {
+          window.localStorage.removeItem('nuedcToken')
           yield put(routerRedux.push('/admin'))
         }
       }

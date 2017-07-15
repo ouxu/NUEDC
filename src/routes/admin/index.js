@@ -4,11 +4,17 @@
 import React from 'react'
 import menuConfig from './config/menu.json'
 import { connect } from 'dva'
-import Layout from '../../components/Layout'
-const AdminPage = (props) => (
-  <Layout {...props} menuConfig={menuConfig}>
-    {props.children}
-  </Layout>
+
+import Sider from '../../components/Layout/Sider'
+const AdminPage = ({children, location}) => (
+  <div className='main-wrapper'>
+    <sider className='sider light'>
+      <Sider menuConfig={menuConfig} location={location} />
+    </sider>
+    <div className='main-container'>
+      {children}
+    </div>
+  </div>
 )
 
 export default connect(({app}) => ({app}))(AdminPage)

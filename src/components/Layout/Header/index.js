@@ -1,55 +1,170 @@
-/**
- * Created by out_xu on 17/7/13.
- */
 import React from 'react'
-import { Icon, Menu, Tooltip,Modal } from 'antd'
 import { Link } from 'dva/router'
+import TweenOne from 'rc-tween-one'
+import QueueAnim from 'rc-queue-anim'
+import { enquireScreen, goto } from '../../../utils/'
 import './index.less'
+import navConfig from './header.json'
+import { Dropdown, Icon, Menu, Modal } from 'antd'
+class Header extends React.Component {
+  static defaultProps = {
+    className: 'home-header'
+  }
 
-const Header = ({user, dispatch, location}) => {
-  let handleClickMenu = e => {
-    if(e.key === 'logout') {
-      Modal.confirm({
-        title: '登出确认',
-        content: '是否登出？登出后下次进入需要重新登录',
-        onOk() {
-          dispatch({type: 'login/logout'})
-        },
-        onCancel() {},
-      });
-
+  constructor (props) {
+    super(props)
+    this.state = {
+      isMode: false,
+      openAnim: null,
+      phoneOpen: false,
+      barAnim: []
     }
   }
-  return (
-    <div className='header' id='navigation'>
-      <Link to='/'>
-        <div className='logo'>
-          电子设计大赛
+
+  componentDidMount () {
+    enquireScreen((bool) => {
+      this.setState({
+        isMode: bool
+      })
+    })
+  }
+
+  getAnimData = phoneOpen => (phoneOpen ? {
+    phoneOpen: false,
+    openAnim: {opacity: 0, delay: 300, duration: 400},
+    barAnim: [
+      {rotate: 0, y: 0, duration: 300},
+      {opacity: 1, duration: 300},
+      {rotate: 0, y: 0, duration: 300}
+    ]
+  } : {
+    phoneOpen: true,
+    openAnim: {opacity: 1, duration: 400},
+    barAnim: [
+      {rotate: 45, y: 6, duration: 300},
+      {opacity: 0, duration: 300},
+      {rotate: -45, y: -6, duration: 300}
+    ]
+  })
+
+  phoneClick = (e, phoneOpen, href, isLogo) => {
+    if (!this.state.isMode || isLogo && !phoneOpen) {
+      return
+    }
+    if (href) {
+      e.preventDefault()
+      setTimeout(goto(href), 850)
+    }
+    this.setState(this.getAnimData(phoneOpen))
+  }
+  onClickLogout = (e) => {
+    e.preventDefault()
+    Modal.confirm({
+      title: '登出确认',
+      content: '是否登出？登出后下次进入需要重新登录',
+      onOk () {
+        dispatch({type: 'login/logout'})
+      },
+      onCancel () {}
+    })
+  }
+
+  render () {
+    const {location, app, dispatch} = this.props
+    const {navItem = []} = navConfig
+    const navToRender = navItem.map((item) => {
+      const className = this.props.activeKey === item.key ? 'active' : ''
+      return (
+        <li key={item.key}>
+          <Link
+            to={item.href}
+            className={className}
+            onClick={(e) => {
+              this.phoneClick(e, this.state.phoneOpen, item.href)
+            }}
+          >
+            {item.name}
+          </Link>
+        </li>
+      )
+    })
+    const menu = (
+      <Menu theme='dark' style={{width: 90, float: 'right'}}>
+        <Menu.Item key=''>
+          <Link to={`/${app.user.privilege}`}> 进入后台 </Link>
+        </Menu.Item>
+        <Menu.Item key='2'>
+          <Link onClick={this.onClickLogout}> 退出登录 </Link>
+        </Menu.Item>
+        <Menu.Divider />
+      </Menu>
+    )
+    return (
+      <header
+        id='nav-header'
+        className={`${this.props.className}-wrapper${this.state.phoneOpen ? ' open' : ''}`}
+      >
+        <div className={this.props.className}>
+          <TweenOne
+            className={`${this.props.className}-logo`}
+            animation={{opacity: 0, type: 'from'}}
+          >
+            <Link to='/' key='logo' onClick={(e) => { this.phoneClick(e, this.state.phoneOpen, '/', true) }}>
+              <span style={{fontSize: 20, color: '#fff'}}>
+                电子设计大赛
+             </span>
+            </Link>
+          </TweenOne>
+          {
+            this.state.isMode ? (
+              <div className='phone-nav'>
+                <div className='phone-nav-bar' onClick={(e) => { this.phoneClick(e, this.state.phoneOpen) }}>
+                  <TweenOne component='em' animation={this.state.barAnim[0]} />
+                  <TweenOne component='em' animation={this.state.barAnim[1]} />
+                  <TweenOne component='em' animation={this.state.barAnim[2]} />
+                </div>
+                <TweenOne
+                  className='phone-nav-text-wrapper'
+                  animation={this.state.openAnim}
+                  style={{pointerEvents: this.state.phoneOpen ? 'auto' : 'none'}}
+                >
+                  <QueueAnim component='ul' delay={[300, 0]} type='bottom' leaveReverse>
+                    {this.state.phoneOpen && navToRender}
+                  </QueueAnim>
+                </TweenOne>
+              </div>
+            ) : (
+              <TweenOne
+                component='nav'
+                className='web-nav'
+                animation={{opacity: 0, type: 'from'}}
+              >
+                <ul>
+                  {navToRender}
+                  <li key='login'>
+                    {app.user.token ? (
+                      <Link
+                        to={`/login?from=${location.pathname}`}
+                      >
+                        登录注册
+                      </Link>
+                    ) : (
+                      <Dropdown overlay={menu}>
+                        <a>
+                          <Icon type='user' /> {app.user.username} <Icon type='down' />
+                        </a>
+                      </Dropdown>
+                    )}
+                  </li>
+
+                </ul>
+              </TweenOne>
+            )
+          }
         </div>
-      </Link>
-      <div className='right-wrapper'>
-        <Menu mode='horizontal' onClick={handleClickMenu} theme='dark'>
-          <Menu.Item key='back-home'>
-            <span> 首页</span>
-          </Menu.Item>
-          <Menu.Item key='user'>
-            <span >
-              <Icon type='user' />
-              {user.username}
-            </span>
-          </Menu.Item>
-          <Menu.Item key='message'>
-            <Icon type='mail' />
-          </Menu.Item>
-          <Menu.Item key='logout'>
-            <Tooltip title='登出'>
-              <Icon type='logout' />
-            </Tooltip>
-          </Menu.Item>
-        </Menu>
-      </div>
-    </div>
-  )
+      </header>
+    )
+  }
 }
 
 export default Header

@@ -9,10 +9,9 @@ import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 
-const Option = Select.Option
 const confirm = Modal.confirm
 const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false} = contest
+  const {modal = false, table} = contest
 
   const onMenuClick = (key, record) => {
     switch (key) {
@@ -78,15 +77,6 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
     }
   ]
 
-  const data = []
-  for (let i = 0; i < 10; i++) {
-    data.push({
-      id: i,
-      title: `电子设计竞赛 ${i}`,
-      description: `电子设计竞赛这里是描述！！！！ `,
-      status: '未开始'
-    })
-  }
   return (
     <div className='contest'>
       <div className='contest-header'>
@@ -94,25 +84,30 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           showSearch
           style={{width: 100}}
           placeholder='选择年份'
-          defaultValue='2017'
+          defaultValue='all'
         >
-          <Option value='2017'>2017</Option>
+          <Select.Option value='all'>ALL</Select.Option>
         </Select>
         <Button type='primary' onClick={onCreateClick}>创建比赛</Button>
       </div>
 
       <Table
         columns={columns} bordered
-        dataSource={data} scroll={{x: 1500}}
+        dataSource={table} scroll={{x: 1500}}
         pagination={false} rowKey={record => record.id}
-        expandedRowRender={record => <p>{record.description}</p>}
+        expandedRowRender={record => (
+          <div className='expanded-row'>
+            <span>{record.description}</span>
+            <span>{record.description}</span>
+          </div>
+        )}
       />
       <Modal
         title={`${modal === 'edit' ? '编辑竞赛' : '创建竞赛'}`}
-        visible={contest.modal === 'edit' || contest.modal === 'create'}
+        visible={modal === 'edit' || modal === 'create'}
         onCancel={() => dispatch({type: 'contest/hideModal'})}
         onOk={onModalOk}
-        key={contest.modal}
+        key={modal}
       >
         <Form className='form-content'>
           {formConfig.map(config => FormItemRender(config, getFieldDecorator))}

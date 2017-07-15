@@ -11,16 +11,29 @@ export default modelExtend(modalModel, tableModel, {
       return history.listen(({pathname}) => {
         const match = pathname === '/admin/contest' || pathname === '/admin'
         if (match) {
-          dispatch({type: 'fetchDate'})
+          dispatch({type: 'fetchTable'})
         }
       })
     }
   },
 
   effects: {
-    * fetchTable ({payload}, {call, put}) {
-      console.log('fetchDate')
-      // const data = yield call(fetchTable)
+    * fetchTable ({payload}, {call, select, put}) {
+      const table = yield select(({contest}) => contest.table)
+      if (table.length > 0) {
+        // 已有数据，不需要获取
+      } else {
+        const data = []
+        for (let i = 0; i < 10; i++) {
+          data.push({
+            id: i,
+            title: `电子设计竞赛 ${i}`,
+            description: `电子设计竞赛这里是描述！！！！ `,
+            status: '未开始'
+          })
+        }
+        yield put({type: 'setTable', payload: data})
+      }
     },
     * update ({payload}, {call}) {
       // const data = yield call(edit, payload)

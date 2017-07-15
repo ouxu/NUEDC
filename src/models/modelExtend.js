@@ -23,7 +23,7 @@ const modalModel = {
 
 const tableModel = {
   state: {
-    table: {}
+    table: []
   },
   reducers: {
     setTable (state, {payload: table}) {

@@ -5,10 +5,12 @@ import { config } from '../utils'
 import './app.less'
 import '../themes/index.less'
 import { connect } from 'dva'
-const App = ({children, location, loading, routes, app, dispatch}) => {
+import Layout from '../components/Layout'
+const App = (props) => {
+  const {loading} = props
   NProgress.start()
   !loading.global && NProgress.done()
-  const { logoSrc = '', name = ''} = config
+  const {logoSrc = '', name = ''} = config
   return <div>
     <Helmet>
       <title>{name}</title>
@@ -17,7 +19,7 @@ const App = ({children, location, loading, routes, app, dispatch}) => {
       {/* {iconFontJS && <script src={iconFontJS}> </script>} */}
       {/* {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />} */}
     </Helmet>
-    {children}
+    <Layout {...props} />
   </div>
 }
 

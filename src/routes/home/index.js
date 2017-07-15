@@ -1,19 +1,17 @@
-import React, { Component } from 'react'
-import {Link} from 'dva/router'
-class index extends Component {
-  render () {
-    return (
-      <div style={{display: "flex",justifyContent: "space-around",marginTop: "20vh"}}>
-        <Link to="/login"> login </Link>
-        <Link to="/admin"> admin </Link>
-        <Link to="/school"> school </Link>
-        <Link to="/student"> student </Link>
+import React from 'react'
+import { Link } from 'dva/router'
+import './index.less'
+const HomePage = () => {
+  return (
+    <div className="home-page">
+      <div className='home-content'>
+        <Link to='/login'> login </Link>
+        <Link to='/admin'> admin </Link>
+        <Link to='/school'> school </Link>
+        <Link to='/student'> student </Link>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-index.propTypes = {}
-index.defaultProps = {}
-
-export default index
+export default HomePage

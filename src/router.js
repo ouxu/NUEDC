@@ -1,18 +1,26 @@
 import React from 'react'
 import { IndexRoute, Route, Router } from 'dva/router'
 import App from './routes/app'
-import Login from './routes/login'
+import Login from './routes/user/login'
 import NotFound from './routes/404'
 import {
   AdminPage,
-  ContestManage,ContestModel,
-  ProblemManage, ProblemModel,
-  SchoolManage, SchoolModel,
-  SchoolAdminManage, SchoolAdminModel,
-  TeamManage, TeamModel,
-  RecordingManage, RecordingModel,
-  PrivilegeManage, PrivilegeModel,
-  MessageManage, MessageModel
+  ContestManage,
+  ContestModel,
+  MessageManage,
+  MessageModel,
+  PrivilegeManage,
+  PrivilegeModel,
+  ProblemManage,
+  ProblemModel,
+  RecordingManage,
+  RecordingModel,
+  SchoolAdminManage,
+  SchoolAdminModel,
+  SchoolManage,
+  SchoolModel,
+  TeamManage,
+  TeamModel
 } from './routes/admin/routes'
 import Home from './routes/home'
 
@@ -35,7 +43,10 @@ const Routers = ({history, app}) => (
         />
         <Route
           path='problem' getComponent={ProblemManage}
-          onEnter={() => registerModel(app, ProblemModel)}
+          onEnter={() => {
+            registerModel(app, ContestModel)
+            registerModel(app, ProblemModel)
+          }}
         />
         <Route
           path='school' getComponent={SchoolManage}

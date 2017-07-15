@@ -1,24 +1,17 @@
-
 export default {
   namespace: 'problem',
-  state: {},
-  effects: {
-
-    *logout ({payload,}, {call, put}) {
-      const data = yield call(logout, parse(payload))
-      if (data.success) {
-        yield put({type: 'query'})
-      } else {
-        throw (data)
-      }
-    },
+  state: {
+    miaomiao: ''
   },
-  reducers: {
-    querySuccess (state, {payload: user}) {
-      return {
-        ...state,
-        user,
-      }
-    },
+  subscriptions: {
+    problemSubscriber ({dispatch, history}) {
+      return history.listen(({pathname}) => {
+        if (pathname === '/admin/problem') {
+          dispatch({type: 'contest/fetchTable'})
+        }
+      })
+    }
   },
+  effects: {},
+  reducers: {}
 }

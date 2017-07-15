@@ -1,0 +1,24 @@
+{
+  "navItem": [
+    {
+      "name": "首页",
+      "href": "/home",
+      "key": "home"
+    },
+    {
+      "name": "超级管理",
+      "href": "/admin",
+      "key": "admin"
+    },
+    {
+      "name": "学校管理",
+      "href": "/school",
+      "key": "school"
+    },
+    {
+      "name": "学生端",
+      "href": "/student",
+      "key": "student"
+    }
+  ]
+}

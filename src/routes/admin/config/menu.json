@@ -25,7 +25,7 @@
       "icon": "solution"
     },{
       "key": "/admin/team",
-      "value": "参赛队伍管理",
+      "value": "参赛队伍审核",
       "icon": "team"
     },{
       "key": "/admin/recording",
