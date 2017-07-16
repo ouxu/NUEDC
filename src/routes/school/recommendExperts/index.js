@@ -9,10 +9,10 @@ import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 
 const RecommendExpertsManage = ({recommendExperts, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false} = recommendExperts
-  const onCreateClick = e => {
+  const {table} = recommendExperts
+  const onRecommendClick = e => {
     e.preventDefault()
-    dispatch({type: 'recommendExperts/showModal', payload: 'create'})
+    dispatch({type: 'recommendExperts/showModal', payload: 'recommend'})
   }
 
   const onModalOk = () => {
@@ -20,47 +20,35 @@ const RecommendExpertsManage = ({recommendExperts, dispatch, form: {getFieldDeco
       if (errors) {
         return
       }
-      dispatch({type: `recommendExperts/${modal === 'edit' ? 'edit' : 'create'}`, payload: values})
+      dispatch({type: 'recommendExperts/onFormSubmit', payload: values})
+      dispatch({type: 'recommendExperts/recommend', payload: values})
       dispatch({type: 'recommendExperts/hideModal'})
     })
   }
 
   const columns = [
-    {title: '序号', dataIndex: 'id', key: 'id', width: 50},
-    {title: '赛事名称', dataIndex: 'title', key: 'title', width: 250},
-    {title: '赛事状态', dataIndex: 'status', key: 'status', width: 100},
-    {title: '报名', dataIndex: 'can_register', key: 'can_register', width: 50},
-    {title: '选题', dataIndex: 'can_select_problem', key: 'can_select_problem', width: 50},
-    {title: '报名开始时间', dataIndex: 'register_start_time', key: 'register_start_time', width: 150},
-    {title: '报名结束时间', dataIndex: 'register_start_time', key: 'register_end_time', width: 150},
-    {title: '选题时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 150},
-    {title: '附加', dataIndex: 'problem_start_time', key: 'problem_end_time'}
+    {title: '姓名', dataIndex: 'name', key: 'name', width: 150},
+    {title: '性别', dataIndex: 'gender', key: 'gender', width: 100},
+    {title: '职位', dataIndex: 'position', key: 'position', width: 100},
+    {title: '职称', dataIndex: 'title_of_professor', key: 'title_of_professor', width: 100},
+    {title: '手机号', dataIndex: 'mobile', key: 'mobile', width: 200},
+    {title: '备注', dataIndex: 'notes', key: 'notes', width: 300},
+    {title: '审核情况', dataIndex: 'status', key: 'status', width: 150, fixed: 'right'},
+    {title: '结果', dataIndex: 'result', key: 'result', width: 150, fixed: 'right'}
   ]
-
-  const data = []
-  for (let i = 0; i < 10; i++) {
-    data.push({
-      id: i,
-      title: `电子设计竞赛 ${i}`,
-      description: `电子设计竞赛这里是描述！！！！ `,
-      status: '未开始'
-    })
-  }
   return (
     <div className='recommend-experts'>
       <div className='recommend-experts-header'>
-        <Button type='primary' onClick={onCreateClick}>推荐本校专家</Button>
+        <Button type='primary' onClick={onRecommendClick}>推荐本校专家</Button>
       </div>
-
       <Table
         columns={columns} bordered
-        dataSource={data} scroll={{x: 1500}}
+        dataSource={table} scroll={{x: 1200}}
         pagination={false} rowKey={record => record.id}
-        expandedRowRender={record => <p>{record.description}</p>}
       />
       <Modal
         title={'推荐本校专家'}
-        visible={recommendExperts.modal === 'create'}
+        visible={recommendExperts.modal === 'recommend'}
         onCancel={() => dispatch({type: 'recommendExperts/hideModal'})}
         onOk={onModalOk}
         key={recommendExperts.modal}

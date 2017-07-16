@@ -6,37 +6,51 @@ import { fetchDate } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'recommendExperts',
-  state: {
-    input: ''
-  },
+  state: {},
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathname === '/school/recommendexperts' || pathname === '/school'
+        const match = pathname === '/school/recommendExperts'
         if (match) {
-          dispatch({type: 'fetchDate'})
+          dispatch({type: 'fetchExpertsTable'})
         }
       })
     }
   },
   effects: {
-    * fetchTable ({payload}, {call, put}) {
-      console.log('fetchDate')
-      // const data = yield call(fetchTable)
+    * fetchExpertsTable ({payload}, {call, put, select}) {
+      console.log('fetchExperts')
+      const table = yield select(({recommendExperts}) => recommendExperts.table)
+      if (table.length > 0) {
+        // 已有数据，不需要获取
+      } else {
+        const data = []
+        for (let i = 0; i < 10; i++) {
+          data.push({
+            id: i,
+            name: '王和兴' + i,
+            gender: `女`,
+            position: `老师`,
+            title_of_professor: '教授',
+            mobile: '18332518016',
+            note: '电子设计竞赛专家推荐',
+            status: '未开始',
+            result: '已通过'
+          })
+        }
+        yield put({type: 'setTable', payload: data})
+      }
     },
-    * update ({payload}, {call}) {
-      // const data = yield call(edit, payload)
-    },
-    * create ({payload}, {put}) {
-      console.log('create')
+    * recommend ({payload}, {put, select}) {
+      const form = yield select(({recommendExperts}) => recommendExperts.form)
+      console.log(form)
     }
   },
   reducers: {
-    onInputChange (state, {payload}) {
-      console.log(payload)
+    onFormSubmit (state, {payload}) {
       return {
         ...state,
-        input: payload
+        form: payload
       }
     }
   }

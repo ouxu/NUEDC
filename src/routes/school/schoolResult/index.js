@@ -7,7 +7,15 @@ import './index.less'
 import { connect } from 'dva'
 
 const Option = Select.Option
-const SchoolResultManage = ({joinedTeams, dispatch}) => {
+const SchoolResultManage = ({schoolResult, dispatch}) => {
+  const {table} = schoolResult
+  const onOptionChange = (value) => {
+    dispatch({type: 'schoolResult/onFilter', payload: value})
+    dispatch({type: 'schoolResult/filter', payload: value})
+  }
+  const excelOut = () => {
+    dispatch({type: 'schoolResult/ResultOut', payload: 'out'})
+  }
   const columns = [
     {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
     {title: '队伍名称', dataIndex: 'name', key: 'name', width: 280},
@@ -16,18 +24,6 @@ const SchoolResultManage = ({joinedTeams, dispatch}) => {
     {title: '结果', dataIndex: 'result', key: 'result', width: 150},
     {title: '审核时间', dataIndex: 'audit_time', key: 'audit_time', width: 250}
   ]
-
-  const data = []
-  for (let i = 0; i < 10; i++) {
-    data.push({
-      id: i,
-      info: `信息${i}`,
-      name: `电子设计竞赛 ${i}`,
-      status: '未开始',
-      result: '一等',
-      audit_time: '2017-3-5'
-    })
-  }
   return (
     <div className='school-result'>
       <div className='school-result-header'>
@@ -35,15 +31,15 @@ const SchoolResultManage = ({joinedTeams, dispatch}) => {
           showSearch
           style={{width: 200}}
           placeholder='选择比赛年份'
-          defaultValue='2017'
+          onChange={onOptionChange}
         >
-          <Option value='2017'>2017届河北省决赛</Option>
+          {table.map(item => <Select.Option key={'' + item} value={'' + item.time}>{item.time}</Select.Option>)}
         </Select>
-        <Button type='primary'>导出excel</Button>
+        <Button type='primary' onClick={excelOut}>导出excel</Button>
       </div>
       <Table
         columns={columns} bordered
-        dataSource={data} scroll={{x: 1200}}
+        dataSource={table} scroll={{x: 1200}}
         pagination={false} rowKey={record => record.id}
       />
     </div>

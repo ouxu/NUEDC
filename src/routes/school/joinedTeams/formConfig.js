@@ -5,39 +5,36 @@ import { verify } from '../../../utils/index'
 
 export default [
   {
-    value: 'major',
-    label: '专业',
+    value: 'school_id',
+    label: '学校',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入专业',
-      pattern: '',
-      patternMessage: ''
-    },
-    initialValue: '计算机科学与技术',
-    hasFeedback: false
-  }, {
-    value: 'stuId',
-    label: '学号',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入您的学号',
-      pattern: verify.stuId,
+      requiredMessage: '请输入您的学校',
       patternMessage: '输入包含非数字字符！'
     }
   }, {
     value: 'name',
-    label: '姓名',
+    label: '队伍名称',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入您的姓名',
+      requiredMessage: '请输入您的队伍名称',
       pattern: verify.chinese,
       patternMessage: '输入包含非中文字符！'
+    }
+  }, {
+    value: 'description',
+    label: '队伍信息',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入队伍信息',
+      pattern: '',
+      patternMessage: ''
     }
   }, {
     value: 'mobile',
@@ -49,17 +46,6 @@ export default [
       requiredMessage: '请输入您的手机',
       pattern: verify.mobile,
       patternMessage: '输入合法的手机！'
-    }
-  }, {
-    value: 'qq',
-    label: 'QQ号',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入您的QQ号',
-      pattern: verify.qq,
-      patternMessage: '输入合法的QQ号！'
     }
   }, {
     value: 'guide',
@@ -95,18 +81,5 @@ export default [
       'label': '张旭',
       'value': '张旭'
     }, {'label': '赵媛', 'value': '赵媛'}, {'label': '周扬', 'value': '周扬'}, {'label': '朱方', 'value': '朱方'}]
-  }, {
-    value: 'title',
-    label: '毕业设计题目',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请输入毕业设计题目',
-      pattern: '',
-      patternMessage: ''
-    },
-    hasFeedback: false,
-    placeholder: '如果已经跟导师确定题目，则填入，否则可以为空'
   }
 ]

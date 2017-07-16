@@ -2,6 +2,15 @@ import { verify } from '../../../utils'
 
 export default [
   {
+    value: 'school',
+    label: '学校',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请选择学校'
+    }
+  }, {
     value: 'major',
     label: '专业',
     formType: 0,
@@ -12,8 +21,28 @@ export default [
       pattern: '',
       patternMessage: ''
     },
-    initialValue: '计算机科学与技术',
     hasFeedback: false
+  }, {
+    value: 'name',
+    label: '姓名',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入您的姓名',
+      pattern: verify.chinese,
+      patternMessage: '输入包含非中文字符！'
+    }
+  }, {
+    value: 'gender',
+    label: '性别',
+    formType: 2,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请选择指导老师'
+    },
+    options: [{'label': '女', 'value': '女'}, {'label': '男', 'value': '男'}]
   }, {
     value: 'position',
     label: '职位',
@@ -25,23 +54,12 @@ export default [
     }
   }, {
     value: 'title_of_professor',
-    label: '职位',
+    label: '职称',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
       requiredMessage: '请输入您的职位'
-    }
-  }, {
-    value: 'name',
-    label: '姓名',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入您的姓名',
-      pattern: verify.chinese,
-      patternMessage: '输入包含非中文字符！'
     }
   }, {
     value: 'mobile',
@@ -64,15 +82,6 @@ export default [
       requiredMessage: '请输入您的办公电话',
       pattern: verify.mobile,
       patternMessage: '输入合法的办公电话！'
-    }
-  }, {
-    value: 'school',
-    label: '学校',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请选择学校'
     }
   }, {
     value: 'notes',

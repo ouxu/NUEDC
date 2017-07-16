@@ -12,38 +12,73 @@ export default modelExtend(modalModel, tableModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathname === '/school/joinedteams' || pathname === '/school'
+        const match = pathname === '/school/joinedTeams' || pathname === '/school'
         if (match) {
-          dispatch({type: 'fetchDate'})
+          dispatch({type: 'fetchJoinedTable'})
         }
       })
     }
   },
   effects: {
-    * fetchTable ({payload}, {call, put}) {
-      console.log('fetchDate')
-      // const data = yield call(fetchTable)
+    * fetchJoinedTable ({payload}, {call, put, select}) {
+      console.log('fetchjoined')
+      const table = yield select(({joinedTeams}) => joinedTeams.table)
+      if (table.length > 0) {
+        // 已有数据，不需要获取
+      } else {
+        const data = []
+        for (let i = 0; i < 10; i++) {
+          data.push({
+            id: i,
+            name: `电子设计竞赛 ${i}`,
+            description: '电子设计竞赛',
+            status: '未开始',
+            year: 2012 + i + ''
+          })
+        }
+        yield put({type: 'setTable', payload: data})
+      }
     },
-    * update ({payload}, {call}) {
+    * edit ({payload}, {call}) {
+      console.log('edit')
       // const data = yield call(edit, payload)
     },
     * delete ({payload}, {put, select}) {
       const input = yield select(({joinedTeams}) => joinedTeams.input)
       console.log(input)
     },
-    * create ({payload}, {put}) {
-      console.log('create')
+    * add ({payload}, {put, select}) {
+      const form = yield select(({joinedTeams}) => joinedTeams.form)
+      console.log(form)
     },
     * audit ({payload}, {put}) {
-      console.log('审核')
+      console.log('audit')
+    },
+    * filter ({payload}, {put, select}) {
+      const filter = yield select(({joinedTeams}) => joinedTeams.filter)
+      console.log(filter)
+    },
+    * joinedOut ({payload}, {put}) {
+      console.log('joinedOut')
     }
   },
   reducers: {
     onInputChange (state, {payload}) {
-      console.log(payload)
       return {
         ...state,
         input: payload
+      }
+    },
+    onFormSubmit (state, {payload}) {
+      return {
+        ...state,
+        form: payload
+      }
+    },
+    onFilter (state, {payload}) {
+      return {
+        ...state,
+        filter: payload
       }
     }
   }

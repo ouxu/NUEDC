@@ -20,10 +20,10 @@ const update = async (data) => request({
   data
 })
 
-const create = async (data) => request({
+const add = async (data) => request({
   url: API.deleteCompetition,
   method: 'post',
   data
 })
 
-export { remove, update, create, fetchTable }
+export { remove, update, add, fetchTable }
