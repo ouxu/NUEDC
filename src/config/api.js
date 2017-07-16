@@ -11,8 +11,7 @@ export default {
   logout: apiMaker('user/logout'),
   tokenVerify: apiMaker('token-verify'),
   register: apiMaker('user/register'),
-
-
+  preRegister: apiMaker('user/preRegister'),
   deleteCompetition: apiMaker(''),
   contestsMine: apiMaker('contests/mine'),
 

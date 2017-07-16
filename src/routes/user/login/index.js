@@ -32,7 +32,7 @@ const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScro
               <FormItem hasFeedback>
                 {getFieldDecorator('identifier', {
                   rules: [{
-                    // pattern: verify.mobile, message: '请输入有效的手机号'
+                    pattern: verify.mobile, message: '请输入有效的手机号'
                   }, {
                     required: true, message: '请输入手机号'
                   }]

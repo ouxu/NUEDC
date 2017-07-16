@@ -32,7 +32,36 @@ const tableModel = {
         table
       }
     }
-  },
+  }
 }
 
-export { modalModel, tableModel }
+const counterModel = {
+  state: {
+    counter: false
+  },
+  subscriptions: {
+    counterSubscriber ({dispatch, history}) {
+      return history.listen(({pathname}) => {
+        if (pathname === '/register') {
+          dispatch({type: 'counterReset'})
+        }
+      })
+    }
+  },
+  reducers: {
+    counterReset (state) {
+      return {
+        ...state,
+        counter: false
+      }
+    },
+    counterStart (state) {
+      return {
+        ...state,
+        counter: true
+      }
+    }
+  }
+}
+
+export { modalModel, tableModel, counterModel }

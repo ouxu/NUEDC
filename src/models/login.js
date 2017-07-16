@@ -1,11 +1,13 @@
-import { login } from '../services/login'
+import { getCode, login } from '../services/login'
 import { routerRedux } from 'dva/router'
 import { queryURL, sleep } from '../utils'
+import modelExtend from 'dva-model-extend'
+import { counterModel } from './modelExtend'
 
-export default {
+export default modelExtend(counterModel, {
   namespace: 'login',
   state: {
-    loginLoading: false
+    loginLoading: false,
   },
   effects: {
     * login ({payload}, {put, call}) {
@@ -40,6 +42,18 @@ export default {
       window.localStorage.removeItem('nuedcToken')
       yield put({type: 'app/logout'})
       yield put(routerRedux.push('/'))
+    },
+    * getCode ({payload}, {call}) {
+      const data = yield call(getCode, payload)
+      console.log(data)
+    },
+    * register ({payload}, {put, call}) {
+      console.log(payload)
+
+      // const data = yield call(register)
+      if (true) {
+        yield put({type: 'login', payload: payload})
+      }
     }
   },
   reducers: {
@@ -56,4 +70,4 @@ export default {
       }
     }
   }
-}
+})

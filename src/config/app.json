@@ -4,7 +4,7 @@
   "iconFontCSS": "/app/iconfont.css",
   "iconFontJS": "/app/iconfont.js",
   "logoSrc": "/app/favicon.ico",
-  "baseURL": "http://oj.marklux.cn",
+  "baseURL": "http://nuedc.hrsoft.net",
   "api": {
     "userLogin": "/user/login",
     "user": "/user/:id",

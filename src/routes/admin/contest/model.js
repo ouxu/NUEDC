@@ -10,7 +10,6 @@ export default modelExtend(modalModel, tableModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        console.log(pathname)
         const match = pathname === '/admin/contest' || pathname === '/admin'
         if (match) {
           dispatch({type: 'fetchTable'})
