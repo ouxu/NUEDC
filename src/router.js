@@ -1,5 +1,5 @@
 import React from 'react'
-import { IndexRoute, Route, Router } from 'dva/router'
+import { IndexRoute, Route, Router, Redirect } from 'dva/router'
 import App from './routes/app'
 import Login from './routes/user/login'
 import NotFound from './routes/404'
@@ -28,6 +28,11 @@ import {
   RecommendExpertsManage, RecommendExpertsModel,
   SchoolResultManage, SchoolResultModel
 } from './routes/school/routes'
+import {
+  StudentPage,
+  StudentProblemManage, StudentProblemModel,
+  ChooseProblemManage, ChooseProblemModel
+} from './routes/student/routes'
 import Home from './routes/home'
 
 const registerModel = (app, model) => {
@@ -38,11 +43,11 @@ const registerModel = (app, model) => {
 const Routers = ({history, app}) => (
   <Router history={history}>
     <Route path='/' component={App}>
-      <IndexRoute component={Home} />
-      <Route path='home' component={Home} />
-      <Route path='login' component={Login} />
+      <IndexRoute component={Home}/>
+      <Route path='home' component={Home}/>
+      <Route path='login' component={Login}/>
       <Route path='admin' component={AdminPage}>
-        <IndexRoute getComponent={ContestManage} onEnter={() => registerModel(app, ContestModel)} />
+        <IndexRoute getComponent={ContestManage} onEnter={() => registerModel(app, ContestModel)}/>
         <Route
           path='contest' getComponent={ContestManage}
           onEnter={() => registerModel(app, ContestModel)}
@@ -80,11 +85,28 @@ const Routers = ({history, app}) => (
         />
 
       </Route>
-      <Route path='student' component={AdminPage}>
-        <Route path='' />
+      <Route path='student' component={StudentPage}>
+      <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
+        registerModel(app, ContestModel)
+        registerModel(app, StudentProblemModel)
+      }}/>
+        <Route
+          path='problem' getComponent={StudentProblemManage}
+          onEnter={() => {
+            registerModel(app, ContestModel)
+            registerModel(app, StudentProblemModel)
+          }}
+        />
+        <Route
+          path='choose' getComponent={ChooseProblemManage}
+          onEnter={() => {
+            registerModel(app, ContestModel)
+            registerModel(app, ChooseProblemModel)
+          }}
+        />
       </Route>
       <Route path='school' component={SchoolPage}>
-        <IndexRoute getComponent={JoinedTeamsManage} onEnter={() => registerModel(app, JoinedTeamsModel)} />
+        <IndexRoute getComponent={JoinedTeamsManage} onEnter={() => registerModel(app, JoinedTeamsModel)}/>
         <Route
           path='joinedteams' getComponent={JoinedTeamsManage}
           onEnter={() => registerModel(app, JoinedTeamsModel)}
@@ -99,7 +121,7 @@ const Routers = ({history, app}) => (
         />
       </Route>
     </Route>
-    <Route path='*' component={NotFound} />
+    <Route path='*' component={NotFound}/>
   </Router>
 )
 
