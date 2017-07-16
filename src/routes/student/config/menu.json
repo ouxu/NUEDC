@@ -1,0 +1,18 @@
+{
+  "title": "",
+  "openKeys": [],
+  "defaultSelectedKeys": [
+  ],
+  "menus": [
+    {
+      "key": "/student/problem",
+      "value": "查看题目",
+      "icon": "file-text"
+    },
+    {
+      "key": "/student/choose",
+      "value": "选择题目",
+      "icon": "check-square-o"
+    }
+  ]
+}
