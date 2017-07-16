@@ -9,7 +9,7 @@ import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 const confirm = Modal.confirm
-const ContestManage = ({contest, loading, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll, fieldsValue}}) => {
   const {modal = false, table} = contest
 
   const onMenuClick = (key, record) => {
@@ -45,8 +45,17 @@ const ContestManage = ({contest, loading, dispatch, form: {getFieldDecorator, va
       if (errors) {
         return
       }
-      dispatch({type: `contest/${modal === 'edit' ? 'edit' : 'create'}`, payload: values})
-      dispatch({type: 'contest/hideModal'})
+      const {title, description, add_on, registerTimes, problemTimes} = values
+      const payload = {
+        title,
+        description,
+        add_on,
+        register_start_time: registerTimes[0].format('YYYY-MM-DD HH:mm:ss'),
+        register_end_time: registerTimes[1].format('YYYY-MM-DD HH:mm:ss'),
+        problem_start_time: problemTimes[0].format('YYYY-MM-DD HH:mm:ss'),
+        problem_end_time: problemTimes[1].format('YYYY-MM-DD HH:mm:ss')
+      }
+      dispatch({type: `contest/${modal === 'edit' ? 'update' : 'create'}`, payload: payload})
     })
   }
 

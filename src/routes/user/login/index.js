@@ -91,10 +91,7 @@ const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScro
                 登录
               </Button>
               <div className='login-footer'>
-                <span />
-                <Link to='/forget'>
-                  <span className='login-form-forgot'>忘记密码</span>
-                </Link>
+                <span>忘记密码 或 注册请账号 请联系总管理员</span>
               </div>
             </Form>
           </TabPane>
@@ -123,12 +120,7 @@ const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScro
               <Button type='primary' size='large' onClick={handleOk} loading={loading}>
                 登录
               </Button>
-              <div className='login-footer'>
-                <span />
-                <Link to='/forget'>
-                  <span className='login-form-forgot'>忘记密码</span>
-                </Link>
-              </div>
+
             </Form>
           </TabPane>
         </Tabs>

@@ -20,8 +20,6 @@ export default {
     * query ({payload}, {call, put, select}) {
       // const data = yield call(query, parse(payload))
       const {token, role} = yield select(({app}) => app)
-      console.log(token)
-      console.log(role)
     }
   },
   reducers: {

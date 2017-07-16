@@ -2,11 +2,11 @@
  * Created by out_xu on 17/6/28.
  */
 import React from 'react'
-import { Form, Input, Radio, Select } from 'antd'
+import { DatePicker, Form, Input, Radio, Select } from 'antd'
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
 const Option = Select.Option
-
+const RangePicker = DatePicker.RangePicker
 export default (config, getFieldDecorator, extra = {}) => {
   const {
     formItemLayout = {
@@ -29,7 +29,7 @@ export default (config, getFieldDecorator, extra = {}) => {
         <FormItem
           label={config.label}
           {...formItemLayout}
-          hasFeedback={config.hasFeedback || true}
+          hasFeedback={config.hasFeedback || false}
           key={config.value}
         >
           {getFieldDecorator(config.value, {
@@ -44,6 +44,7 @@ export default (config, getFieldDecorator, extra = {}) => {
               className='form-content-input'
               placeholder={config.placeholder || ''}
               disabled={config.disabled || false}
+              type={config.type || 'input'}
             />
           )}
         </FormItem>
@@ -85,6 +86,26 @@ export default (config, getFieldDecorator, extra = {}) => {
             <Select >
               {options}
             </Select>
+          )}
+        </FormItem>
+      )
+    case 3:
+      return (
+        <FormItem
+          label={config.label}
+          {...formItemLayout}
+          key={config.value}
+        >
+          {getFieldDecorator(config.value, {
+            rules: [{required: rules.required, message: rules.requiredMessage}],
+            initialValue: initialValue || ''
+          })(
+            <RangePicker
+              style={{width: '100%'}}
+              showTime={{format: 'HH:mm'}}
+              format='YYYY-MM-DD HH:mm'
+              renderExtraFooter={() => 'extra footer'}
+            />
           )}
         </FormItem>
       )

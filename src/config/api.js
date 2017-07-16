@@ -20,4 +20,7 @@ export default {
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),
+  adminContestCreate: apiMaker('sysadmin/contest/create'),
+  adminContestUpdate: apiMaker('sysadmin/contest/:id/update'),
+  adminContestDelete: apiMaker('sysadmin/contest/:id/delete'),
 }
