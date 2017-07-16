@@ -1,32 +1,27 @@
-import { config } from '../utils'
-const {prefix} = config
-
+import pathToRegexp from 'path-to-regexp'
 export default {
   namespace: 'app',
   state: {
-    user: {}
+    user: {},
+    token: window.localStorage.getItem('nuedcToken') || '',
+    role: window.localStorage.getItem('nuedcRole') || 'student'
   },
-  subscriptions: {},
+  subscriptions: {
+    appSubscriber ({dispatch, history}) {
+      return history.listen(({pathname}) => {
+        const match = pathToRegexp(['/admin*', '/school*', '/student*']).exec(pathname)
+        if (match) {
+          dispatch({type: 'query'})
+        }
+      })
+    }
+  },
   effects: {
-    * query ({payload}, {call, put}) {
-      const data = yield call(query, parse(payload))
-      if (data.success && data.user) {
-        yield put({
-          type: 'querySuccess',
-          payload: data.user
-        })
-        if (location.pathname === '/login') {
-          yield put(routerRedux.push('/dashboard'))
-        }
-      } else {
-        if (location.pathname !== '/login') {
-          let from = location.pathname
-          if (location.pathname === '/dashboard') {
-            from = '/dashboard'
-          }
-          window.location = `${location.origin}/login?from=${from}`
-        }
-      }
+    * query ({payload}, {call, put, select}) {
+      // const data = yield call(query, parse(payload))
+      const {token, role} = yield select(({app}) => app)
+      console.log(token)
+      console.log(role)
     }
   },
   reducers: {
@@ -40,6 +35,13 @@ export default {
       return {
         ...state,
         user: {}
+      }
+    },
+    setInfo(state, {payload: {token, role}}) {
+      return {
+        ...state,
+        token,
+        role
       }
     },
     setUser(state, {payload: user}) {

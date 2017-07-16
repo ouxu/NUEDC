@@ -136,7 +136,7 @@ class Header extends React.Component {
                       <Dropdown overlay={(
                         <Menu theme='dark' style={{width: 90, float: 'right'}}>
                           <Menu.Item key=''>
-                            <Link to={`/${app.user.privilege}`}> 进入后台 </Link>
+                            <Link to={`/${app.role}`}> 进入后台 </Link>
                           </Menu.Item>
                           <Menu.Item key='2'>
                             <Link onClick={this.onClickLogout}> 退出登录 </Link>
@@ -145,7 +145,7 @@ class Header extends React.Component {
                         </Menu>
                       )}>
                         <a>
-                          <Icon type='user' /> {app.user.name} <Icon type='down' />
+                          <Icon type='user' /> {app.user.name || '未命名用户'} <Icon type='down' />
                         </a>
                       </Dropdown>
                     ) : (

@@ -3,13 +3,14 @@
  */
 const modalModel = {
   state: {
-    modal: false
+    modal: false,
+    modalContent: {}
   },
   reducers: {
-    showModal (state, {payload}) {
+    showModal (state, {payload: modal}) {
       return {
         ...state,
-        modal: payload
+        modal
       }
     },
     hideModal (state) {
@@ -18,7 +19,33 @@ const modalModel = {
         modal: false
       }
     },
+    updateModalContent(state, {payload: modalContent}) {
+      return {
+        ...state,
+        modalContent
+      }
+    }
   },
+}
+
+const loadingModel = {
+  state: {
+    loading: false
+  },
+  reducers: {
+    showLoading (state) {
+      return {
+        ...state,
+        loading: true
+      }
+    },
+    hideLoading (state) {
+      return {
+        ...state,
+        loading: false
+      }
+    }
+  }
 }
 
 const tableModel = {
@@ -64,4 +91,4 @@ const counterModel = {
   }
 }
 
-export { modalModel, tableModel, counterModel }
+export { modalModel, tableModel, counterModel, loadingModel }

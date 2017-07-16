@@ -13,12 +13,13 @@ import formConfig from './formConfig'
 const FormItem = Form.Item
 
 const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, validateFieldsAndScroll}}) => {
-  const {counter, loginLoading} = login
+  const {counter, loading} = login
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
         return
       }
+      values.schoolName = formConfig[4].options[values.schoolId - 1].label
       dispatch({type: 'login/register', payload: values})
     })
   }
@@ -77,7 +78,7 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
               </Col>
             </Row>
           </FormItem>
-          <Button type='primary' size='large' onClick={handleOk} loading={loginLoading}>
+          <Button type='primary' size='large' onClick={handleOk} loading={loading}>
             注册
           </Button>
 

@@ -15,6 +15,7 @@ const ContestManage = ({contest, loading, dispatch, form: {getFieldDecorator, va
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
+        dispatch({type: 'contest/updateModalContent', payload: record})
         dispatch({type: 'contest/showModal', payload: 'edit'})
         break
       case 'delete':

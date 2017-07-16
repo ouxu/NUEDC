@@ -5,7 +5,7 @@ import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'contest',
   state: {
-    input: ''
+    input: '',
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
@@ -50,10 +50,15 @@ export default modelExtend(modalModel, tableModel, {
   },
   reducers: {
     onInputChange(state, {payload}) {
-      console.log(payload)
       return {
         ...state,
         input: payload
+      }
+    },
+    updateForm(state, {payload: form}) {
+      return {
+        ...state,
+        form
       }
     }
   }
