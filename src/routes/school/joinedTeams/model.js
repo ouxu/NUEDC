@@ -12,7 +12,7 @@ export default modelExtend(modalModel, tableModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathname === '/school/joinedTeams' || pathname === '/school'
+        const match = pathname === '/school/joinedTeams'
         if (match) {
           dispatch({type: 'fetchJoinedTable'})
         }

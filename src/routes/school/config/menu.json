@@ -5,12 +5,12 @@
   ],
   "menus": [
     {
-      "key": "/school/schoolInfo",
+      "key": "/school",
       "value": "学校信息",
       "icon": "user"
     },
     {
-      "key": "/school",
+      "key": "/school/joinedTeams",
       "value": "管理本校参赛队伍",
       "icon": "team"
     },

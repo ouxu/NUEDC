@@ -39,7 +39,7 @@ const RecommendExpertsManage = ({recommendExperts, dispatch, form: {getFieldDeco
   return (
     <div className='recommend-experts'>
       <div className='recommend-experts-header'>
-        <Button type='primary' onClick={onRecommendClick}>推荐本校专家</Button>
+        <Button type='primary' className='recommend-experts-out' onClick={onRecommendClick}>推荐本校专家</Button>
       </div>
       <Table
         columns={columns} bordered

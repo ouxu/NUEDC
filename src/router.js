@@ -109,7 +109,7 @@ const Routers = ({history, app}) => (
         />
       </Route>
       <Route path='school' component={SchoolPage}>
-        <IndexRoute getComponent={JoinedTeamsManage} onEnter={() => registerModel(app, JoinedTeamsModel)} />
+        <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)} />
         <Route
           path='schoolInfo' getComponent={SchoolInfoManage}
           onEnter={() => registerModel(app, SchoolInfoModel)}

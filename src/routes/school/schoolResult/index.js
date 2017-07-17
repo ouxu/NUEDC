@@ -23,14 +23,14 @@ const SchoolResultManage = ({schoolResult, dispatch}) => {
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 300},
     {title: '学校id', dataIndex: 'school_id', key: 'school_id', width: 100},
     {title: '学校名称', dataIndex: 'school_name', key: 'school_name', width: 300},
-    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 200},
-    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
-    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
-    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 150},
+    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 200},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 200},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 200},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 300},
-    {title: '所选题目', dataIndex: 'problem_selected', key: 'problem_selected', width: 100},
+    {title: '所选题目', dataIndex: 'problem_selected', key: 'problem_selected', width: 200},
     {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 200},
     {title: '奖项确定时间', dataIndex: 'result_at', key: 'result_at', width: 200},
     {title: '现场赛相关信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
@@ -52,7 +52,7 @@ const SchoolResultManage = ({schoolResult, dispatch}) => {
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 2500}}
+        dataSource={table} scroll={{x: 2800}}
         pagination={false} rowKey={record => record.id}
       />
     </div>

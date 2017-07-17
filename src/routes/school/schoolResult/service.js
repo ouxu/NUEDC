@@ -10,13 +10,13 @@ const fetchResultTable = async (data) => request({
 })
 
 const fetchSelectOption = async () => request({
-  url: API.acquireId,
+  url: API.schoolAcquireId,
   method: 'get',
   token: true
 })
 
 const resultExcelOut = async (data) => request({
-  url: API.joinedExcelOut + data,
+  url: API.schoolResultExcelOut + data,
   method: 'get',
   token: true
 })

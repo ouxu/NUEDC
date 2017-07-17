@@ -4,44 +4,44 @@
 import { API, request } from '../../../utils'
 
 const fetchJoinedTable = async (data) => request({
-  url: API.joinedTeams.replace('1', `${data}`),
+  url: API.schoolJoinedTeams.replace('1', `${data}`),
   method: 'get',
   token: true
 })
 
 const fetchSelectOption = async () => request({
-  url: API.acquireId,
+  url: API.schoolAcquireId,
   method: 'get',
   token: true
 })
 
 const joinedExcelOut = async (data) => request({
-  url: API.joinedExcelOut + data,
+  url: API.schoolJoinedExcelOut + data,
   method: 'get',
   token: true
 })
 
 const remove = async (data) => request({
-  url: API.deleteTeam + data,
+  url: API.schoolDeleteTeam + data,
   method: 'delete',
   token: true
 })
 
 const update = async (data) => request({
-  url: API.updateTeamInfo + data[1],
+  url: API.schoolUpdateTeamInfo + data[1],
   method: 'put',
   token: true,
   data: data[0]
 })
 
 const audit = async (data) => request({
-  url: API.checkTeam + data,
+  url: API.schoolCheckTeam + data,
   method: 'put',
   token: true
 })
 
 const add = async (data) => request({
-  url: API.addTeam,
+  url: API.schoolAddTeam,
   method: 'post',
   token: true,
   data
