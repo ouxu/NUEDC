@@ -3,14 +3,14 @@ import { remove, update, create, fetchProblemTable } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel,
   {
-    namespace: 'studentProblem',
+    namespace: 'studentProfile',
     state: {
       input: ''
     },
     subscriptions: {
       problemSubscriber ({dispatch, history}) {
         return history.listen(({pathname}) => {
-          if (pathname === '/student/problem') {
+          if (pathname === '/student/profile') {
             dispatch({type: 'fetchProblemTable'})
           }
         })
@@ -19,18 +19,22 @@ export default modelExtend(modalModel, tableModel,
     effects: {
       * fetchProblemTable ({payload}, {call, put, select}) {
         console.log('fetchProblem')
-        const table = yield select(({studentProblem}) => studentProblem.table)
+        const table = yield select(({studentProfile}) => studentProfile.table)
         if (table.length > 0) {
           // 已有数据，不需要获取
         } else {
           const data = []
-          for (let i = 1; i < 8; i++) {
+          for (let i = 0; i < 3; i++) {
             data.push({
               id: i,
-              name: `电子设计竞赛${i}题`,
-              description: '电子设计竞赛',
-              status: '不可选',
-              year: 2012 + i + ''
+              school: '东北大学秦皇岛分校',
+              groupName: `NEUQer`,
+              name:'Raoul',
+              major: 'FE',
+              mobile: '15035188985',
+              stuId:'3154989',
+              status: '未报名',
+              guide: '王涛'
             })
           }
           yield put({type: 'setTable', payload: data})
@@ -41,18 +45,18 @@ export default modelExtend(modalModel, tableModel,
         // const data = yield call(edit, payload)
       },
       * delete ({payload}, {put, select}) {
-        const input = yield select(({studentProblem}) => studentProblem.input)
+        const input = yield select(({studentProfile}) => studentProfile.input)
         console.log(input)
       },
       * add ({payload}, {put, select}) {
-        const form = yield select(({studentProblem}) => studentProblem.form)
+        const form = yield select(({studentProfile}) => studentProfile.form)
         console.log(form)
       },
       * audit ({payload}, {put}) {
         console.log('audit')
       },
       * filter ({payload}, {put, select}) {
-        const filter = yield select(({studentProblem}) => studentProblem.filter)
+        const filter = yield select(({studentProfile}) => studentProfile.filter)
         console.log(filter)
       },
       * joinedOut ({payload}, {put}) {

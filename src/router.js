@@ -38,6 +38,10 @@ import {
   ChooseProblemManage,
   ChooseProblemModel,
   StudentPage,
+  StudentScoreManage, StudentScoreModel,
+  StudentProfileManage, StudentProfileModel,
+  StudentProblemManage, StudentProblemModel,
+  ChooseProblemManage, ChooseProblemModel
   StudentProblemManage,
   StudentProblemModel
 } from './routes/student/routes'
@@ -98,15 +102,25 @@ const Routers = ({history, app}) => (
 
       </Route>
       <Route path='student' component={StudentPage}>
-        <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
-          registerModel(app, ContestModel)
-          registerModel(app, StudentProblemModel)
-        }} />
+      <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
+        registerModel(app, StudentProblemModel)
+      }}/>
         <Route
           path='problem' getComponent={StudentProblemManage}
           onEnter={() => {
-            registerModel(app, ContestModel)
             registerModel(app, StudentProblemModel)
+          }}
+        />
+        <Route
+          path='profile' getComponent={StudentProfileManage}
+          onEnter={() => {
+            registerModel(app, StudentProfileModel)
+          }}
+        />
+        <Route
+          path='score' getComponent={StudentScoreManage}
+          onEnter={() => {
+            registerModel(app, StudentScoreModel)
           }}
         />
         <Route

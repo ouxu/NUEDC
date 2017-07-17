@@ -7,42 +7,28 @@ import './index.less'
 import { connect } from 'dva'
 import DropOption from '../../../components/DropOption/'
 
-const StudentProblemManage = ({studentProblem, dispatch}) => {
-  const {table = []} = studentProblem
-  console.log(studentProblem)
+const StudentProblemManage = ({studentScore, dispatch}) => {
+  const {table = []} = studentScore
+  console.log(studentScore)
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'view':
-        dispatch({type: 'studentProblem/view', payload: 'view'})
+        dispatch({type: 'studentScore/view', payload: 'view'})
         break
       case 'download':
-        dispatch({type: 'studentProblem/download', payload: 'download'})
+        dispatch({type: 'studentScore/download', payload: 'download'})
         break
       default:
         break
     }
   }
   const columns = [
-    {title: '序号', dataIndex: 'id', key: 'id', width: 50},
-    {title: '题目名称', dataIndex: 'name', key: 'name', width: 250},
-    {title: '题目状态', dataIndex: 'status', key: 'status', width: 100},
-    {title: '选题时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 150},
-    {title: '说明', dataIndex: 'problem_start_time', key: 'problem_end_time'},
-    {
-      title: '操作',
-      render: (record) => {
-        return (
-          <DropOption
-            menuOptions={[{key: 'view', name: '查看'}, {key: 'download', name: '下载'}]}
-            buttonStyle={{border: 'solid 1px #eee', width: 60}}
-            onMenuClick={({key}) => onMenuClick(key, record)}
-          />
-        )
-      },
-      fixed: 'right',
-      width: 100,
-      key: '9'
-    }
+    {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
+    {title: '队伍名称', dataIndex: 'name', key: 'name', width: 280},
+    {title: '队伍信息', dataIndex: 'info', key: 'info', width: 350},
+    {title: '获奖审核状态', dataIndex: 'status', key: 'status', width: 150},
+    {title: '结果', dataIndex: 'result', key: 'result', width: 150},
+    {title: '审核时间', dataIndex: 'audit_time', key: 'audit_time', width: 250}
   ]
 
   return (
@@ -72,4 +58,4 @@ const StudentProblemManage = ({studentProblem, dispatch}) => {
   )
 }
 
-export default connect(({app, studentProblem}) => ({app, studentProblem}))(Form.create()(StudentProblemManage))
+export default connect(({app, studentScore}) => ({app, studentScore}))(Form.create()(StudentProblemManage))
