@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { create, fetchDate, remove, update } from './service'
+import { create, fetchTable, remove, update } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'contest',
@@ -23,23 +23,17 @@ export default modelExtend(modalModel, tableModel, {
       if (table.length > 0) {
         // 已有数据，不需要获取
       } else {
-        const data = []
-        for (let i = 0; i < 10; i++) {
-          data.push({
-            id: i,
-            title: `电子设计竞赛 ${i}`,
-            description: `电子设计竞赛这里是描述！！！！ `,
-            status: '未开始'
-          })
+        const data = yield call(fetchTable)
+        if (data.code === 0) {
+          const {contests} = data.data
+          yield put({type: 'setTable', payload: contests})
         }
-        yield put({type: 'setTable', payload: data})
       }
     },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({contest}) => contest.modalContent)
       const data = yield call(update, payload, id)
       if (data.code === 0) {
-        console.log('success' + data)
         yield put({type: 'hideModal'})
       }
     },

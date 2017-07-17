@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Select,Table } from 'antd'
+import { Button, Form, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import DropOption from '../../../components/DropOption/'
@@ -44,9 +44,9 @@ const ProblemManage = ({app, contest, problem}) => {
           showSearch
           style={{width: 300}}
           placeholder='选择年份'
-          defaultValue={'' + table[0].id}
+          defaultValue={table[0] ? table[0].id + '' : ''}
         >
-          {table.map(item => <Select.Option key={'' + item} value={'' + item.id}>{item.title}</Select.Option>)}
+          {table.map(item => <Select.Option key={'' + item} value={ item.id + '' || '' }>{item.title}</Select.Option>)}
         </Select>
         <Button type='primary'>创建比赛</Button>
       </div>

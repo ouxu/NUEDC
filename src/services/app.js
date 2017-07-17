@@ -1,10 +1,11 @@
-import { request, config } from '../utils'
-const { api } = config
-const { user, userLogout, userLogin,news } = api
-export async function query (params) {
+import { request ,API} from '../utils'
+
+const query = async () => {
   return request({
-    url: user.replace('/:id', ''),
+    url: API.tokenVerify,
     method: 'get',
-    data: params,
+    token: true
   })
 }
+
+export { query }

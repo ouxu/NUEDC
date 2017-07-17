@@ -10,7 +10,7 @@ export default {
   // student
   login: apiMaker('user/login'),
   logout: apiMaker('user/logout'),
-  tokenVerify: apiMaker('token-verify'),
+  tokenVerify: apiMaker('verify-token'),
   register: apiMaker('user/register'),
   preRegister: apiMaker('user/preRegister'),
   deleteCompetition: apiMaker(''),
@@ -28,7 +28,15 @@ export default {
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),
+
+  adminContests: apiMaker('sysadmin/contests'),
   adminContestCreate: apiMaker('sysadmin/contest/create'),
   adminContestUpdate: apiMaker('sysadmin/contest/:id/update'),
   adminContestDelete: apiMaker('sysadmin/contest/:id/delete'),
+
+  adminSchools: apiMaker('sysadmin/schools'),
+  adminSchoolCreate: apiMaker('sysadmin/school/create'),
+  adminSchoolUpdate: apiMaker('sysadmin/school/:id/update'),
+  adminSchoolDelete: apiMaker('sysadmin/school/:id/delete'),
+
 }

@@ -2,20 +2,43 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Input, Modal, Select, Table } from 'antd'
-import formConfig from './formConfig'
+import { Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
+import { commonConfig, editConfig } from './formConfig'
 import './index.less'
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
+import moment from 'moment'
+import { color } from '../../../utils'
 const confirm = Modal.confirm
-const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll, fieldsValue}}) => {
-  const {modal = false, table} = contest
+const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  const {modal = false, modalContent = {}, table} = contest
 
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
-        dispatch({type: 'contest/updateModalContent', payload: record})
+        const {
+          register_start_time,
+          register_end_time,
+          problem_start_time,
+          problem_end_time,
+          can_select_problem,
+          can_register
+        } = record
+        const payload = {
+          ...record,
+          registerTimes: [
+            moment(register_start_time, 'YYYY-MM-DD HH:mm:ss'),
+            moment(register_end_time, 'YYYY-MM-DD HH:mm:ss')
+          ],
+          problemTimes: [
+            moment(problem_start_time, 'YYYY-MM-DD HH:mm:ss'),
+            moment(problem_end_time, 'YYYY-MM-DD HH:mm:ss')
+          ],
+          can_register: '' + can_register,
+          can_select_problem: '' + can_select_problem
+        }
+        dispatch({type: 'contest/updateModalContent', payload: payload})
         dispatch({type: 'contest/showModal', payload: 'edit'})
         break
       case 'delete':
@@ -37,6 +60,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
   }
   const onCreateClick = e => {
     e.preventDefault()
+    dispatch({type: 'contest/updateModalContent', payload: 'create'})
     dispatch({type: 'contest/showModal', payload: 'create'})
   }
 
@@ -45,8 +69,11 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       if (errors) {
         return
       }
-      const {title, description, add_on, registerTimes, problemTimes} = values
-      const payload = {
+      const {
+        title, description, add_on, registerTimes, problemTimes, can_register = '',
+        can_select_problem = ''
+      } = values
+      let payload = {
         title,
         description,
         add_on,
@@ -55,26 +82,59 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         problem_start_time: problemTimes[0].format('YYYY-MM-DD HH:mm:ss'),
         problem_end_time: problemTimes[1].format('YYYY-MM-DD HH:mm:ss')
       }
+      if (modal === 'edit') {
+        payload = {
+          ...payload,
+          can_register: +can_register,
+          can_select_problem: +can_select_problem,
+        }
+      }
       dispatch({type: `contest/${modal === 'edit' ? 'update' : 'create'}`, payload: payload})
     })
   }
-
+  const status = [{
+    color: color.green,
+    value: '自动'
+  }, {
+    color: color.red,
+    value: '关闭'
+  }, {
+    color: color.blue,
+    value: '开启'
+  }]
   const columns = [
     {title: '序号', dataIndex: 'id', key: 'id', width: 50},
-    {title: '赛事名称', dataIndex: 'title', key: 'title', width: 250},
+    {title: '赛事名称', dataIndex: 'title', key: 'title'},
     {title: '赛事状态', dataIndex: 'status', key: 'status', width: 100},
-    {title: '报名', dataIndex: 'can_register', key: 'can_register', width: 50},
-    {title: '选题', dataIndex: 'can_select_problem', key: 'can_select_problem', width: 50},
-    {title: '报名开始时间', dataIndex: 'register_start_time', key: 'register_start_time', width: 150},
-    {title: '报名结束时间', dataIndex: 'register_start_time', key: 'register_end_time', width: 150},
-    {title: '选题时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 150},
-    {title: '附加', dataIndex: 'problem_start_time', key: 'problem_end_time'},
+    {
+      title: '报名',
+      render: record => (
+        <Tag color={status[record.can_register + 1].color}>{status[record.can_register + 1].value}</Tag>
+      ),
+      key: 'can_register',
+      width: 50
+    }, {
+      title: '选题',
+      render: record => (
+        <Tag color={status[record.can_select_problem + 1].color}>{status[record.can_select_problem + 1].value}</Tag>
+      ),
+      key: 'can_select_problem',
+      width: 50
+    },
+    {title: '报名开始时间', dataIndex: 'register_start_time', key: 'register_start_time', width: 170},
+    {title: '报名结束时间', dataIndex: 'register_end_time', key: 'register_end_time', width: 170},
+    {title: '选题开始时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 170},
+    {title: '选题结束时间', dataIndex: 'problem_end_time', key: 'problem_end_time', width: 170},
     {
       title: '操作',
       render: (record) => {
         return (
           <DropOption
-            menuOptions={[{key: 'edit', name: '编辑'}, {key: 'delete', name: '删除'}]}
+            menuOptions={[{
+              key: 'edit', name: '编辑'
+            }, {
+              key: 'delete', name: '删除'
+            }]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
           />
@@ -101,25 +161,23 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1500}}
+        dataSource={table} scroll={{x: 1380}}
         pagination={false} rowKey={record => record.id}
         expandedRowRender={record => (
           <div className='expanded-row'>
             <span>{record.description}</span>
-            <span>{record.description}</span>
           </div>
         )}
-        key='1'
       />
       <Modal
         title={`${modal === 'edit' ? '编辑竞赛' : '创建竞赛'}`}
         visible={modal === 'edit' || modal === 'create'}
         onCancel={() => dispatch({type: 'contest/hideModal'})}
         onOk={onModalOk}
-        key={modal}
       >
         <Form className='form-content'>
-          {formConfig.map(config => FormItemRender(config, getFieldDecorator))}
+          {commonConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
         </Form>
       </Modal>
     </div>

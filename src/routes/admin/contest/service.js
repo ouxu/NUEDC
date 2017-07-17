@@ -4,11 +4,11 @@
 import { API, request } from '../../../utils'
 
 const fetchTable = async (data) => request({
-  url: API.deleteCompetition,
+  url: API.adminContests,
   method: 'get',
-  token: true,
-  data
+  token: true
 })
+
 const remove = async (data, id) => request({
   url: API.adminContestDelete.replace(':id', id),
   method: 'post',

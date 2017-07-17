@@ -1,4 +1,4 @@
-import pathToRegexp from 'path-to-regexp'
+import { query } from '../services/app'
 export default {
   namespace: 'app',
   state: {
@@ -9,17 +9,23 @@ export default {
   subscriptions: {
     appSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathToRegexp(['/admin*', '/school*', '/student*']).exec(pathname)
-        if (match) {
-          dispatch({type: 'query'})
-        }
+        !!window.localStorage.getItem('nuedcToken') && dispatch({type: 'query'})
       })
     }
   },
   effects: {
-    * query ({payload}, {call, put, select}) {
-      // const data = yield call(query, parse(payload))
-      const {token, role} = yield select(({app}) => app)
+    * query ({}, {call, put, select}) {
+      const data = yield call(query)
+      if (data.code === 0) {
+        const {user} = yield select(({app}) => app)
+        if (!user.id) {
+          yield put({type: 'setUser', payload: data.user})
+        }
+      } else {
+        yield put({type: 'setInfo', payload: {token: '', role: 'student'}})
+        window.localStorage.removeItem('nuedcToken')
+        window.localStorage.removeItem('nuedcRole')
+      }
     }
   },
   reducers: {
