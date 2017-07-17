@@ -10,7 +10,7 @@ import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 import moment from 'moment'
 import { color } from '../../../utils'
-const confirm = Modal.confirm
+const {confirm} = Modal
 const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table} = contest
 
@@ -142,7 +142,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       },
       fixed: 'right',
       width: 100,
-      key: '9'
+      key: 'edit'
     }
   ]
 
@@ -174,6 +174,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         visible={modal === 'edit' || modal === 'create'}
         onCancel={() => dispatch({type: 'contest/hideModal'})}
         onOk={onModalOk}
+        key={'' + modal}
       >
         <Form className='form-content'>
           {commonConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}

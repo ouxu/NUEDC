@@ -12,5 +12,6 @@ export default {
   height: /^[0-2][0-9]{2}$/,
   chinese: /[\u4E00-\u9FA5\uF900-\uFA2D]/,
   stuId: /^\d{7}$/,
+  postCode: /^\d{6}$/,
   ID: /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/
 }

@@ -30,6 +30,10 @@ const fetch = options => {
       return myAxios.put(url, data)
     case 'patch':
       return myAxios.patch(url, data)
+    case 'export':
+      return myAxios.get(url, {
+        responseType: 'blob'
+      })
     default:
       return myAxios(options)
   }
@@ -38,7 +42,21 @@ const fetch = options => {
 export default async options => {
   try {
     const res = await fetch(options)
+
+    if (options.method === 'export') {
+      let a = document.createElement('a')
+      let url = window.URL.createObjectURL(res.data)
+      a.download = options.filename
+      a.href = url
+      a.click()
+      window.URL.revokeObjectURL(url)
+      return  {
+        code: 0
+      }
+    }
+
     const {data} = res
+
     if (data.code === 0) {
       return data
     } else {

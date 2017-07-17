@@ -1,11 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { create, fetchTable, remove, update } from './service'
-import { modalModel, tableModel } from '../../../models/modelExtend'
-export default modelExtend(modalModel, tableModel, {
+import { inputModel, modalModel, tableModel } from '../../../models/modelExtend'
+import { message } from 'antd'
+export default modelExtend(modalModel, tableModel, inputModel, {
   namespace: 'contest',
-  state: {
-    input: ''
-  },
+  state: {},
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
@@ -18,11 +17,10 @@ export default modelExtend(modalModel, tableModel, {
   },
 
   effects: {
-    * fetchTable ({}, {call, select, put}) {
+    * fetchTable ({payload = false}, {call, select, put}) {
       const table = yield select(({contest}) => contest.table)
-      if (table.length > 0) {
-        // 已有数据，不需要获取
-      } else {
+      if (table.length === 0 || payload) {
+        // 已有数据或者不需要强制跟新，不需要获取
         const data = yield call(fetchTable)
         if (data.code === 0) {
           const {contests} = data.data
@@ -35,38 +33,29 @@ export default modelExtend(modalModel, tableModel, {
       const data = yield call(update, payload, id)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
+        message.success('修改成功')
+        yield put({type: 'fetchTable', payload: true})
       }
     },
 
     * delete ({payload}, {put, select, call}) {
       const {id} = payload
       const {input} = yield select(({contest}) => contest)
-      const data = yield call(remove, {password: input}, id)
+      const data = yield call(remove, id)
       if (data.code === 0) {
-        yield put({type: 'setTable', payload: {}})
+        message.success('删除成功')
+        yield put({type: 'fetchTable', payload: true})
       }
     },
 
     * create ({payload}, {put, call}) {
       const data = yield call(create, payload)
       if (data.code === 0) {
-        console.log('success' + data)
         yield put({type: 'hideModal'})
+        message.success('创建成功')
+        yield put({type: 'fetchTable', payload: true})
       }
     }
   },
-  reducers: {
-    onInputChange(state, {payload}) {
-      return {
-        ...state,
-        input: payload
-      }
-    },
-    updateForm(state, {payload: form}) {
-      return {
-        ...state,
-        form
-      }
-    }
-  }
+  reducers: {}
 })

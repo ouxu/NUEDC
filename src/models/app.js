@@ -1,4 +1,4 @@
-import { query } from '../services/app'
+import { exportF, query } from '../services/app'
 export default {
   namespace: 'app',
   state: {
@@ -8,7 +8,7 @@ export default {
   },
   subscriptions: {
     appSubscriber ({dispatch, history}) {
-      return history.listen(({pathname}) => {
+      return history.listen(() => {
         !!window.localStorage.getItem('nuedcToken') && dispatch({type: 'query'})
       })
     }
@@ -16,6 +16,7 @@ export default {
   effects: {
     * query ({}, {call, put, select}) {
       const data = yield call(query)
+      // const res = yield call(exportF, {filename: '1.xlsx'})
       if (data.code === 0) {
         const {user} = yield select(({app}) => app)
         if (!user.id) {

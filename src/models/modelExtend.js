@@ -50,13 +50,24 @@ const loadingModel = {
 
 const tableModel = {
   state: {
-    table: []
+    table: [],
+    tablePage: -1,
+    tableSize: -1,
+    tableCount: -1
   },
   reducers: {
     setTable (state, {payload: table}) {
       return {
         ...state,
         table
+      }
+    },
+    setTableConfig (state, {payload: {tablePage, tableSize, tableCount}}) {
+      return {
+        ...state,
+        tableSize,
+        tablePage,
+        tableCount
       }
     }
   }
@@ -91,4 +102,18 @@ const counterModel = {
   }
 }
 
-export { modalModel, tableModel, counterModel, loadingModel }
+const inputModel = {
+  state: {
+    input: ''
+  },
+  reducers: {
+    onInputChange(state, {payload}) {
+      return {
+        ...state,
+        input: payload
+      }
+    }
+  }
+}
+
+export { modalModel, tableModel, counterModel, loadingModel, inputModel }
