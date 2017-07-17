@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import modelExtend from 'dva-model-extend'
-import { fetchDate } from './service'
+import { fetchResultTable, resultExcelOut, fetchSelectOption } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'schoolResult',
@@ -21,39 +21,39 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchResultTable ({payload}, {call, put, select}) {
-      console.log('fetchresult')
       const table = yield select(({schoolResult}) => schoolResult.table)
       if (table.length > 0) {
         // 已有数据，不需要获取
       } else {
-        const data = []
-        for (let i = 0; i < 10; i++) {
-          data.push({
-            id: i,
-            info: `信息${i}`,
-            name: `电子设计竞赛 ${i}`,
-            status: '未开始',
-            result: '一等',
-            audit_time: '2017-3-5',
-            time: 2012 + i + '届河北省决赛'
-          })
+        const selectOptions = yield call(fetchSelectOption)
+        if (selectOptions.code === 0) {
+          yield put({type: 'updateModalContent', payload: selectOptions.data})
+          yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
+          const {contestsId} = yield select(({schoolResult}) => schoolResult)
+          const data = yield call(fetchResultTable, contestsId)
+          if (data.code === 0) {
+            yield put({type: 'setTable', payload: data.data.results})
+          }
         }
-        yield put({type: 'setTable', payload: data})
       }
     },
-    * filter ({payload}, {put, select}) {
-      const filter = yield select(({schoolResult}) => schoolResult.filter)
-      console.log(filter)
+    * filter ({payload}, {put, select, call}) {
+      const {contestsId} = yield select(({schoolResult}) => schoolResult)
+      const data = yield call(fetchResultTable, contestsId)
+      if (data.code === 0) {
+        yield put({type: 'setTable', payload: data.data.results})
+      }
     },
-    * ResultOut ({payload}, {put}) {
-      console.log('ResultOut')
+    * ResultOut ({payload}, {put, call, select}) {
+      const {contestsId} = yield select(({schoolResult}) => schoolResult)
+      yield call(resultExcelOut, contestsId)
     }
   },
   reducers: {
     onFilter (state, {payload}) {
       return {
         ...state,
-        filter: payload
+        contestsId: payload
       }
     }
   }

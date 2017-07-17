@@ -17,6 +17,14 @@ export default {
 
   // school
   schoolLogin: apiMaker('school/admin/login'),
+  joinedTeams: apiMaker('school/team/info?contest_id=1'),
+  addTeam: apiMaker('school/team/add'),
+  schoolResult: apiMaker('school/team/awards?contest_id=1'),
+  updateTeamInfo: apiMaker('/school/team/update/'),
+  deleteTeam: apiMaker('school/team/delete/'),
+  checkTeam: apiMaker('school/team/check/'),
+  joinedExcelOut: apiMaker('school/admin/team/export?contest_id='),
+  acquireId: apiMaker('school/admin/contest'),
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),

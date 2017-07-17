@@ -25,6 +25,7 @@ import {
 } from './routes/admin/routes'
 import {
   SchoolPage,
+  SchoolInfoManage, SchoolInfoModel,
   JoinedTeamsManage, JoinedTeamsModel,
   RecommendExpertsManage, RecommendExpertsModel,
   SchoolResultManage, SchoolResultModel
@@ -88,10 +89,10 @@ const Routers = ({history, app}) => (
 
       </Route>
       <Route path='student' component={StudentPage}>
-      <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
-        registerModel(app, ContestModel)
-        registerModel(app, StudentProblemModel)
-      }}/>
+        <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
+          registerModel(app, ContestModel)
+          registerModel(app, StudentProblemModel)
+        }} />
         <Route
           path='problem' getComponent={StudentProblemManage}
           onEnter={() => {
@@ -110,15 +111,19 @@ const Routers = ({history, app}) => (
       <Route path='school' component={SchoolPage}>
         <IndexRoute getComponent={JoinedTeamsManage} onEnter={() => registerModel(app, JoinedTeamsModel)} />
         <Route
-          path='joinedteams' getComponent={JoinedTeamsManage}
+          path='schoolInfo' getComponent={SchoolInfoManage}
+          onEnter={() => registerModel(app, SchoolInfoModel)}
+        />
+        <Route
+          path='joinedTeams' getComponent={JoinedTeamsManage}
           onEnter={() => registerModel(app, JoinedTeamsModel)}
         />
         <Route
-          path='schoolresult' getComponent={SchoolResultManage}
+          path='schoolResult' getComponent={SchoolResultManage}
           onEnter={() => registerModel(app, SchoolResultModel)}
         />
         <Route
-          path='recommendexperts' getComponent={RecommendExpertsManage}
+          path='recommendExperts' getComponent={RecommendExpertsManage}
           onEnter={() => registerModel(app, RecommendExpertsModel)}
         />
       </Route>

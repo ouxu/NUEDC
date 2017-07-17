@@ -8,7 +8,8 @@ import { connect } from 'dva'
 
 const Option = Select.Option
 const SchoolResultManage = ({schoolResult, dispatch}) => {
-  const {table} = schoolResult
+  const {table, modalContent} = schoolResult
+  const {contests = []} = modalContent
   const onOptionChange = (value) => {
     dispatch({type: 'schoolResult/onFilter', payload: value})
     dispatch({type: 'schoolResult/filter', payload: value})
@@ -17,12 +18,24 @@ const SchoolResultManage = ({schoolResult, dispatch}) => {
     dispatch({type: 'schoolResult/ResultOut', payload: 'out'})
   }
   const columns = [
+    {title: '竞赛id', dataIndex: 'contest_id', key: 'contest_id', width: 100},
     {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
-    {title: '队伍名称', dataIndex: 'name', key: 'name', width: 280},
-    {title: '队伍信息', dataIndex: 'info', key: 'info', width: 350},
-    {title: '获奖审核状态', dataIndex: 'status', key: 'status', width: 150},
-    {title: '结果', dataIndex: 'result', key: 'result', width: 150},
-    {title: '审核时间', dataIndex: 'audit_time', key: 'audit_time', width: 250}
+    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 300},
+    {title: '学校id', dataIndex: 'school_id', key: 'school_id', width: 100},
+    {title: '学校名称', dataIndex: 'school_name', key: 'school_name', width: 300},
+    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 200},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 150},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
+    {title: '邮箱', dataIndex: 'email', key: 'email', width: 300},
+    {title: '所选题目', dataIndex: 'problem_selected', key: 'problem_selected', width: 100},
+    {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 200},
+    {title: '奖项确定时间', dataIndex: 'result_at', key: 'result_at', width: 200},
+    {title: '现场赛相关信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
+    {title: '审查情况', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
+    {title: '获得奖项', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'}
   ]
   return (
     <div className='school-result'>
@@ -30,16 +43,16 @@ const SchoolResultManage = ({schoolResult, dispatch}) => {
         <Select
           showSearch
           style={{width: 200}}
-          placeholder='选择比赛年份'
+          placeholder='竞赛ID'
           onChange={onOptionChange}
         >
-          {table.map(item => <Select.Option key={'' + item} value={'' + item.time}>{item.time}</Select.Option>)}
+          {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.id}</Select.Option>)}
         </Select>
         <Button type='primary' onClick={excelOut}>导出excel</Button>
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1200}}
+        dataSource={table} scroll={{x: 2500}}
         pagination={false} rowKey={record => record.id}
       />
     </div>

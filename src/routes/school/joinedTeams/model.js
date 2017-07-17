@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import modelExtend from 'dva-model-extend'
-import { fetchDate } from './service'
+import { fetchJoinedTable, add, update, audit, remove, joinedExcelOut, fetchSelectOption } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'joinedTeams',
@@ -21,54 +21,73 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchJoinedTable ({payload}, {call, put, select}) {
-      console.log('fetchjoined')
       const table = yield select(({joinedTeams}) => joinedTeams.table)
       if (table.length > 0) {
         // 已有数据，不需要获取
       } else {
-        const data = []
-        for (let i = 0; i < 10; i++) {
-          data.push({
-            id: i,
-            name: `电子设计竞赛 ${i}`,
-            description: '电子设计竞赛',
-            status: '未开始',
-            year: 2012 + i + ''
-          })
+        const selectOptions = yield call(fetchSelectOption)
+        if (selectOptions.code === 0) {
+          yield put({type: 'updateModalContent', payload: selectOptions.data})
+          yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
+          const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+          const data = yield call(fetchJoinedTable, contestsId)
+          if (data.code === 0) {
+            yield put({type: 'setTable', payload: data.data.teams})
+          }
         }
-        yield put({type: 'setTable', payload: data})
       }
     },
-    * edit ({payload}, {call}) {
-      console.log('edit')
-      // const data = yield call(edit, payload)
+    * edit ({payload}, {call, select, put}) {
+      const {id} = yield select(({joinedTeams}) => joinedTeams.modalContent)
+      const {form} = yield select(({joinedTeams}) => joinedTeams)
+      const data = yield call(update, [form, id])
+      if (data.code === 0) {
+        yield put({type: 'hideModal'})
+        const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+        const data = yield call(fetchJoinedTable, contestsId)
+        yield put({type: 'setTable', payload: data.data.teams})
+      }
     },
-    * delete ({payload}, {put, select}) {
-      const input = yield select(({joinedTeams}) => joinedTeams.input)
-      console.log(input)
+    * delete ({payload}, {put, select, call}) {
+      const {id} = payload
+      const data = yield call(remove, id)
+      if (data.code === 0) {
+        const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+        const data = yield call(fetchJoinedTable, contestsId)
+        yield put({type: 'setTable', payload: data.data.teams})
+      }
     },
-    * add ({payload}, {put, select}) {
+    * add ({payload}, {put, select, call}) {
       const form = yield select(({joinedTeams}) => joinedTeams.form)
-      console.log(form)
+      const data = yield call(add, form)
+      if (data.code === 0) {
+        yield put({type: 'hideModal'})
+        const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+        const data = yield call(fetchJoinedTable, contestsId)
+        yield put({type: 'setTable', payload: data.data.teams})
+      }
     },
-    * audit ({payload}, {put}) {
-      console.log('audit')
+    * audit ({payload}, {put, call, select}) {
+      const data = yield call(audit, payload)
+      if (data.code === 0) {
+        yield put({type: 'hideModal'})
+        const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+        const data = yield call(fetchJoinedTable, contestsId)
+        yield put({type: 'setTable', payload: data.data.teams})
+      }
     },
-    * filter ({payload}, {put, select}) {
-      const filter = yield select(({joinedTeams}) => joinedTeams.filter)
-      console.log(filter)
+    * filter ({payload}, {put, select, call}) {
+      const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+      const data = yield call(fetchJoinedTable, contestsId)
+      yield put({type: 'setTable', payload: data.data.teams})
     },
-    * joinedOut ({payload}, {put}) {
+    * joinedOut ({payload}, {put, call, select}) {
+      const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+      yield call(joinedExcelOut, contestsId)
       console.log('joinedOut')
     }
   },
   reducers: {
-    onInputChange (state, {payload}) {
-      return {
-        ...state,
-        input: payload
-      }
-    },
     onFormSubmit (state, {payload}) {
       return {
         ...state,
@@ -78,7 +97,7 @@ export default modelExtend(modalModel, tableModel, {
     onFilter (state, {payload}) {
       return {
         ...state,
-        filter: payload
+        contestsId: payload
       }
     }
   }
