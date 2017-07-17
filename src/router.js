@@ -8,6 +8,8 @@ import {
   AdminPage,
   ContestManage,
   ContestModel,
+  ContestRecord,
+  ContestRecordModel,
   MessageManage,
   MessageModel,
   PrivilegeManage,
@@ -19,21 +21,25 @@ import {
   SchoolAdminManage,
   SchoolAdminModel,
   SchoolManage,
-  SchoolModel,
-  TeamManage,
-  TeamModel
+  SchoolModel
 } from './routes/admin/routes'
 import {
+  JoinedTeamsManage,
+  JoinedTeamsModel,
+  RecommendExpertsManage,
+  RecommendExpertsModel,
+  SchoolInfoManage,
+  SchoolInfoModel,
   SchoolPage,
-  SchoolInfoManage, SchoolInfoModel,
-  JoinedTeamsManage, JoinedTeamsModel,
-  RecommendExpertsManage, RecommendExpertsModel,
-  SchoolResultManage, SchoolResultModel
+  SchoolResultManage,
+  SchoolResultModel
 } from './routes/school/routes'
 import {
+  ChooseProblemManage,
+  ChooseProblemModel,
   StudentPage,
-  StudentProblemManage, StudentProblemModel,
-  ChooseProblemManage, ChooseProblemModel
+  StudentProblemManage,
+  StudentProblemModel
 } from './routes/student/routes'
 import Home from './routes/home'
 
@@ -71,8 +77,11 @@ const Routers = ({history, app}) => (
           onEnter={() => registerModel(app, SchoolAdminModel)}
         />
         <Route
-          path='team' getComponent={TeamManage}
-          onEnter={() => registerModel(app, TeamModel)}
+          path='contestRecord' getComponent={ContestRecord}
+          onEnter={() => {
+            registerModel(app, ContestModel)
+            registerModel(app, ContestRecordModel)
+          }}
         />
         <Route
           path='recording' getComponent={RecordingManage}

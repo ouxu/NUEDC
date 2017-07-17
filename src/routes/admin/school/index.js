@@ -10,6 +10,7 @@ import { routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption'
 import FormItemRender from '../../../components/FormItemRender/'
 import { commonConfig, createConfig, editConfig } from './formConfig'
+
 const {confirm} = Modal
 
 const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
@@ -29,7 +30,7 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
       case 'delete':
         confirm({
           title: '删除确认',
-          content: `您确定删除${record.name}的记录吗？`,
+          content: `您确定要删除 ${record.name} 的记录吗？`,
           onOk () { dispatch({type: 'adminSchool/delete', payload: record}) },
           onCancel () {}
         })
@@ -101,7 +102,7 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
         pagination={pagination} rowKey={record => record.id}
       />
       <Modal
-        title={`${modal === 'edit' ? '编辑竞赛' : '创建竞赛'}`}
+        title={`${modal === 'edit' ? '编辑学校信息' : '添加学校'}`}
         visible={modal === 'edit' || modal === 'create'}
         onCancel={() => dispatch({type: 'adminSchool/hideModal'})}
         onOk={onModalOk}

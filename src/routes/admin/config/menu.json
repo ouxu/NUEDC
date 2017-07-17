@@ -24,7 +24,7 @@
       "value": "学校管理员管理",
       "icon": "solution"
     },{
-      "key": "/admin/team",
+      "key": "/admin/contestRecord",
       "value": "参赛队伍审核",
       "icon": "team"
     },{

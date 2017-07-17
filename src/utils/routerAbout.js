@@ -21,6 +21,12 @@ const goto = path => {
   }
 }
 
+const urlEncode = params => {
+  let paramsArray = []
+  Object.keys(params).forEach(key => params[key] && paramsArray.push(`${key}=${params[key]}`))
+  return paramsArray.join('&')
+}
+
 const queryURL = (name) => {
   let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
   let r = window.location.search.substr(1).match(reg)
@@ -29,4 +35,4 @@ const queryURL = (name) => {
 }
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-export { goto, windowScroll, queryURL, sleep }
+export { goto, windowScroll, queryURL, sleep, urlEncode }

@@ -43,7 +43,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         break
       case 'delete':
         confirm({
-          title: '删除确认',
+          title: `删除确认`,
           content: (
             <Input
               type='password' placeholder='请输入你的密码'

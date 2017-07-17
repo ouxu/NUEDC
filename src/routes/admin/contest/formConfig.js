@@ -27,6 +27,7 @@ const commonConfig = [
     value: 'registerTimes',
     label: '竞赛报名时间',
     formType: 3,
+    extra: '请不要忘记选择具体时分秒',
     contentType: 'array',
     rules: {
       required: true,
@@ -35,6 +36,7 @@ const commonConfig = [
   }, {
     value: 'problemTimes',
     label: '竞赛选题时间',
+    extra: '请不要忘记选择具体时分秒',
     formType: 3,
     contentType: 'array',
     rules: {
@@ -60,6 +62,7 @@ const editConfig = [
     label: '报名开启状态',
     formType: 1,
     contentType: 'string',
+    extra: '自动表示按设置的时间执行',
     rules: {
       required: true,
       requiredMessage: '请选择报名开启状态'
@@ -79,6 +82,7 @@ const editConfig = [
     label: '选题开启状态',
     formType: 1,
     contentType: 'string',
+    extra: '自动表示按设置的时间执行',
     rules: {
       required: true,
       requiredMessage: '请选择选题开启状态'

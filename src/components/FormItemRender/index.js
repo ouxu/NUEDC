@@ -31,6 +31,7 @@ export default (config, getFieldDecorator, extra = {}) => {
           {...formItemLayout}
           hasFeedback={config.hasFeedback || false}
           key={config.value}
+          extra={config.extra || ''}
         >
           {getFieldDecorator(config.value, {
             rules: [{
@@ -58,6 +59,7 @@ export default (config, getFieldDecorator, extra = {}) => {
           label={config.label}
           {...formItemLayout}
           key={config.value}
+          extra={config.extra || ''}
         >
           {getFieldDecorator(config.value, {
             rules: [{required: rules.required || false, message: rules.requiredMessage || ''}],
@@ -78,6 +80,7 @@ export default (config, getFieldDecorator, extra = {}) => {
           label={config.label}
           {...formItemLayout}
           key={config.value}
+          extra={config.extra || ''}
         >
           {getFieldDecorator(config.value, {
             rules: [{required: rules.required, message: rules.requiredMessage}],
@@ -95,6 +98,7 @@ export default (config, getFieldDecorator, extra = {}) => {
           label={config.label}
           {...formItemLayout}
           key={config.value}
+          extra={config.extra || ''}
         >
           {getFieldDecorator(config.value, {
             rules: [{required: rules.required, message: rules.requiredMessage}],

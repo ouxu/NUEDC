@@ -40,4 +40,13 @@ export default {
   adminSchoolUpdate: apiMaker('sysadmin/school/:id/update'),
   adminSchoolDelete: apiMaker('sysadmin/school/:id/delete'),
 
+  adminSchoolAdmins: apiMaker('sysadmin/school-admins'),
+  adminSchoolAdminCreate: apiMaker('sysadmin/school-admin/create'),
+  adminUserUpdate: apiMaker('sysadmin/user/:id/update'),
+  adminUserDelete: apiMaker('sysadmin/user/:id/delete'),
+
+  adminContestRecords: apiMaker('sysadmin/contest-records'),
+  adminContestRecordUpdate: apiMaker('sysadmin/contest-records/:id/update'),
+  adminContestRecordDelete: apiMaker('sysadmin/contest-records/:id/delete')
+
 }

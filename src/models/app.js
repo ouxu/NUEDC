@@ -16,7 +16,6 @@ export default {
   effects: {
     * query ({}, {call, put, select}) {
       const data = yield call(query)
-      // const res = yield call(exportF, {filename: '1.xlsx'})
       if (data.code === 0) {
         const {user} = yield select(({app}) => app)
         if (!user.id) {

@@ -1,9 +1,7 @@
 /**
  * Created by out_xu on 17/6/28.
  */
-/**
- * Created by out_xu on 17/6/28.
- */
+
 import { verify } from '../../../utils'
 const commonConfig = [
   {
