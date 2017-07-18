@@ -1,10 +1,11 @@
 import React from 'react'
 import './index.less'
-import HomeBanner from './Banner'
+import HomeBanner from './Banner/Banner'
 import ShowItems from './ShowItems'
 const HomePage = () => {
   return (
     <div className='home-page'>
+
       <HomeBanner />
       <ShowItems />
     </div>

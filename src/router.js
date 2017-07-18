@@ -35,15 +35,21 @@ import {
   SchoolResultModel
 } from './routes/school/routes'
 import {
+  ChooseProblemManage,
+  ChooseProblemModel,
   StudentPage,
-  StudentScoreManage, StudentScoreModel,
-  StudentProfileManage, StudentProfileModel,
-  StudentProblemManage, StudentProblemModel,
-  ChooseProblemManage, ChooseProblemModel,
-  StudentSignUpManage, StudentSignUpModel
+  StudentProblemManage,
+  StudentProblemModel,
+  StudentProfileManage,
+  StudentProfileModel,
+  StudentScoreManage,
+  StudentScoreModel,
+  StudentSignUpManage,
+  StudentSignUpModel
 } from './routes/student/routes'
 import Home from './routes/home/route'
-
+import { News, NewsContent } from './routes/news/route'
+import { Notice, NoticeContent } from './routes/notices/route'
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
     app.model(model)
@@ -54,6 +60,14 @@ const Routers = ({history, app}) => (
     <Route path='/' component={App}>
       <IndexRoute getComponent={Home} />
       <Route path='home' getComponent={Home} />
+      <Route path='news' getComponent={News} >
+        <Route path=':id' getComponent={NewsContent} />
+      </Route>
+      <Route path='news' getComponent={News} />
+      <Route path='notices' getComponent={Notice} >
+        <Route path=':id' getComponent={NoticeContent} />
+      </Route>
+      <Route path='news' getComponent={News} />
       <Route path='login' component={Login} />
       <Route path='register' getComponent={Register} />
       <Route path='admin' component={AdminPage}>

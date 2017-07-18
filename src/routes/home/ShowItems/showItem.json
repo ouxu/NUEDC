@@ -1,36 +1,24 @@
 {
-  "title": "大拇哥",
-  "subTitle": "智能门锁，我选大拇哥",
+  "title": "电子设计竞赛",
+  "subTitle": "创造激情 精彩无限",
   "showItems": [
     {
-      "title": "产品展示",
-      "content": "大拇哥智能锁推出以下系列产品:睿智系列智能锁、简约系列智能锁、门厂专供系列智能锁、云速系列智能锁、克莱斯特系列智能锁、智能猫眼产品",
+      "title": "新闻中心",
+      "content": "新闻中心为您提供最新最全的电子设计竞赛赛况",
       "img": "/assets/home/showItem/1.png",
-      "link": "/product"
+      "link": "/news"
     },
     {
-      "title": "关于我们",
-      "content": "拥有先进的专业智能锁具检验中心，按德国产品品质标准检验，品质值得信赖。采用活体技术、5A级钻化触摸面板、三防专利、一卡通技术",
+      "title": "通知中心",
+      "content": "通知中心给您带来最官方的电子设计竞赛通知",
       "img": "/assets/home/showItem/2.png",
-      "link": "/about"
+      "link": "/notices"
     },
     {
-      "title": "售后服务",
-      "content": "大拇哥作为智能锁领导品牌广泛应用于办公、酒店、公寓、银行等具有特点要求的领域。并致力于为广大消费者提供高品质品牌智能锁以及一流的售后服务",
+      "title": "下载中心",
+      "content": "下载中心包含历年竞赛真题与赛事成绩",
       "img": "/assets/home/showItem/3.png",
-      "link": "/service"
-    },
-    {
-      "title": "asdkjhakjsdhkas",
-      "content": "sadjkalsd",
-      "img": "/assets/home/showItem/1.png",
-      "link": "/"
-    },
-    {
-      "title": "asdkjhakjsdhkas",
-      "content": "sadjkalsd",
-      "img": "/assets/home/showItem/1.png",
-      "link": "/"
+      "link": "/download"
     }
   ]
 }

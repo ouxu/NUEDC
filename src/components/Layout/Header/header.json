@@ -12,8 +12,8 @@
     },
     {
       "name": "通知中心",
-      "href": "/notice",
-      "key": "notice"
+      "href": "/notices",
+      "key": "notices"
     },
     {
       "name": "下载中心",
