@@ -2,10 +2,10 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Modal, Table } from 'antd'
+import { Alert, Button, Form, Modal, Table } from 'antd'
 import { connect } from 'dva'
+import { Link, routerRedux } from 'dva/router'
 import './index.less'
-import { routerRedux } from 'dva/router'
 
 import DropOption from '../../../components/DropOption'
 import FormItemRender from '../../../components/FormItemRender/'
@@ -14,7 +14,7 @@ import { commonConfig, createConfig, editConfig } from './formConfig'
 const {confirm} = Modal
 
 const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminSchool
+  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage, alert} = adminSchool
   const onCreateClick = e => {
     e.preventDefault()
     dispatch({type: 'adminSchool/updateModalContent', payload: {}})
@@ -64,7 +64,7 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
           <DropOption
             menuOptions={[{
               key: 'edit', name: '编辑学校'
-            },{
+            }, {
               key: 'gotoAdmin', name: '查看管理'
             }, {
               key: 'delete', name: '删除学校'
@@ -98,6 +98,15 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
         <div>学校列表</div>
         <Button type='primary' onClick={onCreateClick}>添加学校</Button>
       </div>
+      {alert && (
+        <Alert
+          message={(<span>学校添加成功，可进行下一步操作</span>)}
+          description={(<Link to='/admin/schoolAdmin'>点此为该学校添加管理员</Link>)}
+          type='success'
+          closable
+          showIcon
+        />
+      )}
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 1000}}

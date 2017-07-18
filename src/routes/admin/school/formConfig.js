@@ -23,7 +23,9 @@ const commonConfig = [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '亲输入负责人姓名'
+      requiredMessage: '请输入负责人姓名',
+      pattern: verify.chinese,
+      patternMessage: '请不要输入非中文字符'
     }
   }, {
     value: 'principal_mobile',
@@ -83,24 +85,6 @@ const createConfig = [
         value: '专科',
         label: '专科'
       },
-    ]
-  }, {
-    value: 'createAdmin',
-    label: '创建管理员',
-    formType: 1,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入学校等级'
-    },
-    options: [
-      {
-        value: 'yes',
-        label: '是'
-      }, {
-        value: 'no',
-        label: '否'
-      }
     ]
   }
 ]

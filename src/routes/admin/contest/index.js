@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
+import { Alert, Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
 import { commonConfig, statusConfig } from './formConfig'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -57,7 +57,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         confirm({
           title: `跳转确认`,
           content: `你确定要跳转到 ${record.title} 题目列表吗？`,
-          onOk () { dispatch(routerRedux.push(`/admin/problem?` + urlEncode({contest_id: record.id})))},
+          onOk () { dispatch(routerRedux.push(`/admin/problem?` + urlEncode({contest_id: record.id}))) },
           onCancel () {}
         })
         break
@@ -171,6 +171,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
 
   return (
     <div className='contest'>
+
       <div className='contest-header'>
         <Select
           showSearch
@@ -182,6 +183,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         </Select>
         <Button type='primary' onClick={onCreateClick}>创建比赛</Button>
       </div>
+
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 1380}}

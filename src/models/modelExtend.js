@@ -48,6 +48,26 @@ const loadingModel = {
   }
 }
 
+const alertModel = {
+  state: {
+    alert: false
+  },
+  reducers: {
+    showAlert (state) {
+      return {
+        ...state,
+        alert: true
+      }
+    },
+    hideAlert (state) {
+      return {
+        ...state,
+        alert: false
+      }
+    }
+  }
+}
+
 const tableModel = {
   state: {
     table: [],
@@ -116,4 +136,4 @@ const inputModel = {
   }
 }
 
-export { modalModel, tableModel, counterModel, loadingModel, inputModel }
+export { modalModel, tableModel, counterModel, loadingModel, inputModel, alertModel }

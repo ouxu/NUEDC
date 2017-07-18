@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { modalModel, tableModel } from '../../../models/modelExtend'
+import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { create, fetchTable, remove, update } from './service'
 import { message } from 'antd'
 
-export default modelExtend(modalModel, tableModel, {
+export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'adminSchool',
   state: {},
   subscriptions: {
@@ -56,6 +56,7 @@ export default modelExtend(modalModel, tableModel, {
         yield put({type: 'fetchTable', payload: {force: true}})
         message.success('添加成功')
         yield put({type: 'hideModal'})
+        yield put({type: 'showAlert'})
       }
     }
   },
