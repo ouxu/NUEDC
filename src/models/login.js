@@ -1,16 +1,23 @@
-import { getCode, login, register } from '../services/login'
+import { getCode, login, register, schoolQuery } from '../services/login'
 import { routerRedux } from 'dva/router'
 import { queryURL, sleep } from '../utils'
 import modelExtend from 'dva-model-extend'
-import { counterModel, loadingModel } from './modelExtend'
+import { counterModel, loadingModel, tableModel } from './modelExtend'
 
-export default modelExtend(counterModel, loadingModel, {
+export default modelExtend(counterModel, tableModel, loadingModel, {
   namespace: 'login',
-
   state: {
     role: 'student'
   },
-
+  subscriptions: {
+    schoolsSubscriber ({dispatch, history}) {
+      return history.listen(({pathname}) => {
+        if (pathname === '/register' || pathname === '/admin/contestRecord') {
+          dispatch({type: 'querySchools'})
+        }
+      })
+    }
+  },
   effects: {
     * login ({payload}, {put, call, select}) {
       yield put({type: 'showLoading'})
@@ -31,7 +38,7 @@ export default modelExtend(counterModel, loadingModel, {
       }
     },
 
-    * logout ({}, {put, call}) {
+    * logout ({}, {put}) {
       window.localStorage.removeItem('nuedcToken')
       window.localStorage.removeItem('nuedcRole')
 
@@ -53,6 +60,15 @@ export default modelExtend(counterModel, loadingModel, {
           client: 1
         }
         yield put({type: 'login', payload: loginData})
+      }
+    },
+    * querySchools ({}, {put, call, select}) {
+      const {table = []} = yield select(({login}) => login)
+      if (table.length < 1) {
+        const data = yield call(schoolQuery)
+        if (data.code === 0) {
+          yield put({type: 'setTable', payload: data.data.schools})
+        }
       }
     }
   },

@@ -1,4 +1,4 @@
-import { exportF, query } from '../services/app'
+import { query } from '../services/app'
 export default {
   namespace: 'app',
   state: {
@@ -22,6 +22,7 @@ export default {
           yield put({type: 'setUser', payload: data.user})
         }
       } else {
+        yield put({type: 'setUser', payload: {}})
         yield put({type: 'setInfo', payload: {token: '', role: 'student'}})
         window.localStorage.removeItem('nuedcToken')
         window.localStorage.removeItem('nuedcRole')

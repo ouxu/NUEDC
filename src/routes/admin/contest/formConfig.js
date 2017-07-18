@@ -56,11 +56,11 @@ const commonConfig = [
   //   }
   // }
 ]
-const editConfig = [
+const statusConfig = [
   {
     value: 'can_register',
     label: '报名开启状态',
-    formType: 1,
+    formType: 2,
     contentType: 'string',
     extra: '自动表示按设置的时间执行',
     rules: {
@@ -80,7 +80,7 @@ const editConfig = [
   }, {
     value: 'can_select_problem',
     label: '选题开启状态',
-    formType: 1,
+    formType: 2,
     contentType: 'string',
     extra: '自动表示按设置的时间执行',
     rules: {
@@ -100,4 +100,4 @@ const editConfig = [
   },
 ]
 
-export {commonConfig,editConfig}
+export {commonConfig,statusConfig}

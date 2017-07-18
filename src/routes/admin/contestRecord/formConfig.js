@@ -4,88 +4,156 @@
 
 import { verify } from '../../../utils'
 
-const createConfig = [
-  {
-    value: 'school_id',
-    label: '学校 ID',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入学校ID'
-    },
-    hasFeedback: false
-  }
-]
 const editConfig = [
   {
-    value: 'name',
-    label: '用户名',
+    value: 'team_name',
+    label: '队名',
     formType: 0,
     contentType: 'string',
     rules: {
       required: false,
-      requiredMessage: '请输入您的用户昵称',
+      requiredMessage: '请输入队伍名称',
       pattern: /^[\u4E00-\u9FA5A-Za-z0-9]{2,20}$/,
       patternMessage: '2-20位英文字母、汉字、数字'
     }
   }, {
+    value: 'member1',
+    label: '成员1姓名',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入成员1姓名',
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member2',
+    label: '成员2姓名',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入成员2姓名',
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member3',
+    label: '成员3姓名',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入成员3姓名',
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'teacher',
+    label: '指导老师',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入指导老师姓名',
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'contact_mobile',
+    label: '联系电话',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入手机',
+      pattern: verify.mobile,
+      patternMessage: '输入合法的手机号码'
+    }
+  }, {
     value: 'email',
-    label: '邮箱',
+    label: '联系邮箱',
     formType: 0,
     contentType: 'string',
     rules: {
       required: false,
       requiredMessage: '请输入邮箱',
-      pattern: verify.mail,
-      patternMessage: '请输入合法的邮箱',
-    },
-    hasFeedback: false
-  }, {
-    value: 'mobile',
-    label: '手机号',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请输入您的手机',
-      pattern: verify.mobile,
-      patternMessage: '输入合法的手机号码'
-    }
-  }, {
-    value: 'password',
-    label: '密码',
-    formType: 0,
-    type: 'password',
-    extra: '输入后表示重置密码，如不需重置请忽略此项',
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请输入您的密码',
       pattern: verify.password,
-      patternMessage: '6-18位数字、英文字母或者下划线'
+      patternMessage: '输入合法的邮箱'
     }
   }, {
-    value: 'sex',
-    label: '性别',
-    formType: 1,
+    value: 'problem_selected',
+    label: '所选题目号',
+    formType: 0,
     contentType: 'string',
     rules: {
-      required: true,
-      requiredMessage: '请选择性别'
-    },
-    options: [{'label': '男', 'value': '男'}, {'label': '女', 'value': '女'}]
+      required: false,
+      requiredMessage: '请输入所选题目号',
+      pattern: verify.number,
+      patternMessage: '请勿输入非数字字符'
+    }
   }, {
     value: 'status',
-    label: '用户状态',
+    label: '报名状态',
     formType: 1,
     contentType: 'string',
     rules: {
-      required: true,
-      requiredMessage: '请选择用户状态'
+      required: false,
+      requiredMessage: '请选择报名状态'
     },
-    options: [{'label': '喵喵喵', 'value': '1'}, {'label': '汪汪汪', 'value': '2'}]
-  },
+    options: [
+      {
+        value: '未审核',
+        label: '未审核'
+      }, {
+        value: '已审核',
+        label: '已审核'
+      }
+    ]
+  }, {
+    value: 'result',
+    label: '获奖情况',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入获奖情况'
+    }
+  }, {
+    value: 'result_info',
+    label: '审核状态',
+    formType: 1,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请选择审核状态'
+    },
+    options: [
+      {
+        value: '未审核',
+        label: '未审核'
+      }, {
+        value: '已审核',
+        label: '已审核'
+      }
+    ]
+  }, {
+    value: 'result_info',
+    label: '附加信息',
+    formType: 0,
+    type: 'textarea',
+    placeholder: '现场赛等其他附加信息',
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请选择报名状态'
+    }
+  }
 ]
 
-export { createConfig, editConfig }
+export { editConfig }

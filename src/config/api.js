@@ -13,8 +13,7 @@ export default {
   tokenVerify: apiMaker('verify-token'),
   register: apiMaker('user/register'),
   preRegister: apiMaker('user/preRegister'),
-  deleteCompetition: apiMaker(''),
-
+  userSchools: apiMaker('user/schools'),
   // school
   schoolLogin: apiMaker('school/admin/login'),
   schoolJoinedTeams: apiMaker('school/team/info?contest_id=1'),

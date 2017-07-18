@@ -63,9 +63,11 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
         return (
           <DropOption
             menuOptions={[{
-              key: 'edit', name: '编辑'
+              key: 'edit', name: '编辑学校'
+            },{
+              key: 'gotoAdmin', name: '查看管理'
             }, {
-              key: 'delete', name: '删除'
+              key: 'delete', name: '删除学校'
             }]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}

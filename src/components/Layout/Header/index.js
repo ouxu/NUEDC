@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'dva/router'
 import TweenOne from 'rc-tween-one'
-import QueueAnim from 'rc-queue-anim'
 import { enquireScreen, goto } from '../../../utils/'
 import './index.less'
 import navConfig from './header.json'
@@ -118,9 +117,9 @@ class Header extends React.Component {
                   animation={this.state.openAnim}
                   style={{pointerEvents: this.state.phoneOpen ? 'auto' : 'none'}}
                 >
-                  <QueueAnim component='ul' delay={[300, 0]} type='bottom' leaveReverse>
+                  <ul>
                     {this.state.phoneOpen && navToRender}
-                  </QueueAnim>
+                  </ul>
                 </TweenOne>
               </div>
             ) : (

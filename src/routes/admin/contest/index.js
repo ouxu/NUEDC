@@ -3,30 +3,31 @@
  */
 import React from 'react'
 import { Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
-import { commonConfig, editConfig } from './formConfig'
+import { commonConfig, statusConfig } from './formConfig'
 import './index.less'
+import { routerRedux } from 'dva/router'
+
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 import moment from 'moment'
-import { color } from '../../../utils'
+import { color, urlEncode } from '../../../utils'
 const {confirm} = Modal
 const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table} = contest
-
   const onMenuClick = (key, record) => {
+    let payload = {}
     switch (key) {
-      case 'edit':
+      case 'update':
         const {
           register_start_time,
           register_end_time,
           problem_start_time,
-          problem_end_time,
-          can_select_problem,
-          can_register
+          problem_end_time
         } = record
-        const payload = {
+        payload = {
           ...record,
+          modalTitle: '更新竞赛-' + record.title,
           registerTimes: [
             moment(register_start_time, 'YYYY-MM-DD HH:mm:ss'),
             moment(register_end_time, 'YYYY-MM-DD HH:mm:ss')
@@ -34,12 +35,10 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           problemTimes: [
             moment(problem_start_time, 'YYYY-MM-DD HH:mm:ss'),
             moment(problem_end_time, 'YYYY-MM-DD HH:mm:ss')
-          ],
-          can_register: '' + can_register,
-          can_select_problem: '' + can_select_problem
+          ]
         }
         dispatch({type: 'contest/updateModalContent', payload: payload})
-        dispatch({type: 'contest/showModal', payload: 'edit'})
+        dispatch({type: 'contest/showModal', payload: 'update'})
         break
       case 'delete':
         confirm({
@@ -54,13 +53,30 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           onCancel () {}
         })
         break
+      case 'gotoProblem':
+        confirm({
+          title: `跳转确认`,
+          content: `你确定要跳转到 ${record.title} 题目列表吗？`,
+          onOk () { dispatch(routerRedux.push(`/admin/problem?` + urlEncode({contest_id: record.id})))},
+          onCancel () {}
+        })
+        break
+      case 'status':
+        payload = {
+          ...record,
+          modalTitle: '更新状态-' + record.title
+        }
+        dispatch({type: 'contest/updateModalContent', payload: payload})
+        dispatch({type: 'contest/showModal', payload: 'status'})
+        break
       default:
         break
     }
   }
   const onCreateClick = e => {
     e.preventDefault()
-    dispatch({type: 'contest/updateModalContent', payload: 'create'})
+
+    dispatch({type: 'contest/updateModalContent', payload: {modalTitle: '创建竞赛'}})
     dispatch({type: 'contest/showModal', payload: 'create'})
   }
 
@@ -70,26 +86,29 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         return
       }
       const {
-        title, description, add_on, registerTimes, problemTimes, can_register = '',
+        title = '', description = '', add_on = '', registerTimes = [], problemTimes = '', can_register = '',
         can_select_problem = ''
       } = values
-      let payload = {
-        title,
-        description,
-        add_on,
-        register_start_time: registerTimes[0].format('YYYY-MM-DD HH:mm:ss'),
-        register_end_time: registerTimes[1].format('YYYY-MM-DD HH:mm:ss'),
-        problem_start_time: problemTimes[0].format('YYYY-MM-DD HH:mm:ss'),
-        problem_end_time: problemTimes[1].format('YYYY-MM-DD HH:mm:ss')
-      }
-      if (modal === 'edit') {
+      let payload = {}
+
+      if (modal === 'status') {
         payload = {
-          ...payload,
           can_register: +can_register,
-          can_select_problem: +can_select_problem,
+          can_select_problem: +can_select_problem
+        }
+      } else {
+        payload = {
+          title,
+          description,
+          add_on,
+          register_start_time: registerTimes[0].format('YYYY-MM-DD HH:mm:ss'),
+          register_end_time: registerTimes[1].format('YYYY-MM-DD HH:mm:ss'),
+          problem_start_time: problemTimes[0].format('YYYY-MM-DD HH:mm:ss'),
+          problem_end_time: problemTimes[1].format('YYYY-MM-DD HH:mm:ss')
         }
       }
-      dispatch({type: `contest/${modal === 'edit' ? 'update' : 'create'}`, payload: payload})
+
+      dispatch({type: `contest/${modal}`, payload: payload})
     })
   }
   const status = [{
@@ -131,9 +150,13 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         return (
           <DropOption
             menuOptions={[{
-              key: 'edit', name: '编辑'
+              key: 'update', name: '编辑竞赛'
             }, {
-              key: 'delete', name: '删除'
+              key: 'status', name: '修改状态'
+            }, {
+              key: 'gotoProblem', name: '查看题目'
+            }, {
+              key: 'delete', name: '删除竞赛'
             }]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
@@ -170,15 +193,17 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         )}
       />
       <Modal
-        title={`${modal === 'edit' ? '编辑竞赛' : '创建竞赛'}`}
-        visible={modal === 'edit' || modal === 'create'}
+        title={modalContent.modalTitle}
+        visible={modal}
         onCancel={() => dispatch({type: 'contest/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}
       >
         <Form className='form-content'>
-          {commonConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
-          {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {(modal === 'update' || modal === 'create') && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {modal === 'status' && statusConfig.map(config => FormItemRender(config, getFieldDecorator, {
+            initialValue: '' + modalContent[config.value]
+          }))}
         </Form>
       </Modal>
     </div>

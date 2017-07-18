@@ -22,7 +22,7 @@ const commonConfig = [
     formType: 0,
     contentType: 'string',
     rules: {
-      required: false,
+      required: true,
       requiredMessage: '亲输入负责人姓名'
     }
   }, {
@@ -31,7 +31,7 @@ const commonConfig = [
     formType: 0,
     contentType: 'string',
     rules: {
-      required: false,
+      required: true,
       requiredMessage: '请输入负责人手机号',
       pattern: verify.mobile,
       patternMessage: '请输入合法的手机号'
@@ -63,12 +63,45 @@ const createConfig = [
   }, {
     value: 'level',
     label: '学校等级',
-    formType: 0,
+    formType: 2,
     contentType: 'string',
     rules: {
       required: true,
       requiredMessage: '请输入学校等级'
-    }
+    },
+    options: [
+      {
+        value: '本科一本',
+        label: '本科一本'
+      }, {
+        value: '本科二本',
+        label: '本科二本'
+      }, {
+        value: '本科三本',
+        label: '本科三本'
+      }, {
+        value: '专科',
+        label: '专科'
+      },
+    ]
+  }, {
+    value: 'createAdmin',
+    label: '创建管理员',
+    formType: 1,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入学校等级'
+    },
+    options: [
+      {
+        value: 'yes',
+        label: '是'
+      }, {
+        value: 'no',
+        label: '否'
+      }
+    ]
   }
 ]
 const editConfig = [

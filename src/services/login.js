@@ -26,4 +26,9 @@ const getCode = async data => request({
   method: 'get',
   data
 })
-export { login, register, getCode }
+
+const schoolQuery = async () => request({
+  url: API.userSchools,
+  method: 'get'
+})
+export { login, register, getCode, schoolQuery }

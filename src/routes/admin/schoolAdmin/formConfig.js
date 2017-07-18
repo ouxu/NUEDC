@@ -38,7 +38,7 @@ const editConfig = [
       required: false,
       requiredMessage: '请输入邮箱',
       pattern: verify.mail,
-      patternMessage: '请输入合法的邮箱',
+      patternMessage: '请输入合法的邮箱'
     },
     hasFeedback: false
   }, {
@@ -84,8 +84,8 @@ const editConfig = [
       required: true,
       requiredMessage: '请选择用户状态'
     },
-    options: [{'label': '喵喵喵', 'value': '1'}, {'label': '汪汪汪', 'value': '2'}]
-  },
+    options: [{'label': '未激活', 'value': '0'}, {'label': '已激活', 'value': '1'}]
+  }
 ]
 
 export { createConfig, editConfig }

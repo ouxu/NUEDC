@@ -47,7 +47,9 @@ export default modelExtend(modalModel, tableModel, inputModel, {
         yield put({type: 'fetchTable', payload: true})
       }
     },
-
+    * status ({payload}, {put}) {
+      yield put({type: 'update', payload: payload})
+    },
     * create ({payload}, {put, call}) {
       const data = yield call(create, payload)
       if (data.code === 0) {

@@ -7,14 +7,15 @@ import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
-import { createConfig, editConfig } from './formConfig'
+import { editConfig } from './formConfig'
 import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
-const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const ContestRecordManage = ({location, adminContestRecord, contest, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminContestRecord
   const {table: tableContest = []} = contest
+  const {table: tableSchool = []} = login
   const {query} = location
 
   const onMenuClick = (key, record) => {
@@ -41,10 +42,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, f
       if (errors) {
         return
       }
-      if (modal === 'edit') {
-        values.status = +values.status
-      }
-      dispatch({type: `adminContestRecord/${modal === 'edit' ? 'update' : 'create'}`, payload: values})
+      dispatch({type: 'adminContestRecord/update', payload: values})
     })
   }
   const columns = [
@@ -104,18 +102,14 @@ const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, f
 
   const statusArr = [
     {
-      value: '1',
-      label: '审核中',
-      color: color.blue
+      value: '未审核',
+      label: '未审核',
+      color: color.red
     },
     {
-      value: '2',
-      label: '成功',
-      color: color.green
-    }, {
-      value: '3',
-      label: '打回',
-      color: color.red
+      value: '已审核',
+      label: '已审核',
+      color: color.blue
     }
   ]
 
@@ -128,16 +122,18 @@ const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, f
             style={{width: 260}}
             placeholder='选择竞赛'
             onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({...query, contest_id: value || undefined})))
+              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
+                ...query,
+                contest_id: value || undefined
+              })))
             }}
             allowClear
             value={query.contest_id || undefined}
           >
             {tableContest.map(item => (
-              <Select.Option key={'contest-id-' + item} value={ item.id + '' || '' }>{item.title}</Select.Option>
+              <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
             ))}
           </Select>
-
           <Select
             showSearch
             style={{width: 100}}
@@ -165,7 +161,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, f
             value={query.result || undefined}
           >
             {statusArr.map(item => (
-              <Select.Option key={'contest-status-' + item.value} value={item.value}>
+              <Select.Option key={'contest-result-' + item.value} value={item.value}>
                 {item.label}
               </Select.Option>
             ))}
@@ -180,21 +176,21 @@ const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, f
             allowClear
             value={query.school_id || undefined}
           >
-            {statusArr.map(item => (
-              <Select.Option key={'contest-status-' + item.value} value={item.value}>
-                {item.label}
+            {tableSchool.map(item => (
+              <Select.Option key={'contest-school-' + item.id} value={item.id}>
+                {item.name}
               </Select.Option>
             ))}
           </Select>
         </div>
         <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/contestRecord?' + urlEncode({
-            ...query,
-            contest_id: undefined,
-            status: undefined,
-            result: undefined,
-            school_id: undefined
-          })))
-        }>重置筛选</Button>
+          ...query,
+          contest_id: undefined,
+          status: undefined,
+          result: undefined,
+          school_id: undefined
+        })))}>
+          重置筛选</Button>
       </div>
       <Table
         columns={columns} bordered
@@ -202,23 +198,23 @@ const ContestRecordManage = ({location, adminContestRecord, contest, dispatch, f
         pagination={pagination} rowKey={record => record.id}
       />
       <Modal
-        title={`${modal === 'edit' ? '修改学校管理员信息' : '添加学校管理员'}`}
-        visible={modal === 'edit' || modal === 'create'}
+        title='修改队伍信息'
+        visible={modal === 'edit'}
         onCancel={() => dispatch({type: 'adminContestRecord/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}
       >
         <Form className='form-content'>
           {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
-          {modal === 'create' && createConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
         </Form>
       </Modal>
     </div>
   )
 }
 
-export default connect(({app, loading, contest, adminContestRecord}) => ({
+export default connect(({app, loading, contest, login, adminContestRecord}) => ({
   app,
+  login,
   loading,
   adminContestRecord,
   contest

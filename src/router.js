@@ -38,12 +38,12 @@ import {
   ChooseProblemManage,
   ChooseProblemModel,
   StudentPage,
-  StudentScoreManage, StudentScoreModel,
-  StudentProfileManage, StudentProfileModel,
-  StudentProblemManage, StudentProblemModel,
-  ChooseProblemManage, ChooseProblemModel
   StudentProblemManage,
-  StudentProblemModel
+  StudentProblemModel,
+  StudentProfileManage,
+  StudentProfileModel,
+  StudentScoreManage,
+  StudentScoreModel
 } from './routes/student/routes'
 import Home from './routes/home'
 
@@ -102,9 +102,9 @@ const Routers = ({history, app}) => (
 
       </Route>
       <Route path='student' component={StudentPage}>
-      <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
-        registerModel(app, StudentProblemModel)
-      }}/>
+        <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
+          registerModel(app, StudentProblemModel)
+        }} />
         <Route
           path='problem' getComponent={StudentProblemManage}
           onEnter={() => {

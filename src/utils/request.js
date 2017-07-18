@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { message } from 'antd'
 import { codeHelper } from './'
-const TIMEOUT = 15000
 
 const fetch = options => {
   let {
@@ -50,19 +49,18 @@ export default async options => {
       a.href = url
       a.click()
       window.URL.revokeObjectURL(url)
-      return  {
+      return {
         code: 0
       }
     }
 
     const {data} = res
 
-    if (data.code === 0) {
-      return data
-    } else {
+    if (data.code !== 0) {
       codeHelper(data.code)
-      return data
     }
+    return data
+
   } catch (e) {
     message.error('网络错误，请刷新页面重试')
     return {
