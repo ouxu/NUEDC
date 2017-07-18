@@ -4,6 +4,7 @@
 import modelExtend from 'dva-model-extend'
 import { fetchJoinedTable, add, update, audit, remove, joinedExcelOut, fetchSelectOption } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
+import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'joinedTeams',
   state: {
@@ -27,7 +28,7 @@ export default modelExtend(modalModel, tableModel, {
       } else {
         const selectOptions = yield call(fetchSelectOption)
         if (selectOptions.code === 0) {
-          yield put({type: 'updateModalContent', payload: selectOptions.data})
+          yield put({type: 'saveFilter', payload: selectOptions.data})
           yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
           const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
           const data = yield call(fetchJoinedTable, contestsId)
@@ -43,6 +44,7 @@ export default modelExtend(modalModel, tableModel, {
       const data = yield call(update, [form, id])
       if (data.code === 0) {
         yield put({type: 'hideModal'})
+        message.success('修改成功')
         const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
         const data = yield call(fetchJoinedTable, contestsId)
         yield put({type: 'setTable', payload: data.data.teams})
@@ -52,6 +54,7 @@ export default modelExtend(modalModel, tableModel, {
       const {id} = payload
       const data = yield call(remove, id)
       if (data.code === 0) {
+        message.success('删除成功')
         const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
         const data = yield call(fetchJoinedTable, contestsId)
         yield put({type: 'setTable', payload: data.data.teams})
@@ -62,6 +65,7 @@ export default modelExtend(modalModel, tableModel, {
       const data = yield call(add, form)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
+        message.success('创建成功')
         const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
         const data = yield call(fetchJoinedTable, contestsId)
         yield put({type: 'setTable', payload: data.data.teams})
@@ -71,6 +75,7 @@ export default modelExtend(modalModel, tableModel, {
       const data = yield call(audit, payload)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
+        message.success('审核通过')
         const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
         const data = yield call(fetchJoinedTable, contestsId)
         yield put({type: 'setTable', payload: data.data.teams})
@@ -83,7 +88,8 @@ export default modelExtend(modalModel, tableModel, {
     },
     * joinedOut ({payload}, {put, call, select}) {
       const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
-      yield call(joinedExcelOut, contestsId)
+      const date = new Date().valueOf() + ''
+      yield call(joinedExcelOut, {filename: date.substr(-3, 3) + '本校参赛队伍竞赛' + contestsId + '.xlsx'}, contestsId)
       console.log('joinedOut')
     }
   },
@@ -98,6 +104,12 @@ export default modelExtend(modalModel, tableModel, {
       return {
         ...state,
         contestsId: payload
+      }
+    },
+    saveFilter (state, {payload}) {
+      return {
+        ...state,
+        contest: payload
       }
     }
   }

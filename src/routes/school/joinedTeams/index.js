@@ -12,13 +12,21 @@ import { connect } from 'dva'
 const Option = Select.Option
 const confirm = Modal.confirm
 const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, modalContent} = joinedTeams
-  const {contests = []} = modalContent
-
+  const {modal = false, table, modalContent, contest = {}} = joinedTeams
+  const {contests = []} = contest
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
-        dispatch({type: 'joinedTeams/updateModalContent', payload: record})
+        const {
+          contest_id,
+          school_id
+        } = record
+        const payload = {
+          ...record,
+          school_id: school_id + '',
+          contest_id: contest_id + ''
+        }
+        dispatch({type: 'joinedTeams/updateModalContent', payload: payload})
         dispatch({type: 'joinedTeams/showModal', payload: 'edit'})
         break
       case 'delete':
@@ -34,7 +42,16 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         })
         break
       case 'audit':
-        dispatch({type: 'joinedTeams/audit', payload: record.id})
+        confirm({
+          title: '审核确认',
+          content: (
+            <p>确认审核{record.team_name}吗？</p>
+          ),
+          onOk () {
+            dispatch({type: 'joinedTeams/audit', payload: record.id})
+          },
+          onCancel () {}
+        })
         break
       default:
         break
@@ -103,7 +120,12 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         >
           {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.id}</Select.Option>)}
         </Select>
-        <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button>
+        <div>
+          <div className='joined-teams-out'>
+            <Button type='primary' onClick={excelOut}>导出excel</Button>
+          </div>
+          <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button>
+        </div>
       </div>
       <Table
         columns={columns} bordered
@@ -118,10 +140,10 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         key={joinedTeams.modal}
       >
         <Form className='form-content'>
-          {formConfig.map(config => FormItemRender(config, getFieldDecorator))}
+          {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))}
+          {modal === 'edit' && formConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
         </Form>
       </Modal>
-      <Button className='joined-teams-out' type='primary' onClick={excelOut}>导出excel</Button>
     </div>
   )
 }

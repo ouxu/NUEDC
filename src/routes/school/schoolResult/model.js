@@ -46,7 +46,8 @@ export default modelExtend(modalModel, tableModel, {
     },
     * ResultOut ({payload}, {put, call, select}) {
       const {contestsId} = yield select(({schoolResult}) => schoolResult)
-      yield call(resultExcelOut, contestsId)
+      const date = new Date().valueOf() + ''
+      yield call(resultExcelOut, {filename: date.substr(-3, 3) + '本校赛果竞赛' + contestsId + '.xlsx'}, contestsId)
     }
   },
   reducers: {

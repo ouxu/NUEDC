@@ -15,10 +15,11 @@ const fetchSelectOption = async () => request({
   token: true
 })
 
-const resultExcelOut = async (data) => request({
-  url: API.schoolResultExcelOut + data,
-  method: 'get',
-  token: true
+const resultExcelOut = async ({filename}, id) => request({
+  url: API.schoolResultExcelOut + id,
+  method: 'export',
+  token: true,
+  filename
 })
 
 export { fetchResultTable, resultExcelOut, fetchSelectOption }

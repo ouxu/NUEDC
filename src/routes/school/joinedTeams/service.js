@@ -15,10 +15,11 @@ const fetchSelectOption = async () => request({
   token: true
 })
 
-const joinedExcelOut = async (data) => request({
-  url: API.schoolJoinedExcelOut + data,
-  method: 'get',
-  token: true
+const joinedExcelOut = async ({filename}, id) => request({
+  url: API.schoolJoinedExcelOut + id,
+  method: 'export',
+  token: true,
+  filename
 })
 
 const remove = async (data) => request({

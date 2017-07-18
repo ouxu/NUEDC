@@ -1,0 +1,13 @@
+{
+  "value": "team_name",
+  "label": "队伍名称",
+  "formType": 0,
+  "contentType": "string",
+  "initialValue": "",
+  "rules": {
+    "required": true,
+    "requiredMessage": "请输入您的队伍名称",
+    "pattern": "",
+    "patternMessage": "输入包含非中文字符！"
+  }
+}
