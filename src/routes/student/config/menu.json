@@ -5,6 +5,11 @@
   ],
   "menus": [
     {
+      "key": "student/signup",
+      "value": "注册报名",
+      "icon": "smile-o"
+    },
+    {
       "key": "/student/problem",
       "value": "查看题目",
       "icon": "file-text"

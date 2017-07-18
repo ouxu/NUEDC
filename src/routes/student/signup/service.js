@@ -1,12 +1,10 @@
-/**
- * Created by out_xu on 17/7/14.
- */
+
 /**
  * Created by out_xu on 17/7/14.
  */
 import { API, request } from '../../../utils'
 
-const fetchProblemTable = async (data) => request({
+const fetchSignUpTable = async (data) => request({
   url: API.getContestProblemList,
   method: 'get',
   token: true
@@ -23,8 +21,7 @@ const getAllContest = async (data) => request({
   token: true
 })
 const getContestProblemList = async (id) => request({
-  // url: API.getContestProblemList.replace(':contestId', id),
-  url: API.getContestProblemList.replace(':contestId', 3),
+  url: API.getContestProblemList.replace(':contestId', id),
   method: 'get',
   token: true
 })
@@ -67,4 +64,4 @@ const getSchoolList = async () => request({
   token: false
 })
 
-export { signUpContest, getContestProblemList, fetchProblemTable }
+export {signUpContest, fetchSignUpTable }

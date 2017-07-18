@@ -9,7 +9,6 @@ import DropOption from '../../../components/DropOption/'
 
 const StudentProblemManage = ({studentProblem, dispatch}) => {
   const {table = []} = studentProblem
-  console.log(studentProblem)
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'view':
