@@ -6,19 +6,19 @@
       "key": "home"
     },
     {
-      "name": "超级管理",
-      "href": "/admin",
-      "key": "admin"
+      "name": "新闻中心",
+      "href": "/news",
+      "key": "news"
     },
     {
-      "name": "学校管理",
-      "href": "/school",
-      "key": "school"
+      "name": "通知中心",
+      "href": "/notice",
+      "key": "notice"
     },
     {
-      "name": "学生端",
-      "href": "/student",
-      "key": "student"
+      "name": "下载中心",
+      "href": "/download",
+      "key": "download"
     }
   ]
 }

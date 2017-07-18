@@ -24,6 +24,7 @@ export default {
   abandonContest: apiMaker('user/:contestId/abandonContest'),
   getAllPassContest: apiMaker('user/getAllPassContest'),
   userSchools: apiMaker('user/schools'),
+
   // school
   schoolLogin: apiMaker('school/admin/login'),
   schoolJoinedTeams: apiMaker('school/team/info?contest_id=1'),

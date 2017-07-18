@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { create, fetchTable, remove, update } from './service'
-import { inputModel, modalModel, tableModel } from '../../../models/modelExtend'
+import { alertModel, inputModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
-export default modelExtend(modalModel, tableModel, inputModel, {
+export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   namespace: 'contest',
   state: {},
   subscriptions: {
@@ -41,7 +41,7 @@ export default modelExtend(modalModel, tableModel, inputModel, {
     * delete ({payload}, {put, select, call}) {
       const {id} = payload
       const {input} = yield select(({contest}) => contest)
-      const data = yield call(remove, id)
+      const data = yield call(remove, {password: input}, id)
       if (data.code === 0) {
         message.success('删除成功')
         yield put({type: 'fetchTable', payload: true})
@@ -56,6 +56,8 @@ export default modelExtend(modalModel, tableModel, inputModel, {
         yield put({type: 'hideModal'})
         message.success('创建成功')
         yield put({type: 'fetchTable', payload: true})
+        yield put({type: 'showAlert'})
+
       }
     }
   },

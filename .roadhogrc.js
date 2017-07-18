@@ -19,11 +19,6 @@ export default {
         'transform-decorators-legacy',
         ['import', {'libraryName': 'antd', 'style': true}]
       ],
-      "externals": {
-        "react": "window.React",
-        "react-dom": "window.ReactDOM"
-      },
-      // 'publicPath':'http://osxp7rsod.bkt.clouddn.com/',
       'autoprefixer': {
         'browsers': [
           'iOS >= 8', 'Android >= 4'

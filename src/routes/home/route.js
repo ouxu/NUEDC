@@ -1,11 +1,5 @@
-module.exports = {
-  path: 'home',
-  // childRoutes: [
-  //   require('./info/route'),
-  // ],
-  getComponents(nextState, callback){
-    require.ensure([], () => {
-      callback(null, require('./index'))
-    }, 'home.chunk')
-  }
+export default (location, cb) => {
+  require.ensure([], require => {
+    cb(null, require('./index'))
+  })
 }

@@ -5,8 +5,7 @@ import React from 'react'
 import { Alert, Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
 import { commonConfig, statusConfig } from './formConfig'
 import './index.less'
-import { routerRedux } from 'dva/router'
-
+import { Link, routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
@@ -14,7 +13,7 @@ import moment from 'moment'
 import { color, urlEncode } from '../../../utils'
 const {confirm} = Modal
 const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table} = contest
+  const {modal = false, modalContent = {}, table, alert} = contest
   const onMenuClick = (key, record) => {
     let payload = {}
     switch (key) {
@@ -183,7 +182,15 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         </Select>
         <Button type='primary' onClick={onCreateClick}>创建比赛</Button>
       </div>
-
+      {alert && (
+        <Alert
+          message={(<span>竞赛添加成功，可进行下一步操作</span>)}
+          description={(<Link to='/admin/problem'>点此为本次竞赛添加题目</Link>)}
+          type='success'
+          closable
+          showIcon
+        />
+      )}
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 1380}}
@@ -196,7 +203,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       />
       <Modal
         title={modalContent.modalTitle}
-        visible={modal}
+        visible={!!modal}
         onCancel={() => dispatch({type: 'contest/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}

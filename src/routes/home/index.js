@@ -1,15 +1,12 @@
 import React from 'react'
-import { Link } from 'dva/router'
 import './index.less'
+import HomeBanner from './Banner'
+import ShowItems from './ShowItems'
 const HomePage = () => {
   return (
-    <div className="home-page">
-      <div className='home-content'>
-        <Link to='/login'> login </Link>
-        <Link to='/admin'> admin </Link>
-        <Link to='/school'> school </Link>
-        <Link to='/student'> student </Link>
-      </div>
+    <div className='home-page'>
+      <HomeBanner />
+      <ShowItems />
     </div>
   )
 }
