@@ -30,8 +30,6 @@ import {
 import {
   JoinedTeamsManage,
   JoinedTeamsModel,
-  RecommendExpertsManage,
-  RecommendExpertsModel,
   SchoolInfoManage,
   SchoolInfoModel,
   SchoolPage,
@@ -169,10 +167,6 @@ const Routers = ({history, app}) => (
         <Route
           path='schoolResult' getComponent={SchoolResultManage}
           onEnter={() => registerModel(app, SchoolResultModel)}
-        />
-        <Route
-          path='recommendExperts' getComponent={RecommendExpertsManage}
-          onEnter={() => registerModel(app, RecommendExpertsModel)}
         />
       </Route>
     </Route>

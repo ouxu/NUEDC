@@ -4,9 +4,10 @@
 import { API, request } from '../../../utils'
 
 const fetchJoinedTable = async (data) => request({
-  url: API.schoolJoinedTeams.replace('1', `${data}`),
+  url: API.schoolJoinedTeams,
   method: 'get',
-  token: true
+  token: true,
+  data
 })
 
 const fetchSelectOption = async () => request({
@@ -48,4 +49,11 @@ const add = async (data) => request({
   data
 })
 
-export { remove, update, add, fetchJoinedTable, audit, joinedExcelOut, fetchSelectOption }
+const allChecked = async (data) => request({
+  url: API.schoolChecked,
+  method: 'put',
+  token: true,
+  data
+})
+
+export { remove, update, add, fetchJoinedTable, audit, joinedExcelOut, fetchSelectOption, allChecked }

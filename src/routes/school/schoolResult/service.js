@@ -4,9 +4,10 @@
 import { API, request } from '../../../utils'
 
 const fetchResultTable = async (data) => request({
-  url: API.schoolResult.replace('1', `${data}`),
+  url: API.schoolResult,
   method: 'get',
-  token: true
+  token: true,
+  data
 })
 
 const fetchSelectOption = async () => request({

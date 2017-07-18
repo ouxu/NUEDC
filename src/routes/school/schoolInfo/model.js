@@ -7,7 +7,6 @@ import { modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'schoolInfo',
   state: {
-    input: ''
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {

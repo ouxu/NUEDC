@@ -9,6 +9,5 @@ export {
   SchoolPage,
   SchoolInfoManage, SchoolInfoModel,
   JoinedTeamsManage, JoinedTeamsModel,
-  RecommendExpertsManage, RecommendExpertsModel,
   SchoolResultManage, SchoolResultModel
 }

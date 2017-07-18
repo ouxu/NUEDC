@@ -4,15 +4,30 @@
 import React from 'react'
 import { Button, Select, Table } from 'antd'
 import './index.less'
+import { routerRedux } from 'dva/router'
+import { urlEncode } from '../../../utils'
 import { connect } from 'dva'
 
 const Option = Select.Option
-const SchoolResultManage = ({schoolResult, dispatch}) => {
-  const {table, modalContent} = schoolResult
-  const {contests = []} = modalContent
+const SchoolResultManage = ({location, schoolResult, dispatch}) => {
+  const {table, contest, tableSize, tableCount, tablePage} = schoolResult
+  const {contests = []} = contest
+  const {query} = location
+
+  const pagination = {
+    pageSize: +tableSize,
+    current: +tablePage,
+    total: +tableCount,
+    showSizeChanger: true,
+    onShowSizeChange: (current, pageSize) => {
+      dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, page: current, size: pageSize})))
+    },
+    onChange: (current) => {
+      dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, page: current})))
+    }
+  }
   const onOptionChange = (value) => {
-    dispatch({type: 'schoolResult/onFilter', payload: value})
-    dispatch({type: 'schoolResult/filter', payload: value})
+    dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, contest_id: value || undefined})))
   }
   const excelOut = () => {
     dispatch({type: 'schoolResult/ResultOut', payload: 'out'})
@@ -34,26 +49,54 @@ const SchoolResultManage = ({schoolResult, dispatch}) => {
     {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 200},
     {title: '奖项确定时间', dataIndex: 'result_at', key: 'result_at', width: 200},
     {title: '现场赛相关信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
-    {title: '审查情况', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
+    {title: '审核状态', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
     {title: '获得奖项', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'}
   ]
   return (
     <div className='school-result'>
       <div className='school-result-header'>
-        <Select
-          showSearch
-          style={{width: 200}}
-          placeholder='竞赛ID'
-          onChange={onOptionChange}
-        >
-          {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.id}</Select.Option>)}
-        </Select>
+        <div className='school-result-select'>
+          <Select
+            showSearch
+            style={{width: 300, marginRight: 10}}
+            placeholder='竞赛名称'
+            value={query.contest_id || undefined}
+            onChange={onOptionChange}
+          >
+            {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
+          </Select>
+          <Select
+            showSearch
+            style={{width: 200, marginRight: 10}}
+            placeholder='审核状态'
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({
+                  ...query,
+                  result_info: value || undefined
+                })))
+            }}
+            allowClear
+          >
+            <Select.Option key={'school-result-' + 1} value='未审核'>
+              未审核
+            </Select.Option>
+            <Select.Option key={'school-result-' + 2} value='已审核'>
+              已审核
+            </Select.Option>
+          </Select>
+          <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/schoolResult?' + urlEncode({
+              ...query,
+              contest_id: undefined,
+              result_info: undefined
+            })))}>
+            重置筛选</Button>
+        </div>
         <Button type='primary' onClick={excelOut}>导出excel</Button>
       </div>
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 2800}}
-        pagination={false} rowKey={record => record.id}
+        pagination={pagination} rowKey={record => record.id}
       />
     </div>
   )

@@ -5,15 +5,20 @@ import React from 'react'
 import { Button, Form, Modal, Select, Table } from 'antd'
 import formConfig from '../joinedTeams/formConfig'
 import './index.less'
+import { routerRedux } from 'dva/router'
+import { urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 
 const Option = Select.Option
 const confirm = Modal.confirm
-const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, modalContent, contest = {}} = joinedTeams
+const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  const {modal = false, table, modalContent, contest = {}, tableSize, tableCount, tablePage} = joinedTeams
   const {contests = []} = contest
+  const {school_team_ids = []} = modalContent
+  const {query} = location
+
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
@@ -33,7 +38,7 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         confirm({
           title: '删除确认',
           content: (
-            <p>确认删除{record.team_name}吗？</p>
+            <p>确认删除队伍{record.team_name}吗？</p>
           ),
           onOk () {
             dispatch({type: 'joinedTeams/delete', payload: record})
@@ -45,7 +50,7 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         confirm({
           title: '审核确认',
           content: (
-            <p>确认审核{record.team_name}吗？</p>
+            <p>确认审核队伍{record.team_name}吗？</p>
           ),
           onOk () {
             dispatch({type: 'joinedTeams/audit', payload: record.id})
@@ -57,13 +62,24 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         break
     }
   }
-  const onAddClick = e => {
-    e.preventDefault()
-    dispatch({type: 'joinedTeams/showModal', payload: 'add'})
+  // const onAddClick = e => {
+  //   e.preventDefault()
+  //   dispatch({type: 'joinedTeams/showModal', payload: 'add'})
+  // }
+  const pagination = {
+    pageSize: +tableSize,
+    current: +tablePage,
+    total: +tableCount,
+    showSizeChanger: true,
+    onShowSizeChange: (current, pageSize) => {
+      dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, page: current, size: pageSize})))
+    },
+    onChange: (current) => {
+      dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, page: current})))
+    }
   }
   const onOptionChange = (value) => {
-    dispatch({type: 'joinedTeams/onFilter', payload: value})
-    dispatch({type: 'joinedTeams/filter', payload: value})
+    dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, contest_id: value || undefined})))
   }
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
@@ -77,6 +93,18 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
   }
   const excelOut = () => {
     dispatch({type: 'joinedTeams/joinedOut', payload: 'out'})
+  }
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      let selectedId = []
+      selectedRows.map((item) => {
+        selectedId.push(item.id)
+      })
+      dispatch({type: 'joinedTeams/updateModalContent', payload: {school_team_ids: selectedId}})
+    }
+  }
+  const allChecked = () => {
+    dispatch({type: 'joinedTeams/allChecked'})
   }
 
   const columns = [
@@ -112,25 +140,49 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
   return (
     <div className='joined-teams'>
       <div className='joined-teams-header'>
-        <Select
-          showSearch
-          style={{width: 100}}
-          placeholder='竞赛ID'
-          onChange={onOptionChange}
-        >
-          {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.id}</Select.Option>)}
-        </Select>
+        <div className='joined-teams-select'>
+          <Select
+            showSearch
+            style={{width: 300, marginRight: 10}}
+            placeholder='竞赛名称'
+            value={query.contest_id || undefined}
+            onChange={onOptionChange}
+          >
+            {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
+          </Select>
+          <Select
+            showSearch
+            style={{width: 200, marginRight: 10}}
+            placeholder='审核状态'
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, status: value || undefined})))
+            }}
+            allowClear
+          >
+            <Select.Option key={'joined-result-' + 1} value='未审核'>
+              未审核
+            </Select.Option>
+            <Select.Option key={'joined-result-' + 2} value='已审核'>
+              已审核
+            </Select.Option>
+          </Select>
+          <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/joinedTeams?' + urlEncode({
+              ...query,
+              contest_id: undefined,
+              status: undefined
+            })))}>
+            重置筛选</Button>
+        </div>
         <div>
-          <div className='joined-teams-out'>
-            <Button type='primary' onClick={excelOut}>导出excel</Button>
-          </div>
-          <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button>
+          <Button type='primary' onClick={excelOut}>导出excel</Button>
+          {/* <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button> */}
         </div>
       </div>
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 2000}}
-        pagination={false} rowKey={record => record.id}
+        rowSelection={rowSelection}
+        pagination={pagination} rowKey={record => record.id}
       />
       <Modal
         title={`${modal === 'edit' ? '编辑队伍信息' : '增加比赛队伍'}`}
@@ -140,10 +192,14 @@ const JoinedTeamsManage = ({joinedTeams, dispatch, form: {getFieldDecorator, val
         key={joinedTeams.modal}
       >
         <Form className='form-content'>
-          {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))}
+          {/* {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))} */}
           {modal === 'edit' && formConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
         </Form>
       </Modal>
+      <div className='joined-teams-check'>
+        <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
+        <Button type='primary' onClick={allChecked}>批量审核</Button>
+      </div>
     </div>
   )
 }

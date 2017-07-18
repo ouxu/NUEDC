@@ -1,9 +1,7 @@
-/**
- * Created by Pororo on 17/7/14.
- */
 import modelExtend from 'dva-model-extend'
 import { fetchResultTable, resultExcelOut, fetchSelectOption } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
+
 export default modelExtend(modalModel, tableModel, {
   namespace: 'schoolResult',
   state: {
@@ -11,37 +9,39 @@ export default modelExtend(modalModel, tableModel, {
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
-      return history.listen(({pathname}) => {
+      return history.listen(({pathname, query}) => {
         const match = pathname === '/school/schoolResult'
         if (match) {
-          dispatch({type: 'fetchResultTable'})
+          dispatch({type: 'fetchResultTable', payload: query})
         }
       })
     }
   },
   effects: {
     * fetchResultTable ({payload}, {call, put, select}) {
-      const table = yield select(({schoolResult}) => schoolResult.table)
-      if (table.length > 0) {
-        // 已有数据，不需要获取
-      } else {
-        const selectOptions = yield call(fetchSelectOption)
-        if (selectOptions.code === 0) {
-          yield put({type: 'updateModalContent', payload: selectOptions.data})
-          yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
-          const {contestsId} = yield select(({schoolResult}) => schoolResult)
-          const data = yield call(fetchResultTable, contestsId)
-          if (data.code === 0) {
-            yield put({type: 'setTable', payload: data.data.results})
-          }
+      const selectOptions = yield call(fetchSelectOption)
+      if (selectOptions.code === 0) {
+        yield put({type: 'saveFilter', payload: selectOptions.data})
+        yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
+        const {contestsId} = yield select(({schoolResult}) => schoolResult)
+        const {contest_id, result_info, page, size} = payload
+        const query = {
+          page: page || undefined,
+          size: size || undefined,
+          contest_id: contest_id || contestsId,
+          result_info: result_info || undefined
         }
-      }
-    },
-    * filter ({payload}, {put, select, call}) {
-      const {contestsId} = yield select(({schoolResult}) => schoolResult)
-      const data = yield call(fetchResultTable, contestsId)
-      if (data.code === 0) {
-        yield put({type: 'setTable', payload: data.data.results})
+        const data = yield call(fetchResultTable, query)
+        if (data.code === 0) {
+          const {data: {count, results}} = data
+          const tableConfig = {
+            tablePage: page,
+            tableSize: size,
+            tableCount: count
+          }
+          yield put({type: 'setTable', payload: results})
+          yield put({type: 'setTableConfig', payload: tableConfig})
+        }
       }
     },
     * ResultOut ({payload}, {put, call, select}) {
@@ -55,6 +55,12 @@ export default modelExtend(modalModel, tableModel, {
       return {
         ...state,
         contestsId: payload
+      }
+    },
+    saveFilter (state, {payload}) {
+      return {
+        ...state,
+        contest: payload
       }
     }
   }

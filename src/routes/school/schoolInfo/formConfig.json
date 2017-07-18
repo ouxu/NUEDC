@@ -5,7 +5,7 @@
   "contentType": "string",
   "initialValue": "",
   "rules": {
-    "required": true,
+    "required": false,
     "requiredMessage": "请输入您的队伍名称",
     "pattern": "",
     "patternMessage": "输入包含非中文字符！"

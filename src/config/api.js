@@ -27,15 +27,16 @@ export default {
 
   // school
   schoolLogin: apiMaker('school/admin/login'),
-  schoolJoinedTeams: apiMaker('school/team/info?contest_id=1'),
+  schoolJoinedTeams: apiMaker('school/team/info'),
   schoolAddTeam: apiMaker('school/team/add'),
-  schoolResult: apiMaker('school/team/awards?contest_id=1'),
+  schoolResult: apiMaker('school/team/awards'),
   schoolUpdateTeamInfo: apiMaker('/school/team/update/'),
   schoolDeleteTeam: apiMaker('school/team/delete/'),
   schoolCheckTeam: apiMaker('school/team/check/'),
   schoolJoinedExcelOut: apiMaker('school/admin/team/export?contest_id='),
   schoolResultExcelOut: apiMaker('school/admin/result/export?contest_id='),
   schoolAcquireId: apiMaker('school/admin/contest'),
+  schoolChecked: apiMaker('school/team/mult-check'),
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),
