@@ -5,6 +5,8 @@ import NotFound from './routes/404'
 
 import { Login, Register } from './routes/user/routes'
 import {
+  AdminNews,
+  AdminNewsModel,
   AdminPage,
   ContestManage,
   ContestModel,
@@ -12,6 +14,8 @@ import {
   ContestRecordModel,
   MessageManage,
   MessageModel,
+  NewsEdit,
+  NewsEditModel,
   PrivilegeManage,
   PrivilegeModel,
   ProblemManage,
@@ -60,11 +64,11 @@ const Routers = ({history, app}) => (
     <Route path='/' component={App}>
       <IndexRoute getComponent={Home} />
       <Route path='home' getComponent={Home} />
-      <Route path='news' getComponent={News} >
+      <Route path='news' getComponent={News}>
         <Route path=':id' getComponent={NewsContent} />
       </Route>
       <Route path='news' getComponent={News} />
-      <Route path='notices' getComponent={Notice} >
+      <Route path='notices' getComponent={Notice}>
         <Route path=':id' getComponent={NoticeContent} />
       </Route>
       <Route path='news' getComponent={News} />
@@ -110,12 +114,20 @@ const Routers = ({history, app}) => (
           path='message' getComponent={MessageManage}
           onEnter={() => registerModel(app, MessageModel)}
         />
+        <Route
+          path='news' getComponent={AdminNews}
+          onEnter={() => registerModel(app, AdminNewsModel)}
+        />
+        <Route
+          path='news/edit' getComponent={NewsEdit}
+          onEnter={() => registerModel(app, NewsEditModel)}
+        />
 
       </Route>
       <Route path='student' component={StudentPage}>
         <IndexRoute getComponent={StudentSignUpManage} onEnter={() => {
           registerModel(app, StudentSignUpModel)
-        }}/>
+        }} />
         <Route
           path='problem' getComponent={StudentProblemManage}
           onEnter={() => {
@@ -134,18 +146,18 @@ const Routers = ({history, app}) => (
                }}
         />
         <Route path='choose' getComponent={ChooseProblemManage}
-         onEnter={() => {
-           registerModel(app, ChooseProblemModel)
-           }}
+               onEnter={() => {
+                 registerModel(app, ChooseProblemModel)
+               }}
         />
         <Route path="signup" getComponent={StudentSignUpManage}
-         onEnter={() => {
-          registerModel(app, StudentSignUpModel)
-        }}
+               onEnter={() => {
+                 registerModel(app, StudentSignUpModel)
+               }}
         />
       </Route>
       <Route path='school' component={SchoolPage}>
-        <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)}/>
+        <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)} />
         <Route
           path='schoolInfo' getComponent={SchoolInfoManage}
           onEnter={() => registerModel(app, SchoolInfoModel)}
