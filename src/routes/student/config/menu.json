@@ -5,9 +5,9 @@
   ],
   "menus": [
     {
-      "key": "student/signup",
-      "value": "注册报名",
-      "icon": "smile-o"
+      "key": "/student",
+      "value": "报名参赛",
+      "icon": "edit"
     },
     {
       "key": "/student/problem",

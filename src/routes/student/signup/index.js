@@ -11,15 +11,13 @@ import { connect } from 'dva'
 import FormItemRender from '../../../components/FormItemRender/'
 
 const StudentSignUpManage = ({studentSignUp, dispatch, form: {getFieldDecorator, validateFieldsAndScroll, fieldsValue}}) => {
-  const {table = []} = studentSignUp
-  console.log(studentSignUp)
   const onSubmitClick = e => {
     e.preventDefault()
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
         return
       }
-      values.schoolName = formConfig[4].options[values.schoolId - 1].label
+      values.schoolName = formConfig[1].options[values.schoolId - 1].label
       console.log(values)
       dispatch({type: 'studentSignUp/signUpContest', payload: values})
     })

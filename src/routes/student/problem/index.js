@@ -47,14 +47,14 @@ const StudentProblemManage = ({studentProblem, dispatch}) => {
   return (
     <div className='problem'>
       <div className='problem-header'>
-        {/*<Select*/}
-        {/*showSearch*/}
-        {/*style={{width: 300}}*/}
-        {/*placeholder='选择年份'*/}
-        {/*// defaultValue={'' + table[0].id}*/}
-        {/*>*/}
-        {/*{table.map(item => <Select.Option key={'' + item} value={'' + item.id}>{item.title}</Select.Option>)}*/}
-        {/*</Select>*/}
+        <Select
+          showSearch
+          style={{width: 300}}
+          placeholder='选择年份'
+          defaultValue={'' + table[0].id}
+        >
+          {table.map(item => <Select.Option key={'' + item} value={'' + item.id}>{item.title}</Select.Option>)}
+        </Select>
       </div>
       <Table
         columns={columns} bordered

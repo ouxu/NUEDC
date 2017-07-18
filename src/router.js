@@ -99,8 +99,8 @@ const Routers = ({history, app}) => (
 
       </Route>
       <Route path='student' component={StudentPage}>
-        <IndexRoute getComponent={StudentProblemManage} onEnter={() => {
-          registerModel(app, StudentProblemModel)
+        <IndexRoute getComponent={StudentSignUpManage} onEnter={() => {
+          registerModel(app, StudentSignUpModel)
         }}/>
         <Route
           path='problem' getComponent={StudentProblemManage}

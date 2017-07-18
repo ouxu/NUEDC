@@ -9,59 +9,10 @@ const fetchSignUpTable = async (data) => request({
   method: 'get',
   token: true
 })
-const signUpContest = async (data, id) => request({
+const signUpContest = async (data) => request({
   url: API.signUpContest,
   method: 'post',
   token: true,
   data
 })
-const getAllContest = async (data) => request({
-  url: API.getAllContest,
-  method: 'get',
-  token: true
-})
-const getContestProblemList = async (id) => request({
-  url: API.getContestProblemList.replace(':contestId', id),
-  method: 'get',
-  token: true
-})
-/**
- * @query contestId
- * @query problemId
- */
-const getContestProblemDetail = async (data) => request({
-  url: API.getContestProblemDetail + data,
-  method: 'get',
-  token: true
-})
-/**
- * @query contestId
- * @query problemId
- */
-const updateContestProblemSelect = async (data) => request({
-  url: API.updateContestProblemSelect + data,
-  method: 'get',
-  token: true
-})
-const getContestSignUpStatus = async (contestId) => request({
-  url: API.adminContestUpdate.replace(':contestId', contestId),
-  method: 'get',
-  token: true
-})
-const abandonContest = async (contestId) => request({
-  url: API.abandonContest.replace(':contestId', contestId),
-  method: 'get',
-  token: true
-})
-const getAllPassContest = async () => request({
-  url: API.getAllContest,
-  method: 'get',
-  token: false
-})
-const getSchoolList = async () => request({
-  url: API.getSchoolList,
-  method: 'get',
-  token: false
-})
-
 export {signUpContest, fetchSignUpTable }

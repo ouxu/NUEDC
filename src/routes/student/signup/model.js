@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { signUpContest } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
+import { message } from 'antd'
 
 export default modelExtend(modalModel, tableModel,
   {
@@ -18,25 +19,14 @@ export default modelExtend(modalModel, tableModel,
       }
     },
     effects: {
-      * fetchSignUpTable ({payload}, {call, put, select}) {
-        console.log('fetchSignUp')
-        const table = yield select(({studentSignUp}) => studentSignUp.table)
-        if (table.length > 0) {
-          // 已有数据，不需要获取
-          const data = yield call(fetchSignUpTable)
-          console.log(data)
-        } else {
-          const data = []
-          for (let i = 1; i < 8; i++) {
-            data.push({
-              id: i,
-              name: `电子设计竞赛${i}题`,
-              description: '电子设计竞赛',
-              status: '不可选',
-              year: 2012 + i + ''
-            })
-          }
-          yield put({type: 'setTable', payload: data})
+      * signUpContest ({payload}, {call, put, select}) {
+        console.log('SignUp')
+        // 已有数据，不需要获取
+        const data = yield call(signUpContest, payload)
+        console.log(data)
+        if (data.code === 0) {
+          message.success('报名成功，请等待审核')
+          // yield put({type: 'fetchTable', payload: true})
         }
       },
       * edit ({payload}, {call}) {

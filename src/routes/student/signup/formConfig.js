@@ -28,14 +28,23 @@ export default [
   }, {
     value: 'schoolLevel',
     label: '学校等级',
-    formType: 0,
+    formType: 2,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入学校等级',
-      pattern: '',
-      patternMessage: ''
-    }
+      requiredMessage: '请输入学校等级'
+    },
+    options: [{'label': '一本院校', 'value': '1'}, {'label': '二本院校', 'value': '2'}, {'label': '三本院校', 'value': '3'}]
+  }, {
+    value: 'contestId',
+    label: '竞赛名称',
+    formType: 2,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入学校等级'
+    },
+    options: [{'label': '2017年电子设计大赛3', 'value': '3'}]
   }, {
     value: 'member1',
     label: '成员1',
@@ -87,9 +96,9 @@ export default [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入您队伍队长的QQ号',
+      requiredMessage: '请输入您队伍队长的手机号',
       pattern: verify.mobile,
-      patternMessage: '输入合法的QQ号！'
+      patternMessage: '输入合法的手机号！'
     }
   }, {
     value: 'email',
