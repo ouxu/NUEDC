@@ -38,21 +38,15 @@ import {
   SchoolResultModel
 } from './routes/school/routes'
 import {
-  ChooseProblemManage,
-  ChooseProblemModel,
   StudentPage,
-  StudentProblemManage,
-  StudentProblemModel,
-  StudentProfileManage,
-  StudentProfileModel,
-  StudentScoreManage,
-  StudentScoreModel,
-  StudentSignUpManage,
-  StudentSignUpModel
+  StudentScoreManage, StudentScoreModel,
+  StudentProblemManage, StudentProblemModel,
+  StudentSignUpManage, StudentSignUpModel
 } from './routes/student/routes'
 import Home from './routes/home/route'
 import { News, NewsContent } from './routes/news/route'
 import { Notice, NoticeContent } from './routes/notices/route'
+
 import Download from './routes/download'
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
@@ -142,20 +136,9 @@ const Routers = ({history, app}) => (
             registerModel(app, StudentProblemModel)
           }}
         />
-        <Route
-          path='profile' getComponent={StudentProfileManage}
-          onEnter={() => {
-            registerModel(app, StudentProfileModel)
-          }}
-        />
         <Route path='score' getComponent={StudentScoreManage}
                onEnter={() => {
                  registerModel(app, StudentScoreModel)
-               }}
-        />
-        <Route path='choose' getComponent={ChooseProblemManage}
-               onEnter={() => {
-                 registerModel(app, ChooseProblemModel)
                }}
         />
         <Route path="signup" getComponent={StudentSignUpManage}

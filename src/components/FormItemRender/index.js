@@ -3,6 +3,7 @@
  */
 import React from 'react'
 import { DatePicker, Form, Input, Radio, Select } from 'antd'
+
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
 const Option = Select.Option
@@ -52,7 +53,7 @@ export default (config, getFieldDecorator, extra = {}) => {
       )
     case 1:
       options = config.options.map(option => (
-        <Radio value={option.value} key={option.value}>{option.label}</Radio>
+        <Radio value={option.value} key={option.value} disabled={config.disabled}>{option.label}</Radio>
       ))
       return (
         <FormItem
@@ -73,7 +74,7 @@ export default (config, getFieldDecorator, extra = {}) => {
       )
     case 2:
       options = config.options.map(option => (
-        <Option value={option.value} key={option.value}>{option.label}</Option>
+        <Option value={option.value} key={option.value} disabled={config.disabled}>{option.label}</Option>
       ))
       return (
         <FormItem
@@ -86,7 +87,7 @@ export default (config, getFieldDecorator, extra = {}) => {
             rules: [{required: rules.required, message: rules.requiredMessage}],
             initialValue: initialValue || ''
           })(
-            <Select >
+            <Select>
               {options}
             </Select>
           )}

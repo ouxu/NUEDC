@@ -3,16 +3,12 @@
  */
 import StudentPage from './index'
 import { StudentProblemManage, StudentProblemModel } from './problem/route'
-import { StudentProfileManage, StudentProfileModel } from './profile/route'
 import { StudentScoreManage, StudentScoreModel } from './score/route'
-import { ChooseProblemManage, ChooseProblemModel } from './choose/route'
 import { StudentSignUpManage, StudentSignUpModel } from './signup/route'
 
 export {
   StudentPage,
   StudentProblemManage, StudentProblemModel,
   StudentScoreManage, StudentScoreModel,
-  StudentProfileManage, StudentProfileModel,
-  ChooseProblemManage, ChooseProblemModel,
   StudentSignUpManage, StudentSignUpModel
 }

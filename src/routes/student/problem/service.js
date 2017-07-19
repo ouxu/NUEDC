@@ -5,12 +5,6 @@
  * Created by out_xu on 17/7/14.
  */
 import { API, request } from '../../../utils'
-
-const fetchProblemTable = async (data) => request({
-  url: API.getContestProblemList,
-  method: 'get',
-  token: true
-})
 const signUpContest = async (data, id) => request({
   url: API.signUpContest,
   method: 'post',
@@ -67,4 +61,4 @@ const getSchoolList = async () => request({
   token: false
 })
 
-export { signUpContest, getContestProblemList, fetchProblemTable }
+export { getContestProblemDetail, getContestProblemList}

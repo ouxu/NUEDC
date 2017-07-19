@@ -74,7 +74,6 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
   }
   const onCreateClick = e => {
     e.preventDefault()
-
     dispatch({type: 'contest/updateModalContent', payload: {modalTitle: '创建竞赛'}})
     dispatch({type: 'contest/showModal', payload: 'create'})
   }

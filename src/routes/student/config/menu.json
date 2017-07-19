@@ -6,28 +6,18 @@
   "menus": [
     {
       "key": "/student",
-      "value": "报名参赛",
+      "value": "参赛信息",
       "icon": "edit"
     },
     {
       "key": "/student/problem",
-      "value": "查看题目",
+      "value": "查题选题",
       "icon": "file-text"
-    },
-    {
-      "key": "/student/choose",
-      "value": "选择题目",
-      "icon": "check-square-o"
     },
     {
       "key": "/student/score",
       "value": "查看成绩",
       "icon": "smile-o"
-    },
-    {
-      "key": "/student/profile",
-      "value": "个人信息",
-      "icon": "idcard"
     }
   ]
 }

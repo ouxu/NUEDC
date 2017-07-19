@@ -1,61 +1,54 @@
 /**
- * Created by out_xu on 17/7/13.
+ * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Form, Select, Table } from 'antd'
+import { Button, Form, Modal, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
-import DropOption from '../../../components/DropOption/'
 
-const StudentProblemManage = ({studentScore, dispatch}) => {
-  const {table = []} = studentScore
-  console.log(studentScore)
-  const onMenuClick = (key, record) => {
-    switch (key) {
-      case 'view':
-        dispatch({type: 'studentScore/view', payload: 'view'})
-        break
-      case 'download':
-        dispatch({type: 'studentScore/download', payload: 'download'})
-        break
-      default:
-        break
-    }
+const StudentScoreManage = ({ studentScore, dispatch, }) => {
+  const {table, contest = []} = studentScore
+  const onOptionChange = (value) => {
+    // dispatch({type: 'studentScore/onFilter', payload: value})
+    dispatch({type: 'studentScore/getAllPassContest', payload: value})
   }
   const columns = [
+    {title: '竞赛id', dataIndex: 'contest_id', key: 'contest_id', width: 100},
     {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
-    {title: '队伍名称', dataIndex: 'name', key: 'name', width: 280},
-    {title: '队伍信息', dataIndex: 'info', key: 'info', width: 350},
-    {title: '获奖审核状态', dataIndex: 'status', key: 'status', width: 150},
-    {title: '结果', dataIndex: 'result', key: 'result', width: 150},
-    {title: '审核时间', dataIndex: 'audit_time', key: 'audit_time', width: 250}
+    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 300},
+    {title: '学校id', dataIndex: 'school_id', key: 'school_id', width: 100},
+    {title: '学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
+    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 200},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 200},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 200},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
+    {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 300},
+    {title: '参赛状态', dataIndex: 'status', key: 'status', width: 150, fixed: 'right'}
   ]
-
   return (
-    <div className='problem'>
-      <div className='problem-header'>
-        {/*<Select*/}
-        {/*showSearch*/}
-        {/*style={{width: 300}}*/}
-        {/*placeholder='选择年份'*/}
-        {/*// defaultValue={'' + table[0].id}*/}
-        {/*>*/}
-        {/*{table.map(item => <Select.Option key={'' + item} value={'' + item.id}>{item.title}</Select.Option>)}*/}
-        {/*</Select>*/}
+    <div className='student-score'>
+      <div className='student-score-header'>
+        <div className='student-score-select'>
+          <Select
+            showSearch
+            style={{width: 300, marginRight: 10}}
+            placeholder='竞赛名称'
+            onChange={onOptionChange}
+          >
+            {contest.map(item => <Select.Option key={'' + item.id}
+                                                value={'' + item.id}>{item.title}</Select.Option>)}
+          </Select>
+        </div>
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1500}}
-        pagination={false} rowKey={record => record.id}
-        // expandedRowRender={record => (
-        //   <div className='expanded-row'>
-        //     <span>{record.description}</span>
-        //     <span>{record.description}</span>
-        //   </div>
-        // )}
+        dataSource={table} scroll={{x: 2000}}
+        rowKey={record => record.id}
       />
     </div>
   )
 }
 
-export default connect(({app, studentScore}) => ({app, studentScore}))(Form.create()(StudentProblemManage))
+export default connect(({app, studentScore}) => ({app, studentScore}))(Form.create()(StudentScoreManage))

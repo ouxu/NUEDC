@@ -4,7 +4,6 @@
 import React from 'react'
 import menuConfig from './config/menu.json'
 import { connect } from 'dva'
-
 import Sider from '../../components/Layout/Sider'
 const StudentPage = ({children, location}) => (
   <div className='main-wrapper'>
