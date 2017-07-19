@@ -53,7 +53,7 @@ export default modelExtend(modalModel, tableModel, {
         yield put({type: 'fetchJoinedTable', payload: {force: true}})
       }
     },
-    * delete ({payload}, {put, select, call}) {
+    * delete ({payload}, {put, call}) {
       const {id} = payload
       const data = yield call(remove, id)
       if (data.code === 0) {
@@ -70,7 +70,7 @@ export default modelExtend(modalModel, tableModel, {
         yield put({type: 'fetchJoinedTable', payload: {force: true}})
       }
     },
-    * audit ({payload}, {put, call, select}) {
+    * audit ({payload}, {put, call}) {
       const data = yield call(audit, payload)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
@@ -78,10 +78,14 @@ export default modelExtend(modalModel, tableModel, {
         yield put({type: 'fetchJoinedTable', payload: {force: true}})
       }
     },
-    * joinedOut ({payload}, {put, call, select}) {
+    * joinedOut ({payload}, {call, select}) {
       const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
       const date = new Date().valueOf() + ''
-      yield call(joinedExcelOut, {filename: date.substr(-3, 3) + '本校参赛队伍竞赛' + contestsId + '.xlsx'}, contestsId)
+      const data = {
+        ...payload,
+        contest_id: contestsId
+      }
+      yield call(joinedExcelOut, {filename: date.substr(-3, 3) + '本校参赛队伍竞赛' + contestsId + '.xlsx'}, data)
     },
     * allChecked ({payload}, {call, select}) {
       const {school_team_ids} = yield select(({joinedTeams}) => joinedTeams.modalContent)

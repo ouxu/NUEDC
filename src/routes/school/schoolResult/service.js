@@ -1,7 +1,7 @@
 /**
  * Created by Pororo on 17/7/14.
  */
-import { API, request } from '../../../utils'
+import { API, request, urlEncode } from '../../../utils'
 
 const fetchResultTable = async (data) => request({
   url: API.schoolResult,
@@ -16,8 +16,8 @@ const fetchSelectOption = async () => request({
   token: true
 })
 
-const resultExcelOut = async ({filename}, id) => request({
-  url: API.schoolResultExcelOut + id,
+const resultExcelOut = async ({filename}, data) => request({
+  url: API.schoolResultExcelOut + urlEncode({...data}),
   method: 'export',
   token: true,
   filename

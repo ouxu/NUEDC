@@ -3,16 +3,11 @@
  */
 import { API, request } from '../../../utils'
 
-const fetchInfo = async () => request({
-  url: API.schoolResult,
-  method: 'get',
-  token: true
+const changePassword = async (data) => request({
+  url: API.changePassword,
+  method: 'post',
+  token: true,
+  data
 })
 
-const changeInfo = async (data) => request({
-  url: API.joinedExcelOut + data,
-  method: 'get',
-  token: true
-})
-
-export { fetchInfo, changeInfo }
+export { changePassword }

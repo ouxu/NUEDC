@@ -6,7 +6,7 @@
   "menus": [
     {
       "key": "/school",
-      "value": "学校信息",
+      "value": "校管理员信息",
       "icon": "user"
     },
     {

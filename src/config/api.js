@@ -7,6 +7,7 @@ const apiMaker = path => `${baseURL}/${path}`
 export default {
 
   host: apiMaker(''),
+  changePassword: apiMaker('user/updatePassword'),
   // student
   login: apiMaker('user/login'),
   logout: apiMaker('user/logout'),
@@ -33,8 +34,8 @@ export default {
   schoolUpdateTeamInfo: apiMaker('/school/team/update/'),
   schoolDeleteTeam: apiMaker('school/team/delete/'),
   schoolCheckTeam: apiMaker('school/team/check/'),
-  schoolJoinedExcelOut: apiMaker('school/admin/team/export?contest_id='),
-  schoolResultExcelOut: apiMaker('school/admin/result/export?contest_id='),
+  schoolJoinedExcelOut: apiMaker('school/admin/team/export?'),
+  schoolResultExcelOut: apiMaker('school/admin/result/export?'),
   schoolAcquireId: apiMaker('school/admin/contest'),
   schoolChecked: apiMaker('school/team/mult-check'),
 

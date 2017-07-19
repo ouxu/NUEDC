@@ -92,7 +92,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
     })
   }
   const excelOut = () => {
-    dispatch({type: 'joinedTeams/joinedOut', payload: 'out'})
+    dispatch({type: 'joinedTeams/joinedOut', payload: {...query, page: undefined, size: undefined}})
   }
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {

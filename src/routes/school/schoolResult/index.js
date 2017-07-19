@@ -10,7 +10,7 @@ import { connect } from 'dva'
 
 const Option = Select.Option
 const SchoolResultManage = ({location, schoolResult, dispatch}) => {
-  const {table, contest, tableSize, tableCount, tablePage} = schoolResult
+  const {table, contest = {}, tableSize, tableCount, tablePage} = schoolResult
   const {contests = []} = contest
   const {query} = location
 
@@ -30,7 +30,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
     dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, contest_id: value || undefined})))
   }
   const excelOut = () => {
-    dispatch({type: 'schoolResult/ResultOut', payload: 'out'})
+    dispatch({type: 'schoolResult/ResultOut', payload: {...query, page: undefined, size: undefined}})
   }
   const columns = [
     {title: '竞赛id', dataIndex: 'contest_id', key: 'contest_id', width: 100},

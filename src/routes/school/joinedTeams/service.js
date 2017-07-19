@@ -1,7 +1,7 @@
 /**
  * Created by out_xu on 17/7/14.
  */
-import { API, request } from '../../../utils'
+import { API, request, urlEncode } from '../../../utils'
 
 const fetchJoinedTable = async (data) => request({
   url: API.schoolJoinedTeams,
@@ -16,8 +16,8 @@ const fetchSelectOption = async () => request({
   token: true
 })
 
-const joinedExcelOut = async ({filename}, id) => request({
-  url: API.schoolJoinedExcelOut + id,
+const joinedExcelOut = async ({filename}, data) => request({
+  url: API.schoolJoinedExcelOut + urlEncode({...data}),
   method: 'export',
   token: true,
   filename
