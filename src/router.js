@@ -25,7 +25,8 @@ import {
   SchoolAdminManage,
   SchoolAdminModel,
   SchoolManage,
-  SchoolModel
+  SchoolModel,
+  TeamAdminManage
 } from './routes/admin/routes'
 import {
   JoinedTeamsManage,
@@ -52,6 +53,7 @@ import {
 import Home from './routes/home/route'
 import { News, NewsContent } from './routes/news/route'
 import { Notice, NoticeContent } from './routes/notices/route'
+import Download from './routes/download'
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
     app.model(model)
@@ -62,6 +64,7 @@ const Routers = ({history, app}) => (
     <Route path='/' component={App}>
       <IndexRoute getComponent={Home} />
       <Route path='home' getComponent={Home} />
+      <Route path='download' component={Download} />
       <Route path='news' getComponent={News}>
         <Route path=':id' getComponent={NewsContent} />
       </Route>
@@ -88,6 +91,13 @@ const Routers = ({history, app}) => (
         <Route
           path='school' getComponent={SchoolManage}
           onEnter={() => registerModel(app, SchoolModel)}
+        />
+        <Route
+          path='team' getComponent={TeamAdminManage}
+          onEnter={() => {
+            registerModel(app, ContestModel)
+            registerModel(app, ContestRecordModel)
+          }}
         />
         <Route
           path='schoolAdmin' getComponent={SchoolAdminManage}

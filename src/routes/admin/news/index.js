@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Form, Modal, Select, Table } from 'antd'
+import { Button, Form, Modal, Select, Table } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -112,24 +112,24 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
   ]
 
   return (
-    <div className='contest-record'>
-      <div className='contest-record-header'>
+    <div className='news-manage'>
+      <div className='news-manage-header'>
         <Select
           showSearch
           style={{width: 260}}
-          onChange={(value) => {
-            dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
-                ...query,
-                type: value || undefined
-              })))
-          }}
+          onChange={(value) => dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
+              ...query, type: value
+            })))
+          }
           value={query.type || 'news'}
         >
 
           <Select.Option key='news-select-news' value='news'>新闻管理</Select.Option>
           <Select.Option key='news-select-news' value='notices'>通知管理</Select.Option>
         </Select>
-        <div />
+        <Button type='primary'
+                onClick={ () => dispatch(routerRedux.push(`/admin/news/edit?type=` + ( query.type ? query.type : 'news')))}>
+          发布{query.type === 'notice' ? '通知' : '新闻'}</Button>
       </div>
       <Table
         columns={columns} bordered

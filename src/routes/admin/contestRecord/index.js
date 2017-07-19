@@ -50,7 +50,6 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     {title: '报名ID', dataIndex: 'register_id', key: 'register_id', width: 70, fixed: 'left'},
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200, fixed: 'left'},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
-    {title: '竞赛场次', dataIndex: 'contest_id', key: 'contest_id', width: 200},  // TODO 竞赛场次解释
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 90},
     {title: '队员1姓名', dataIndex: 'member1', key: 'member1', width: 100},
     {title: '队员2姓名', dataIndex: 'member2', key: 'member2', width: 100},
@@ -66,7 +65,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 170},
     {title: '评奖时间', dataIndex: 'result_at', key: 'result_at', width: 170},
     {title: '报名时间', dataIndex: 'created_at', key: 'created_at', width: 170},
-    {title: '跟新时间', dataIndex: 'updated_at', key: 'updated_at', width: 170},
+    {title: '上次编辑时间', dataIndex: 'updated_at', key: 'updated_at', width: 170},
     {
       title: '操作',
       render: (record) => {
@@ -123,11 +122,10 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             placeholder='选择竞赛'
             onChange={(value) => {
               dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
-                ...query,
-                contest_id: value || undefined
-              })))
+                  ...query,
+                  contest_id: value || tableContest[tableContest.length - 1].contest_id
+                })))
             }}
-            allowClear
             value={query.contest_id || undefined}
           >
             {tableContest.map(item => (
@@ -177,19 +175,19 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             value={query.school_id || undefined}
           >
             {tableSchool.map(item => (
-              <Select.Option key={'contest-school-' + item.id} value={item.id}>
+              <Select.Option key={'contest-school-' + item.id} value={item.id + ''}>
                 {item.name}
               </Select.Option>
             ))}
           </Select>
         </div>
         <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/contestRecord?' + urlEncode({
-          ...query,
-          contest_id: undefined,
-          status: undefined,
-          result: undefined,
-          school_id: undefined
-        })))}>
+            ...query,
+            contest_id: undefined,
+            status: undefined,
+            result: undefined,
+            school_id: undefined
+          })))}>
           重置筛选</Button>
       </div>
       <Table

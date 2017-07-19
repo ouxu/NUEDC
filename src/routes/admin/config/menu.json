@@ -5,11 +5,6 @@
   ],
   "menus": [
     {
-      "key": "/admin/news",
-      "value": "新闻通知管理",
-      "icon": "calendar"
-    },
-    {
       "key": "/admin",
       "value": "赛事管理",
       "icon": "clock-circle-o"
@@ -43,6 +38,11 @@
       "key": "/admin/contestRecord",
       "value": "所有参赛记录",
       "icon": "hdd"
+    },
+    {
+      "key": "/admin/news",
+      "value": "新闻通知管理",
+      "icon": "calendar"
     },
     {
       "key": "/admin/message",

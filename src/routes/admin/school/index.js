@@ -83,6 +83,7 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
     pageSize: +tableSize,
     current: +tablePage,
     total: +tableCount,
+    pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
       dispatch(routerRedux.push(`/admin/school?page=${current}&size=${pageSize}`))

@@ -2,11 +2,11 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Select, Table } from 'antd'
+import { Button, Form, Select } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import DropOption from '../../../components/DropOption/'
-
+import ProblemItem from './ProblemItem'
 const ProblemManage = ({app, contest, problem}) => {
   const {table = []} = contest
 
@@ -46,21 +46,11 @@ const ProblemManage = ({app, contest, problem}) => {
           placeholder='选择年份'
           defaultValue={table[0] ? table[0].id + '' : ''}
         >
-          {table.map(item => <Select.Option key={'' + item} value={ item.id + '' || '' }>{item.title}</Select.Option>)}
+          {table.map(item => <Select.Option key={'' + item} value={item.id + '' || ''}>{item.title}</Select.Option>)}
         </Select>
-        <Button type='primary'>创建比赛</Button>
+        <Button type='primary'>编辑题目</Button>
       </div>
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 1500}}
-        pagination={false} rowKey={record => record.id}
-        expandedRowRender={record => (
-          <div className='expanded-row'>
-            <span>{record.description}</span>
-            <span>{record.description}</span>
-          </div>
-        )}
-      />
+      <ProblemItem />
     </div>
   )
 }

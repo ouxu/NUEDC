@@ -18,7 +18,7 @@ export default modelExtend(modalModel, tableModel, alertModel, {
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
       const {tablePage, tableSize} = yield select(({adminSchool}) => adminSchool)
-      const {page = 1, size = 20, force = false} = payload
+      const {page = 1, size = 50, force = false} = payload
       if (tablePage !== page || tableSize !== size || force) {
         const data = yield call(fetchTable, {page, size})
         if (data.code === 0) {

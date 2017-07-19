@@ -20,11 +20,11 @@ const createConfig = [
 const editConfig = [
   {
     value: 'name',
-    label: '用户名',
+    label: '姓名',
     formType: 0,
     contentType: 'string',
     rules: {
-      required: false,
+      required: true,
       requiredMessage: '请输入您的用户昵称',
       pattern: /^[\u4E00-\u9FA5A-Za-z0-9]{2,20}$/,
       patternMessage: '2-20位英文字母、汉字、数字'
@@ -47,7 +47,7 @@ const editConfig = [
     formType: 0,
     contentType: 'string',
     rules: {
-      required: false,
+      required: true,
       requiredMessage: '请输入您的手机',
       pattern: verify.mobile,
       patternMessage: '输入合法的手机号码'
@@ -57,7 +57,7 @@ const editConfig = [
     label: '密码',
     formType: 0,
     type: 'password',
-    extra: '输入后表示重置密码，如不需重置请忽略此项',
+    extra: '输入表示重置密码，不重置或使用默认忽略此项',
     contentType: 'string',
     rules: {
       required: false,

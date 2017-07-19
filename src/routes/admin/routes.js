@@ -11,7 +11,8 @@ import { ContestRecord, ContestRecordModel } from './contestRecord/route'
 import { RecordingManage, RecordingModel } from './recording/route'
 import { PrivilegeManage, PrivilegeModel } from './privilege/route'
 import { MessageManage, MessageModel } from './message/route'
-import { AdminNews, AdminNewsModel,NewsEditModel,NewsEdit } from './news/route'
+import { TeamAdminManage, TeamAdminModel } from './team/route'
+import { AdminNews, AdminNewsModel, NewsEdit, NewsEditModel } from './news/route'
 
 export {
   AdminPage,
@@ -24,5 +25,6 @@ export {
   PrivilegeManage, PrivilegeModel,
   MessageManage, MessageModel,
   AdminNews, AdminNewsModel,
-  NewsEdit,NewsEditModel
+  NewsEdit, NewsEditModel,
+  TeamAdminManage, TeamAdminModel
 }

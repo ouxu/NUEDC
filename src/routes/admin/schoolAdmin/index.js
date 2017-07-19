@@ -2,18 +2,20 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Modal, Table } from 'antd'
+import { Button, Form, Modal, Radio, Select, Table, Tag } from 'antd'
+
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
-import { createConfig, editConfig } from './formConfig'
-
+import { editConfig } from './formConfig'
+import { color } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
-const SchoolAdminManage = ({adminSchoolAdmin, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const SchoolAdminManage = ({adminSchoolAdmin, dispatch, login, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminSchoolAdmin
+  const {table: schoolTable = []} = login
   const onCreateClick = e => {
     e.preventDefault()
     dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: {}})
@@ -44,8 +46,8 @@ const SchoolAdminManage = ({adminSchoolAdmin, dispatch, form: {getFieldDecorator
       if (errors) {
         return
       }
-      if (modal==='edit') {
-        values.status = + values.status
+      if (modal === 'edit') {
+        values.status = +values.status
       }
       dispatch({type: `adminSchoolAdmin/${modal === 'edit' ? 'update' : 'create'}`, payload: values})
     })
@@ -57,7 +59,13 @@ const SchoolAdminManage = ({adminSchoolAdmin, dispatch, form: {getFieldDecorator
     {title: '手机号', dataIndex: 'mobile', key: 'mobile', width: 120},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name'},
     {title: '性别', dataIndex: 'sex', key: 'sex', width: 50},
-    {title: '状态', dataIndex: 'status', key: 'status', width: 50}, // TODO 状态解释
+    {
+      title: '状态',
+      render: (record) => (
+        <Tag color={record.status === 0 ? color.red : color.blue}>{record.status === 0 ? '未激活' : '已激活'}</Tag>),
+      key: 'status',
+      width: 50
+    }, // TODO 状态解释
     {title: '创建于', dataIndex: 'created_at', key: 'created_at', width: 170},
     {
       title: '操作',
@@ -91,7 +99,16 @@ const SchoolAdminManage = ({adminSchoolAdmin, dispatch, form: {getFieldDecorator
       dispatch(routerRedux.push(`/admin/schoolAdmin?page=${current}&size=${tableSize}`))
     }
   }
-
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 6}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 16}
+    }
+  }
   return (
     <div className='school-admin'>
       <div className='school-admin-header'>
@@ -111,16 +128,34 @@ const SchoolAdminManage = ({adminSchoolAdmin, dispatch, form: {getFieldDecorator
         key={'' + modal}
       >
         <Form className='form-content'>
-          {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
-          {modal === 'create' && createConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
+          {modal === 'create' && (
+            <Form.Item
+              label='选择学校'
+              key='school-select'
+              {...formItemLayout}
+            >
+              {getFieldDecorator('school_id', {
+                rules: [{required: true, message: '请选择学校'}]
+              })(
+                <Select>
+                  {schoolTable.map(option => (
+                    <Radio value={'' + option.id} key={option.id}>{option.name}</Radio>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+          )}
+          { editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
+
         </Form>
       </Modal>
     </div>
   )
 }
 
-export default connect(({app, loading, adminSchoolAdmin}) => ({
+export default connect(({app, loading, login, adminSchoolAdmin}) => ({
   app,
   loading,
+  login,
   adminSchoolAdmin
 }))(Form.create()(SchoolAdminManage))
