@@ -9,31 +9,28 @@ export default modelExtend(modalModel, tableModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
-        if (pathname === '/admin/news') {
-          dispatch({type: 'fetchTable', payload: query})
+        if (query.length > 0) {
+          dispatch({type: 'fetchMessage', payload: {pathname, query}})
         }
       })
     }
   },
   effects: {
-    * fetchTable ({payload = {}}, {call, select, put}) {
-      const {type = '', page, size} = payload
-      const query = {
-        page: page || 1,
-        size: size || 50,
-        type: type || 'news'
-      }
-      const data = yield call(fetchTable, query)
-      if (data.code === 0) {
-        const {data: {count, records}} = data
-        const tableConfig = {
-          tablePage: page,
-          tableSize: size,
-          tableCount: count
-        }
-        yield put({type: 'setTable', payload: records})
-        yield put({type: 'setTableConfig', payload: tableConfig})
-      }
+    * fetchMessage ({payload}, {call, select, put}) {
+      const {pathname, query} = payload
+      console.log(pathname)
+      console.log(query)
+      // const data = yield call(fetchTable, query)
+      // if (data.code === 0) {
+      //   const {data: {count, records}} = data
+      //   const tableConfig = {
+      //     tablePage: page,
+      //     tableSize: size,
+      //     tableCount: count
+      //   }
+      //   yield put({type: 'setTable', payload: records})
+      //   yield put({type: 'setTableConfig', payload: tableConfig})
+      // }
     },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({adminNewsEdit}) => adminNewsEdit.modalContent)
