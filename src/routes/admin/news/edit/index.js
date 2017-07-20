@@ -2,26 +2,21 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Icon, message, Modal, Select, Upload } from 'antd'
+import { Button, Form, Icon, Input, message, Modal, Upload } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import LzEditor from 'react-lz-editor'
-import { routerRedux } from 'dva/router'
 
 const {confirm} = Modal
 class Test extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      content: ''
-    }
     this.receiveHtml = this.receiveHtml.bind(this)
     this.onChange = this.onChange.bind(this)
-    this.beforeUpload = this.beforeUpload.bind(this)
   }
 
   receiveHtml (content) {
-    console.log('Recieved content', content)
+    this.props.dispatch({type: 'adminNewsEdit/contentChange', payload: content})
   }
 
   onChange (info) {
@@ -35,13 +30,11 @@ class Test extends React.Component {
     }
   }
 
-  beforeUpload (file) {
-    console.log('beforeUpload:', file)
-  }
-
   render () {
     const uploadConfig = {}
     const {location, dispatch} = this.props
+    const {pathname, query} = location
+    const {content, input} = this.props.adminNewsEdit
     const uploadProps = {
       action: 'http://nuedc.hrsoft.net/file/public/upload',
       name: 'upload',
@@ -70,12 +63,22 @@ class Test extends React.Component {
           </div>
           <div>
 
-            <Button type='primary' onClick={()=>{console.log(this.props.location)}}>发布</Button>
+            <Button type='primary' onClick={() => dispatch({
+              type: 'adminNewsEdit/update',
+              payload: {pathname: pathname, id: query.id}
+            })}>发布</Button>
           </div>
         </div>
+        <Input
+          placeholder='请输入标题'
+          style={{marginBottom: 10}}
+          onChange={(e) => dispatch({type: 'adminNewsEdit/onInputChange', payload: e.target.value})}
+          value={input}
+        />
+
         <LzEditor
-          active
-          importContent={this.state.content}
+          active={false}
+          importContent={content}
           cbReceiver={this.receiveHtml}
           uploadProps={uploadProps}
           fullScreen={false}
@@ -89,8 +92,8 @@ class Test extends React.Component {
     )
   }
 }
-export default connect(({app, loading, contest, login, adminNews}) => ({
+export default connect(({app, loading, contest, login, adminNewsEdit}) => ({
   app,
   loading,
-  adminNews
+  adminNewsEdit
 }))(Form.create()(Test))

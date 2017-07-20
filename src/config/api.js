@@ -62,8 +62,10 @@ export default {
   adminContestRecordUpdate: apiMaker('sysadmin/contest-records/:id/update'),
   adminContestRecordDelete: apiMaker('sysadmin/contest-records/:id/delete'),
 
-  adminMessage: apiMaker('sysadmin/message/all')
+  adminMessage: apiMaker('sysadmin/message/all'),
   // news
   newsMessageAll: apiMaker('sysadmin/message/all'),
-  newsPassage: apiMaker('sysadmin/message/info')
+  newsPassage: apiMaker('sysadmin/message/info'),
+  newsUpdate: apiMaker('sysadmin/message/update/:id'),
+  newsCreate: apiMaker('sysadmin/message/add'),
 }

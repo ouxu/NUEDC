@@ -1,45 +1,62 @@
 import modelExtend from 'dva-model-extend'
-import { modalModel, tableModel } from '../../../../models/modelExtend'
-import { fetchTable, remove, update } from './service'
+import { inputModel, modalModel } from '../../../../models/modelExtend'
+import { fetchMessage, remove, update,create } from './service'
 import { message } from 'antd'
 
-export default modelExtend(modalModel, tableModel, {
-  namespace: 'adminNewsEditEdit',
-  state: {},
+export default modelExtend(modalModel, inputModel, {
+  namespace: 'adminNewsEdit',
+  state: {
+    content: undefined
+  },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
-        if (query.length > 0) {
-          dispatch({type: 'fetchMessage', payload: {pathname, query}})
+        if (pathname === '/admin/notices/edit' || pathname === '/admin/news/edit') {
+          if (query.id) {
+            dispatch({type: 'fetchMessage', payload: {pathname, query}})
+          }
         }
       })
     }
   },
   effects: {
     * fetchMessage ({payload}, {call, select, put}) {
-      const {pathname, query} = payload
-      console.log(pathname)
-      console.log(query)
-      // const data = yield call(fetchTable, query)
-      // if (data.code === 0) {
-      //   const {data: {count, records}} = data
-      //   const tableConfig = {
-      //     tablePage: page,
-      //     tableSize: size,
-      //     tableCount: count
-      //   }
-      //   yield put({type: 'setTable', payload: records})
-      //   yield put({type: 'setTableConfig', payload: tableConfig})
-      // }
+      let {pathname, query} = payload
+      const type = pathname === '/admin/news/edit' ? 0 : 1
+      query = {
+        messageId: query.id,
+        type
+      }
+      const data = yield call(fetchMessage, query)
+      if (data.code === 0) {
+        const {current: {title, content}} = data.data
+        yield put({type: 'contentChange', payload: content})
+        yield put({type: 'onInputChange', payload: title})
+
+      }
     },
     * update ({payload}, {call, put, select}) {
-      const {id} = yield select(({adminNewsEdit}) => adminNewsEdit.modalContent)
-      const data = yield call(update, payload, id)
-      if (data.code === 0) {
-        yield put({type: 'hideModal'})
-        message.success('修改成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+      const {id, pathname} = payload
+      const type = pathname === '/admin/news/edit' ? 0 : 1
+
+      const {input: title = '', content = ''} = yield select(({adminNewsEdit}) => adminNewsEdit)
+      const body = {
+        title,
+        content,
+        type
       }
+      if (id) {
+        const data = yield call(update, body, id)
+        if (data.code === 0) {
+          message.success('修改成功')
+        }
+      } else {
+        const data = yield call(create, body)
+        if (data.code === 0) {
+          message.success('发布成功')
+        }
+      }
+
     },
     * delete ({payload}, {put, call}) {
       const {id} = payload
@@ -51,10 +68,11 @@ export default modelExtend(modalModel, tableModel, {
     }
   },
   reducers: {
-    queryChange(state, {payload}) {
+    contentChange (state, {payload: content}) {
+      console.log(content)
       return {
         ...state,
-        ...payload
+        content
       }
     }
   }

@@ -3,8 +3,8 @@
  */
 import { API, request } from '../../../../utils'
 
-const fetchTable = async (data) => request({
-  url: API.adminContestRecords,
+const fetchMessage = async (data) => request({
+  url: API.newsPassage,
   method: 'get',
   token: true,
   data
@@ -16,11 +16,18 @@ const remove = async (id) => request({
   token: true
 })
 
-const update = async (data, id) => request({
-  url: API.adminContestRecordUpdate.replace(':id', id),
+const create = async (data) => request({
+  url: API.newsCreate,
   method: 'post',
   token: true,
   data
 })
 
-export { remove, update, fetchTable }
+const update = async (data, id) => request({
+  url: API.newsUpdate.replace(':id', id),
+  method: 'put',
+  token: true,
+  data
+})
+
+export { remove, update, fetchMessage, create }

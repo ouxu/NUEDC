@@ -19,9 +19,7 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
-        record.status = '' + record.status
-        dispatch({type: 'adminNews/updateModalContent', payload: record})
-        dispatch({type: 'adminNews/showModal', payload: 'edit'})
+        dispatch(routerRedux.push(`/admin/` + ( isNews ? 'news' : 'notices') + '/edit?id=' + record.id))
         break
       case 'delete':
         confirm({
