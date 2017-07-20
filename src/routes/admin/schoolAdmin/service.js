@@ -4,23 +4,30 @@
 import { API, request } from '../../../utils'
 
 const fetchTable = async (data) => request({
-  url: API.adminMessage,
+  url: API.adminSchoolAdmins,
   method: 'get',
   token: true,
   data
 })
 
 const remove = async (id) => request({
-  url: API.adminContestRecordDelete.replace(':id', id),
+  url: API.adminUserDelete.replace(':id', id),
   method: 'get',
   token: true
 })
 
 const update = async (data, id) => request({
-  url: API.adminContestRecordUpdate.replace(':id', id),
+  url: API.adminUserUpdate.replace(':id', id),
   method: 'post',
   token: true,
   data
 })
 
-export { remove, update, fetchTable }
+const create = async (data) => request({
+  url: API.adminSchoolAdminCreate,
+  method: 'post',
+  token: true,
+  data
+})
+
+export { remove, update, create, fetchTable }

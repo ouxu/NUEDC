@@ -44,7 +44,7 @@
 │   │   ├── config
 │   │   │   └── menu.json
 │   │   ├── index.js
-│   │   └── routes.js
+│   │   └── route.js
 │   ├── app.js
 │   ├── app.less
 │   ├── home

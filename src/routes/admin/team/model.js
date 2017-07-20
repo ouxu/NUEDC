@@ -6,7 +6,7 @@ import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'teamManage',
   state: {
-    checked: []
+    selected: []
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
@@ -42,6 +42,12 @@ export default modelExtend(modalModel, tableModel, {
       return {
         ...state,
         ...payload
+      }
+    },
+    selectChange(state, {payload: selected}) {
+      return {
+        ...state,
+        selected
       }
     }
   }

@@ -13,8 +13,7 @@ class Test extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      value: '',
-      copied: false
+      content: ''
     }
     this.receiveHtml = this.receiveHtml.bind(this)
     this.onChange = this.onChange.bind(this)
@@ -42,7 +41,7 @@ class Test extends React.Component {
 
   render () {
     const uploadConfig = {}
-    const {location: {query}, dispatch} = this.props
+    const {location, dispatch} = this.props
     const uploadProps = {
       action: 'http://nuedc.hrsoft.net/file/public/upload',
       name: 'upload',
@@ -70,16 +69,8 @@ class Test extends React.Component {
             </Upload>
           </div>
           <div>
-            <Select
-              showSearch
-              style={{width: 100}}
-              onChange={(value) => dispatch(routerRedux.push(`/admin/news/edit?type=` + value))}
-              value={query.type || 'news'}
-            >
-              <Select.Option key='news-select-news' value='news'>新闻管理</Select.Option>
-              <Select.Option key='news-select-news' value='notices'>通知管理</Select.Option>
-            </Select>
-            <Button type='primary' onClick={() => document.execCommand('Copy',true,'1231')}>发布新闻</Button>
+
+            <Button type='primary' onClick={()=>{console.log(this.props.location)}}>发布</Button>
           </div>
         </div>
         <LzEditor

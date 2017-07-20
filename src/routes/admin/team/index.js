@@ -12,13 +12,12 @@ import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
-const ContestRecordManage = ({location, adminContestRecord, contest, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const ContestRecordManage = ({location, teamManage, adminContestRecord, contest, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminContestRecord
   const {table: tableContest = []} = contest
   const {table: tableSchool = []} = login
   const {query} = location
-  const {school_team_ids = []} = modalContent
-
+  const {selected = []} = teamManage
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
@@ -31,6 +30,16 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
           title: '删除确认',
           content: `您确定要删除 ${record.name} 管理员账号？`,
           onOk () { dispatch({type: 'adminContestRecord/delete', payload: record}) },
+          onCancel () {}
+        })
+        break
+      case 'audit':
+        confirm({
+          title: '审核确认',
+          content: '是否通过这些队伍的审核',
+          onOk () {
+            dispatch({type: 'joinedTeams/audit', payload: record.id})
+          },
           onCancel () {}
         })
         break
@@ -86,10 +95,12 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
   const allChecked = () => {
     dispatch({type: 'joinedTeams/allChecked'})
   }
+  console.log(selected.length)
   const pagination = {
-    pageSize: +tableSize,
-    current: +tablePage,
+    pageSize: query.size || 50,
+    current: query.page || 1,
     total: +tableCount,
+    pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
       dispatch(routerRedux.push(`/admin/team?` + urlEncode({...query, page: current, size: pageSize})))
@@ -97,9 +108,9 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     onChange: (current) => {
       dispatch(routerRedux.push(`/admin/team?` + urlEncode({...query, page: current})))
     },
-    showTotal: ()=> (
+    showTotal: () => (
       <div className='joined-teams-check'>
-        <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
+        <span style={{marginRight: 10}}>已选中{selected.length}个</span>
         <Button type='primary' onClick={allChecked}>批量审核</Button>
       </div>
     )
@@ -119,14 +130,13 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
   ]
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      let selectedId = []
+      let selected = []
       selectedRows.map((item) => {
-        selectedId.push(item.id)
+        selected.push(item.id)
       })
-      dispatch({type: 'joinedTeams/updateModalContent', payload: {school_team_ids: selectedId}})
+      dispatch({type: 'teamManage/selectChange', payload: selected})
     }
   }
-
 
   return (
     <div className='contest-record'>
@@ -138,9 +148,9 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             placeholder='选择竞赛'
             onChange={(value) => {
               dispatch(routerRedux.push(`/admin/team?` + urlEncode({
-                ...query,
-                contest_id: value || undefined
-              })))
+                  ...query,
+                  contest_id: value || undefined
+                })))
             }}
             allowClear
             value={query.contest_id || undefined}
@@ -183,12 +193,12 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
           </Select>
         </div>
         <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/team?' + urlEncode({
-          ...query,
-          contest_id: undefined,
-          status: undefined,
-          result: undefined,
-          school_id: undefined
-        })))}>
+            ...query,
+            contest_id: undefined,
+            status: undefined,
+            result: undefined,
+            school_id: undefined
+          })))}>
           重置筛选
         </Button>
       </div>

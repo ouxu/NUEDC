@@ -26,12 +26,12 @@
     },
     {
       "key": "/admin/team",
-      "value": "队伍审核",
+      "value": "队伍报名审核",
       "icon": "team"
     },
     {
       "key": "/admin/recording",
-      "value": "成绩录入",
+      "value": "赛事成绩录入",
       "icon": "book"
     },
     {
@@ -41,8 +41,12 @@
     },
     {
       "key": "/admin/news",
-      "value": "新闻通知管理",
+      "value": "新闻管理",
       "icon": "calendar"
+    },  {
+      "key": "/admin/notices",
+      "value": "通知管理",
+      "icon": "info-circle-o"
     },
     {
       "key": "/admin/message",

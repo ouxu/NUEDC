@@ -9,7 +9,12 @@ export default modelExtend(modalModel, tableModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
-        if (pathname === '/admin/news') {
+        if (pathname === '/admin/news' || pathname === '/admin/notices') {
+          const type = pathname === '/admin/news' ? 0 : 1
+          query = {
+            ...query,
+            type
+          }
           dispatch({type: 'fetchTable', payload: query})
         }
       })
@@ -17,21 +22,21 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
-      const {type = '', page, size} = payload
+      const {page, size, type} = payload
       const query = {
         page: page || 1,
         size: size || 50,
-        type: type || 'news'
+        type: type || 0
       }
       const data = yield call(fetchTable, query)
       if (data.code === 0) {
-        const {data: {count, records}} = data
+        const {data: {count, messages}} = data
         const tableConfig = {
           tablePage: page,
           tableSize: size,
           tableCount: count
         }
-        yield put({type: 'setTable', payload: records})
+        yield put({type: 'setTable', payload: messages})
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },

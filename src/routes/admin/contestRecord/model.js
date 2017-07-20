@@ -19,10 +19,9 @@ export default modelExtend(modalModel, tableModel, {
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
       const {contest_id, status, result, school_id, page, size} = payload
-      const {table: tableContest = []} = yield select(({contest}) => contest)
       const query = {
-        page: page || undefined,
-        size: size || undefined,
+        page: page || 1,
+        size: size || 50,
         contest_id: contest_id || undefined,
         status: status || undefined,
         result: result || undefined,

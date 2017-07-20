@@ -26,7 +26,8 @@ import {
   SchoolAdminModel,
   SchoolManage,
   SchoolModel,
-  TeamAdminManage
+  TeamAdminManage,
+  TeamAdminModel
 } from './routes/admin/routes'
 import {
   JoinedTeamsManage,
@@ -91,6 +92,7 @@ const Routers = ({history, app}) => (
           onEnter={() => {
             registerModel(app, ContestModel)
             registerModel(app, ContestRecordModel)
+            registerModel(app, TeamAdminModel)
           }}
         />
         <Route
@@ -122,6 +124,14 @@ const Routers = ({history, app}) => (
         />
         <Route
           path='news/edit' getComponent={NewsEdit}
+          onEnter={() => registerModel(app, NewsEditModel)}
+        />
+        <Route
+          path='notices' getComponent={AdminNews}
+          onEnter={() => registerModel(app, AdminNewsModel)}
+        />
+        <Route
+          path='notices/edit' getComponent={NewsEdit}
           onEnter={() => registerModel(app, NewsEditModel)}
         />
 

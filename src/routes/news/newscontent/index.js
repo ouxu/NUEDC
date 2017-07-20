@@ -10,7 +10,9 @@ import NewsContentConfig from './newscontent.json'
 import { Link } from 'dva/router'
 
 class NewsPage extends Component {
+
   render () {
+    console.log(this.props)
     const config = NewsContentConfig
     const img = '/assets/home/banner/1.jpg'
     const {title, time, content, prePassage, nextPassage, prePassageId, nextPassageId} = config
