@@ -1,26 +1,24 @@
 /**
  * Created by Pororo on 17/7/7.
  */
-import React, { Component } from 'react'
+import React from 'react'
 import './index.less'
 import ShowItems from './ShowItems'
-class News extends Component {
-  render () {
-    return (
-      <div className='news-wrapper'>
-        {this.props.children ||
+import { connect } from 'dva'
+
+const news = ({children}) => {
+  return (
+    <div className='news-wrapper'>
+      {
+        children ||
         <div className='newsCard'>
           <div className='news-content'>
             <ShowItems />
           </div>
         </div>
-        }
-      </div>
-    )
-  }
+      }
+    </div>
+  )
 }
 
-News.propTypes = {}
-News.defaultProps = {}
-
-export default News
+export default connect(({app, news}) => ({app, news}))(news)

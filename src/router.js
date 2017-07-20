@@ -45,9 +45,18 @@ import {
   StudentSignUpManage, StudentSignUpModel
 } from './routes/student/routes'
 import Home from './routes/home/route'
-import { News, NewsContent } from './routes/news/route'
-import { Notice, NoticeContent } from './routes/notices/route'
-
+import {
+  News,
+  NewsModel,
+  NewsContent,
+  NewsContentModel
+} from './routes/news/route'
+import {
+  Notice,
+  NoticeModel,
+  NoticeContent,
+  NoticeContentModel
+} from './routes/notices/route'
 import Download from './routes/download'
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
@@ -60,14 +69,12 @@ const Routers = ({history, app}) => (
       <IndexRoute getComponent={Home} />
       <Route path='home' getComponent={Home} />
       <Route path='download' component={Download} />
-      <Route path='news' getComponent={News}>
-        <Route path=':id' getComponent={NewsContent} />
+      <Route path='news' getComponent={News} onEnter={() => registerModel(app, NewsModel)}>
+        <Route path=':id' getComponent={NewsContent} onEnter={() => registerModel(app, NewsContentModel)} />
       </Route>
-      <Route path='news' getComponent={News} />
-      <Route path='notices' getComponent={Notice}>
-        <Route path=':id' getComponent={NoticeContent} />
+      <Route path='notices' getComponent={Notice} onEnter={() => registerModel(app, NoticeModel)}>
+        <Route path=':id' getComponent={NoticeContent} onEnter={() => registerModel(app, NoticeContentModel)} />
       </Route>
-      <Route path='news' getComponent={News} />
       <Route path='login' component={Login} />
       <Route path='register' getComponent={Register} />
       <Route path='admin' component={AdminPage}>

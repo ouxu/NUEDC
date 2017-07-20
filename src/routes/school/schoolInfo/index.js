@@ -59,7 +59,6 @@ const SchoolInfoManage = ({app, schoolInfo, dispatch, form: {getFieldDecorator, 
   }
   return (
     <div className='school-info-wrapper'>
-      <h1 style={{fontWeight: 200, textAlign: 'left', marginBottom: 20}}>校管理员信息</h1>
       <Card>
         <Form>
           {

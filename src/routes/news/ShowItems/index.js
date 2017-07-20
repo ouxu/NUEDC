@@ -1,58 +1,67 @@
 import React from 'react'
 import QueueAnim from 'rc-queue-anim'
 import TweenOne from 'rc-tween-one'
-
 import { Link } from 'dva/router'
 import './index.less'
-import showItemConfig from './showItem.json'
+import { connect } from 'dva'
 
-class ShowItems extends React.Component {
-  render () {
-    const {showItems = [], title, subTitle} = showItemConfig
-    const demoToChildren = showItems.map((item, i) => {
-      const {img, id, title, content} = item
-
-      return (
-        <li key={i}>
-          <Link to={'/news/' + id}>
-            <div className='home-anim-demo-img'><img src={img} width='100%' /></div>
-            <h2>{title}</h2>
-            <div className='home-anim-demo-text'>
-              <p>{content}</p>
-            </div>
-          </Link>
-        </li>
-      )
-    })
-
+const ShowItems = ({news, dispatch}) => {
+  const {modalContent} = news
+  const {messages = []} = modalContent
+  const demoToChildren = messages.map((item, i) => {
+    const {img = '/assets/home/showItem/1.png', id, title, created_at} = item
     return (
-      <div
-        className='home-content show-items'
-      >
-        <QueueAnim
-          className='page-text'
-          key='text'
-          type='bottom'
-          leaveReverse
-          delay={[0, 100]}
-        >
-          <h1 key='h1'>{title}</h1>
-          <p key='p'>
-            {subTitle}
-          </p>
-        </QueueAnim>
-        <TweenOne
-          animation={{y: '+=30', opacity: 0, type: 'from'}}
-          key='img'
-          className='home-anim-demo'
-        >
-          <ul>
-            {demoToChildren}
-          </ul>
-        </TweenOne>
-      </div>
+      <li key={i}>
+        <Link to={'/news/' + id}>
+          <div className='home-anim-demo-img'><img src={img} width='100%' /></div>
+          <h2>{title}</h2>
+          <div className='home-anim-demo-text'>
+            <p>{created_at}</p>
+          </div>
+        </Link>
+      </li>
     )
+  })
+  const fetchMore = (e) => {
+    e.preventDefault()
+    dispatch({type: 'news/fetchMore'})
   }
+  return (
+    <div
+      className='home-content show-items'
+    >
+      <QueueAnim
+        className='page-text'
+        key='text'
+        type='bottom'
+        leaveReverse
+        delay={[0, 100]}
+      >
+        <h1 key='h1'>新闻中心</h1>
+        <p key='p'>
+          新闻中心为您提供最新最全的电子设计竞赛赛况
+        </p>
+      </QueueAnim>
+      <TweenOne
+        animation={{y: '+=30', opacity: 0, type: 'from'}}
+        key='img'
+        className='home-anim-demo'
+      >
+        <ul>
+          {demoToChildren}
+        </ul>
+        <div className='news-content'>
+          <TweenOne
+            key='a'
+            className='news-button'
+            style={{marginBottom: '80px'}}
+          >
+            <Link onClick={fetchMore}>查看更多</Link>
+          </TweenOne>
+        </div>
+      </TweenOne>
+    </div>
+  )
 }
 
-export default ShowItems
+export default connect(({app, news}) => ({app, news}))(ShowItems)
