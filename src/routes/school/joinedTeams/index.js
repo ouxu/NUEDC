@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table, Upload, Icon, message } from 'antd'
+import { Button, Form, Modal, Select, Table, Upload, Icon, message, Alert } from 'antd'
 import formConfig from '../joinedTeams/formConfig'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -15,7 +15,7 @@ const Dragger = Upload.Dragger
 const Option = Select.Option
 const confirm = Modal.confirm
 const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, modalContent, contest = {}, tableSize, tableCount, tablePage, contestsId} = joinedTeams
+  const {modal = false, table, content, modalContent, contest = {}, tableSize, tableCount, tablePage, contestsId, alert} = joinedTeams
   const {contests = []} = contest
   const {school_team_ids = []} = modalContent
   const {query} = location
@@ -28,15 +28,21 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
     },
     showUploadList: false,
     onChange (info) {
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} 文件上传成功！`)
+      const {response = {}} = info.file
+      const {code = 1, data = []} = response
+      if (code === 0) {
+        const {fail = []} = data
+        if (fail.length) {
+          dispatch({type: 'joinedTeams/saveSuccessExcel', payload: fail})
+          dispatch({type: 'joinedTeams/showAlert'})
+        } else {
+          dispatch({type: 'joinedTeams/hideAlert'})
+          message.success(`文件上传成功`)
+        }
         dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query})))
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
       }
-    },
-    data: (file) => { // 支持自定义保存文件名、扩展名支持
-      console.log('uploadProps data', file)
     }
   }
   const onMenuClick = (key, record) => {
@@ -197,19 +203,26 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           })))}>
             重置筛选</Button>
         </div>
-        <div style={{marginRight: 20}}>
-          <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入Excel模板</Button>
-          <Upload {...props}>
-            <Button>
-              <Icon type='upload' /> 点击导入队伍表格
-            </Button>
-          </Upload>
-        </div>
+        <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入Excel模板</Button>
+        <Upload {...props}>
+          <Button>
+            <Icon type='upload' /> 导入队伍Excel
+          </Button>
+        </Upload>
         <div>
           <Button type='primary' onClick={excelOut}>导出excel</Button>
           {/* <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button> */}
         </div>
       </div>
+      {alert && (
+        <Alert
+          message={(<span>以下队伍导入失败（手机号和已存在队伍重复）,请修改手机号后再导入以下队伍</span>)}
+          description={(content.map((item, index) => <div key={index}><span>队伍名称:{item[0]} &nbsp; 手机号:{item[5]}</span>
+          </div>))}
+          type='error'
+          showIcon
+        />
+      )}
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 2000}}

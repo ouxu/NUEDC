@@ -8,13 +8,12 @@ import {
   joinedExcelOut,
   fetchSelectOption,
   allChecked,
-  downloadExcel,
-  uploadExcel
+  downloadExcel
 } from './service'
-import { modalModel, tableModel } from '../../../models/modelExtend'
+import { modalModel, tableModel, alertModel } from '../../../models/modelExtend'
 import { message } from 'antd'
 
-export default modelExtend(modalModel, tableModel, {
+export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'joinedTeams',
   state: {},
   subscriptions: {
@@ -127,6 +126,12 @@ export default modelExtend(modalModel, tableModel, {
       return {
         ...state,
         contest: payload
+      }
+    },
+    saveSuccessExcel (state, {payload}) {
+      return {
+        ...state,
+        content: payload
       }
     }
   }
