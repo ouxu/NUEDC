@@ -49,8 +49,8 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
     {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 200},
     {title: '奖项确定时间', dataIndex: 'result_at', key: 'result_at', width: 200},
     {title: '现场赛相关信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
-    {title: '审核状态', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
-    {title: '获得奖项', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'}
+    {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'},
+    {title: '获得奖项', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'}
   ]
   return (
     <div className='school-result'>
@@ -69,6 +69,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             showSearch
             style={{width: 200, marginRight: 10}}
             placeholder='审核状态'
+            value={query.result_info || undefined}
             onChange={(value) => {
               dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({
                   ...query,

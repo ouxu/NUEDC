@@ -9,13 +9,14 @@ import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
 import { editConfig } from './formConfig'
-import { color } from '../../../utils'
+import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
-const SchoolAdminManage = ({adminSchoolAdmin, dispatch, login, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminSchoolAdmin
   const {table: schoolTable = []} = login
+  const {query} = location
   const onCreateClick = e => {
     e.preventDefault()
     dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: {}})
@@ -94,10 +95,10 @@ const SchoolAdminManage = ({adminSchoolAdmin, dispatch, login, form: {getFieldDe
     showSizeChanger: true,
     pageSizeOptions: ['20', '50', '100'],
     onShowSizeChange: (current, pageSize) => {
-      dispatch(routerRedux.push(`/admin/schoolAdmin?page=${current}&size=${pageSize}`))
+      dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
-      dispatch(routerRedux.push(`/admin/schoolAdmin?page=${current}&size=${tableSize}`))
+      dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, page: current, size: tableSize})))
     }
   }
   const formItemLayout = {
@@ -113,7 +114,30 @@ const SchoolAdminManage = ({adminSchoolAdmin, dispatch, login, form: {getFieldDe
   return (
     <div className='school-admin'>
       <div className='school-admin-header'>
-        <div>学校管理员列表</div>
+        <div>
+          <span>学校管理员列表</span>
+          <Select
+            showSearch
+            style={{width: 200, marginRight: 10, marginLeft: 20}}
+            placeholder='选择学校'
+            value={query.school_id || undefined}
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, school_id: value || undefined})))
+            }}
+            allowClear
+          >
+            {table.map(item => (
+              <Select.Option key={'contest-status-' + item.school_id} value={item.school_id + ''}>
+                {item.school_name}
+              </Select.Option>
+            ))}
+          </Select>
+          <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/schoolAdmin?' + urlEncode({
+            ...query,
+            school_id: undefined
+          })))}>
+            重置筛选</Button>
+        </div>
         <Button type='primary' onClick={onCreateClick}>生成账号</Button>
       </div>
       <Table

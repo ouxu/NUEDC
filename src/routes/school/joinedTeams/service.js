@@ -56,4 +56,11 @@ const allChecked = async (data) => request({
   data
 })
 
-export { remove, update, add, fetchJoinedTable, audit, joinedExcelOut, fetchSelectOption, allChecked }
+const downloadExcel = async ({filename}) => request({
+  url: API.schoolImportTeamsExcel,
+  method: 'export',
+  token: true,
+  filename
+})
+
+export { remove, update, add, fetchJoinedTable, audit, joinedExcelOut, fetchSelectOption, allChecked, downloadExcel }

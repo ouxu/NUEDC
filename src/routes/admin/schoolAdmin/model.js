@@ -17,20 +17,22 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
-      const {tablePage, tableSize} = yield select(({adminSchoolAdmin}) => adminSchoolAdmin)
-      const {page = 1, size = 20, force = false} = payload
-      if (tablePage !== page || tableSize !== size || force) {
-        const data = yield call(fetchTable, {page, size})
-        if (data.code === 0) {
-          const {data: {count, school_admins}} = data
-          const tableConfig = {
-            tablePage: page,
-            tableSize: size,
-            tableCount: count
-          }
-          yield put({type: 'setTable', payload: school_admins})
-          yield put({type: 'setTableConfig', payload: tableConfig})
+      const {page = 1, size = 20, school_id} = payload
+      const query = {
+        page: page,
+        size: size,
+        school_id: school_id || undefined
+      }
+      const data = yield call(fetchTable, query)
+      if (data.code === 0) {
+        const {data: {count, school_admins}} = data
+        const tableConfig = {
+          tablePage: page,
+          tableSize: size,
+          tableCount: count
         }
+        yield put({type: 'setTable', payload: school_admins})
+        yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
     * update ({payload}, {call, put, select}) {

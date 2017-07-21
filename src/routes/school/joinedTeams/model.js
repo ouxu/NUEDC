@@ -1,5 +1,16 @@
 import modelExtend from 'dva-model-extend'
-import { fetchJoinedTable, add, update, audit, remove, joinedExcelOut, fetchSelectOption, allChecked } from './service'
+import {
+  fetchJoinedTable,
+  add,
+  update,
+  audit,
+  remove,
+  joinedExcelOut,
+  fetchSelectOption,
+  allChecked,
+  downloadExcel,
+  uploadExcel
+} from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
 
@@ -87,12 +98,16 @@ export default modelExtend(modalModel, tableModel, {
       }
       yield call(joinedExcelOut, {filename: date.substr(-3, 3) + '本校参赛队伍竞赛' + contestsId + '.xlsx'}, data)
     },
-    * allChecked ({payload}, {call, select}) {
+    * allChecked ({payload}, {call, select, put}) {
       const {school_team_ids} = yield select(({joinedTeams}) => joinedTeams.modalContent)
       const data = yield call(allChecked, {school_team_ids: school_team_ids})
       if (data.code === 0) {
         message.success('批量审核成功')
+        yield put({type: 'fetchJoinedTable', payload: {force: true}})
       }
+    },
+    * downloadExcel ({payload}, {call, put, select}) {
+      yield call(downloadExcel, {filename: '队伍导入Excel模板.xlsx'})
     }
   },
   reducers: {

@@ -39,6 +39,8 @@ export default {
   schoolResultExcelOut: apiMaker('school/admin/result/export?'),
   schoolAcquireId: apiMaker('school/admin/contest'),
   schoolChecked: apiMaker('school/team/mult-check'),
+  schoolImportTeamsExcel: apiMaker('school/admin/team/getImportTemplate'),
+  schoolUploadExcel: apiMaker('school/admin/team/import'),
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),

@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table } from 'antd'
+import { Button, Form, Modal, Select, Table, Upload, Icon, message } from 'antd'
 import formConfig from '../joinedTeams/formConfig'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -11,14 +11,34 @@ import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 
+const Dragger = Upload.Dragger
 const Option = Select.Option
 const confirm = Modal.confirm
 const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, modalContent, contest = {}, tableSize, tableCount, tablePage} = joinedTeams
+  const {modal = false, table, modalContent, contest = {}, tableSize, tableCount, tablePage, contestsId} = joinedTeams
   const {contests = []} = contest
   const {school_team_ids = []} = modalContent
   const {query} = location
 
+  const props = {
+    name: 'file',
+    action: 'http://nuedc.hrsoft.net/school/admin/team/import' + `/${query.contest_id || contestsId}`,
+    headers: {
+      token: window.localStorage.getItem('nuedcToken')
+    },
+    showUploadList: false,
+    onChange (info) {
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} 文件上传成功！`)
+        dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query})))
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 文件上传失败，稍后再试。`)
+      }
+    },
+    data: (file) => { // 支持自定义保存文件名、扩展名支持
+      console.log('uploadProps data', file)
+    }
+  }
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
@@ -106,6 +126,9 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   const allChecked = () => {
     dispatch({type: 'joinedTeams/allChecked'})
   }
+  const getExcel = () => {
+    dispatch({type: 'joinedTeams/downloadExcel'})
+  }
 
   const columns = [
     {title: '竞赛id', dataIndex: 'contest_id', key: 'contest_id', width: 100},
@@ -154,6 +177,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             showSearch
             style={{width: 200, marginRight: 10}}
             placeholder='审核状态'
+            value={query.status || undefined}
             onChange={(value) => {
               dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, status: value || undefined})))
             }}
@@ -167,11 +191,19 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             </Select.Option>
           </Select>
           <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/joinedTeams?' + urlEncode({
-              ...query,
-              contest_id: undefined,
-              status: undefined
-            })))}>
+            ...query,
+            contest_id: undefined,
+            status: undefined
+          })))}>
             重置筛选</Button>
+        </div>
+        <div style={{marginRight: 20}}>
+          <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入Excel模板</Button>
+          <Upload {...props}>
+            <Button>
+              <Icon type='upload' /> 点击导入队伍表格
+            </Button>
+          </Upload>
         </div>
         <div>
           <Button type='primary' onClick={excelOut}>导出excel</Button>
