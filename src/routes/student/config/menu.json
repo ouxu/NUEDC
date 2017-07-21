@@ -8,16 +8,6 @@
       "key": "/student",
       "value": "参赛信息",
       "icon": "edit"
-    },
-    {
-      "key": "/student/problem",
-      "value": "查题选题",
-      "icon": "file-text"
-    },
-    {
-      "key": "/student/score",
-      "value": "查看成绩",
-      "icon": "smile-o"
     }
   ]
 }

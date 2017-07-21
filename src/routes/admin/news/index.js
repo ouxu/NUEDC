@@ -84,8 +84,9 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
     <div className='news-manage'>
       <div className='news-manage-header'>
         {isNews ? '新闻管理' : '通知管理'}
-        <Button type='primary'
-                onClick={ () => dispatch(routerRedux.push(`/admin/` + ( isNews ? 'news' : 'notices') + '/edit'))}>
+        <Button
+          type='primary'
+          onClick={ () => dispatch(routerRedux.push(`/admin/` + ( isNews ? 'news' : 'notices') + '/edit'))}>
           发布{isNews ? '新闻' : '通知'}</Button>
       </div>
       <Table

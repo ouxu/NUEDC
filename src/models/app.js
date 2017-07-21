@@ -22,10 +22,8 @@ export default {
           yield put({type: 'setUser', payload: data.user})
         }
       } else {
-        yield put({type: 'setUser', payload: {}})
+        yield put({type: 'login/logout', payload: {}})
         yield put({type: 'setInfo', payload: {token: '', role: 'student'}})
-        window.localStorage.removeItem('nuedcToken')
-        window.localStorage.removeItem('nuedcRole')
       }
     }
   },

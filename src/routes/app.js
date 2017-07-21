@@ -10,18 +10,20 @@ import Layout from '../components/Layout'
 const App = (props) => {
   const {loading} = props
   NProgress.start()
-  !loading.global &&  NProgress.done()
-  const {logoSrc = '', name = ''} = config
-  return <div>
-    <Helmet>
-      <title>{name}</title>
-      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-      <link rel='icon' href={logoSrc} type='image/x-icon' />
-      {/* {iconFontJS && <script src={iconFontJS}> </script>} */}
-      {/* {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />} */}
-    </Helmet>
-    <Layout {...props} />
-  </div>
+  !loading.global && NProgress.done()
+  const {logoSrc = '', name = '', iconFontJS, iconFontCSS} = config
+  return (
+    <div>
+      <Helmet>
+        <title>{name}</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <link rel='icon' href={logoSrc} type='image/x-icon' />
+        {iconFontJS && <script src={iconFontJS}></script>}
+        {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />}
+      </Helmet>
+      <Layout {...props} />
+    </div>
+  )
 }
 
 export default connect(({loading, app}) => ({loading, app}))(App)

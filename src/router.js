@@ -42,7 +42,8 @@ import {
   StudentPage,
   StudentScoreManage, StudentScoreModel,
   StudentProblemManage, StudentProblemModel,
-  StudentSignUpManage, StudentSignUpModel
+  StudentSignUpManage, StudentSignUpModel,
+  SchoolContestManage,SchoolContestModel
 } from './routes/student/routes'
 import Home from './routes/home/route'
 import {
@@ -144,9 +145,8 @@ const Routers = ({history, app}) => (
 
       </Route>
       <Route path='student' component={StudentPage}>
-        <IndexRoute getComponent={StudentSignUpManage} onEnter={() => {
-          registerModel(app, StudentSignUpModel)
-        }} />
+        <IndexRoute getComponent={SchoolContestManage} onEnter={() => registerModel(app, SchoolContestModel)} />
+
         <Route
           path='problem' getComponent={StudentProblemManage}
           onEnter={() => {
