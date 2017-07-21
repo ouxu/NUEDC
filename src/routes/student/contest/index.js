@@ -88,8 +88,6 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
             })}
           </Row>
         </Panel>
-        <Panel header="This is panel header 3" key="3" style={customPanelStyle}>
-        </Panel>
       </Collapse>
     </div>
   )
