@@ -169,7 +169,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   return (
     <div className='joined-teams'>
       <div className='joined-teams-header'>
-        <div className='joined-teams-select'>
+        <div>
           <Select
             showSearch
             style={{width: 300, marginRight: 10}}
@@ -209,10 +209,8 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             <Icon type='upload' /> 导入队伍Excel
           </Button>
         </Upload>
-        <div>
-          <Button type='primary' onClick={excelOut}>导出excel</Button>
-          {/* <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button> */}
-        </div>
+        <Button type='primary' onClick={excelOut}>导出excel</Button>
+        {/* <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button> */}
       </div>
       {alert && (
         <Alert

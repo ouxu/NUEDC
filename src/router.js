@@ -43,7 +43,7 @@ import {
   StudentScoreManage, StudentScoreModel,
   StudentProblemManage, StudentProblemModel,
   StudentSignUpManage, StudentSignUpModel,
-  SchoolContestManage,SchoolContestModel
+  SchoolContestManage, SchoolContestModel
 } from './routes/student/routes'
 import Home from './routes/home/route'
 import {
@@ -99,6 +99,7 @@ const Routers = ({history, app}) => (
           path='team' getComponent={TeamAdminManage}
           onEnter={() => {
             registerModel(app, ContestModel)
+            registerModel(app, RecordingModel)
             registerModel(app, ContestRecordModel)
             registerModel(app, TeamAdminModel)
           }}
@@ -116,7 +117,10 @@ const Routers = ({history, app}) => (
         />
         <Route
           path='recording' getComponent={RecordingManage}
-          onEnter={() => registerModel(app, RecordingModel)}
+          onEnter={() => {
+            registerModel(app, ContestModel)
+            registerModel(app, RecordingModel)
+          }}
         />
         <Route
           path='privilege' getComponent={PrivilegeManage}
