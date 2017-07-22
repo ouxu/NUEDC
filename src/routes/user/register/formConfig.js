@@ -49,16 +49,6 @@ export default [
     },
     options: [{'label': '男', 'value': '男'}, {'label': '女', 'value': '女'}]
   }, {
-    value: 'schoolId',
-    label: '学校',
-    formType: 2,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请选择您所在的学校',
-    },
-    options: [{'label': '东北大学秦皇岛分校', 'value': '1'}, {'label': '燕山大学', 'value': '2'}]
-  }, {
     value: 'password',
     label: '密码',
     formType: 0,

@@ -16,7 +16,6 @@ export default modelExtend(modalModel, tableModel, {
         const match = pathname === `/student/signup`
         console.log(query)
         if (match) {
-          dispatch({type: 'getContestSignUpStatus', payload: query.contest_id})
           dispatch({type: 'getUserSchool'})
         }
       })
@@ -36,28 +35,7 @@ export default modelExtend(modalModel, tableModel, {
         message.success('报名成功，请等待审核')
         yield put({type: 'onFormSubmit', payload: payload})
       }
-    },
-    * getContestSignUpStatus ({payload}, {call, put, select}) {
-      const contests = yield call(getAllContest)
-      // console.log(selectOptions.data)
-      // if (selectOptions.code === 0) {
-      yield put({type: 'saveFilter', payload: contests.data})
-      yield put({type: 'onFilter', payload: payload})
-
-      // yield put({type: 'onFilter', payload: selectOptions.data[0].id})
-      // const {contestsId} = yield select(({studentSignUp}) => studentSignUp)
-      const data = yield call(getContestSignUpStatus, payload)
-      if (data.code === 0) {
-        yield put({type: 'studentInfo', payload: data.data})
-      }
-      // }
-      // }
     }
-    // * filter ({payload}, {put, select, call}) {
-    //   // const {contestsId} = yield select(({studentSignUp}) => studentSignUp)
-    //   const data = yield call(getContestSignUpStatus, contestsId)
-    //   yield put({type: 'studentInfo', payload: data.data})
-    // }
   },
   reducers: {
     schools (state, {payload}) {

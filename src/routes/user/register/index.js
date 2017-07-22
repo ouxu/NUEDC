@@ -13,7 +13,14 @@ import formConfig from './formConfig'
 const FormItem = Form.Item
 
 const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, validateFieldsAndScroll}}) => {
-  const {counter, loading} = login
+  const {counter, loading, table: schools} = login
+  const schoolOptions = schools.map(config => {
+    return {
+      value: config.id + '',
+      label: config.name,
+      level: config.level
+    }
+  })
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
@@ -50,6 +57,19 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
         </div>
 
         <Form>
+          {
+            FormItemRender({
+              value: 'schoolId',
+              label: '学校',
+              formType: 2,
+              contentType: 'string',
+              rules: {
+                required: true,
+                requiredMessage: '请选择您所在的学校',
+              },
+              options: schoolOptions
+            }, getFieldDecorator, extra)
+          }
           {formConfig.map(config => FormItemRender(config, getFieldDecorator, extra))}
           <FormItem
             label='验证码'

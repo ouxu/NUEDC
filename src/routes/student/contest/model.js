@@ -28,7 +28,7 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
           yield put({type: 'setTable', payload: data.data})
         }
         if (dataPass.code === 0) {
-          yield put({type: 'setTablePass', payload: data.contestList})
+          yield put({type: 'setTablePass', payload: dataPass.data.contestList})
         }
       }
     }

@@ -12,6 +12,7 @@ const {confirm} = Modal
 const Panel = Collapse.Panel
 const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, alert, tablePass = []} = studentContest
+  console.log(tablePass)
   const customPanelStyle = {
     background: '#f7f7f7',
     borderRadius: 4,
@@ -27,8 +28,8 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
   return (
     <div className='contest'>
       <Collapse bordered={false} defaultActiveKey={['1']}>
-        <Panel header="已报名竞赛" key="1" style={customPanelStyle}>
-          <Row type='flex' gutter='12'>
+        <Panel header='已报名竞赛' key='1' style={customPanelStyle}>
+          <Row type='flex' gutter={12}>
             {tablePass.map(item => {
               let extra
               if (item.can_select_problem === 1) {
@@ -61,7 +62,7 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
             })}
           </Row>
         </Panel>
-        <Panel header="全部竞赛" key="2" style={customPanelStyle}>
+        <Panel header='全部竞赛' key='2' style={customPanelStyle}>
           <Row type='flex' gutter='12'>
             {table.map(item => {
               let extra

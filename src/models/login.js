@@ -12,7 +12,7 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
   subscriptions: {
     schoolsSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        if (pathname === '/register' || pathname === '/admin/contestRecord' || pathname === '/admin/schoolAdmin') {
+        if (pathname === '/register' || pathname === '/admin/contestRecord' || pathname === '/admin/schoolAdmin' || pathname === '/student/signup') {
           dispatch({type: 'querySchools'})
         }
       })

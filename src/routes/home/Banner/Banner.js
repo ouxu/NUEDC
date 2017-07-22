@@ -27,7 +27,7 @@ class Banner extends React.Component {
             <span className='title-number'>河北赛区</span>
           </span>
           <p key='content' id={`${props.id}-content`}>创造激情 精彩无限</p>
-          <Button ghost key='button' size='large' id={`${props.id}-button`} onClick={() => goto('/applyInnovation')}
+          <Button ghost key='button' size='large' id={`${props.id}-button`} onClick={() => goto('/login')}
             style={{marginRight: 5}}>
             点击登录报名
           </Button>

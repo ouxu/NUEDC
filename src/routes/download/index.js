@@ -21,12 +21,8 @@ class Downlaod extends Component {
       },
     };
     return (
-      <div>
-        <Upload {...props}>
-          <Button>
-            <Icon type="upload" /> Click to Upload
-          </Button>
-        </Upload>
+      <div style={{margin: 20}}>
+        暂无内容
       </div>
     )
   }
