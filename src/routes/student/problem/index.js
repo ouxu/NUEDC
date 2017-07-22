@@ -93,16 +93,6 @@ const JoinedTeamsManage = ({studentProblem, dispatch, form: {getFieldDecorator, 
   ]
   return (
     <div className='joined-teams'>
-      <div className='joined-teams-header'>
-        <Select
-          showSearch
-          style={{width: 100}}
-          placeholder='竞赛ID'
-          onChange={onOptionChange}
-        >
-          {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.id}</Select.Option>)}
-        </Select>
-      </div>
       <Table
         columns={columns} bordered
         dataSource={table} scroll={{x: 2000}}

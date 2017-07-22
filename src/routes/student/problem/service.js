@@ -17,8 +17,8 @@ const getAllContest = async (data) => request({
   token: true
 })
 const getContestProblemList = async (id) => request({
-  // url: API.getContestProblemList.replace(':contestId', id),
-  url: API.getContestProblemList.replace(':contestId', 3),
+  url: API.getContestProblemList.replace(':contestId', id),
+  // url: API.getContestProblemList.replace(':contestId', 3),
   method: 'get',
   token: true
 })

@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { getAllContest, signUpContest, getContestSignUpStatus, userSchools } from './service'
-import { modalModel, tableModel } from '../../../models/modelExtend'
-import { message } from 'antd'
+import {getAllContest, signUpContest, getContestSignUpStatus, userSchools} from './service'
+import {modalModel, tableModel} from '../../../models/modelExtend'
+import {message} from 'antd'
 
 export default modelExtend(modalModel, tableModel, {
   namespace: 'studentSignUp',
@@ -12,10 +12,11 @@ export default modelExtend(modalModel, tableModel, {
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
-      return history.listen(({pathname}) => {
-        const match = pathname === '/student'
+      return history.listen(({pathname, query}) => {
+        const match = pathname === `/student/signup`
+        console.log(query)
         if (match) {
-          dispatch({type: 'getContestSignUpStatus'})
+          dispatch({type: 'getContestSignUpStatus', payload: query.contest_id})
           dispatch({type: 'getUserSchool'})
         }
       })
@@ -37,28 +38,26 @@ export default modelExtend(modalModel, tableModel, {
       }
     },
     * getContestSignUpStatus ({payload}, {call, put, select}) {
-      const table = yield select(({studentSignUp}) => studentSignUp.table)
-      if (table.length > 0) {
-        // 已有数据，不需要获取
-      } else {
-        const selectOptions = yield call(getAllContest)
-        console.log(selectOptions.data)
-        if (selectOptions.code === 0) {
-          yield put({type: 'saveFilter', payload: selectOptions.data})
-          yield put({type: 'onFilter', payload: selectOptions.data[0].id})
-          const {contestsId} = yield select(({studentSignUp}) => studentSignUp)
-          const data = yield call(getContestSignUpStatus, contestsId)
-          if (data.code === 0) {
-            yield put({type: 'studentInfo', payload: data.data})
-          }
-        }
+      const contests = yield call(getAllContest)
+      // console.log(selectOptions.data)
+      // if (selectOptions.code === 0) {
+      yield put({type: 'saveFilter', payload: contests.data})
+      yield put({type: 'onFilter', payload: payload})
+
+      // yield put({type: 'onFilter', payload: selectOptions.data[0].id})
+      // const {contestsId} = yield select(({studentSignUp}) => studentSignUp)
+      const data = yield call(getContestSignUpStatus, payload)
+      if (data.code === 0) {
+        yield put({type: 'studentInfo', payload: data.data})
       }
-    },
-    * filter ({payload}, {put, select, call}) {
-      const {contestsId} = yield select(({studentSignUp}) => studentSignUp)
-      const data = yield call(getContestSignUpStatus, contestsId)
-      yield put({type: 'studentInfo', payload: data.data})
+      // }
+      // }
     }
+    // * filter ({payload}, {put, select, call}) {
+    //   // const {contestsId} = yield select(({studentSignUp}) => studentSignUp)
+    //   const data = yield call(getContestSignUpStatus, contestsId)
+    //   yield put({type: 'studentInfo', payload: data.data})
+    // }
   },
   reducers: {
     schools (state, {payload}) {

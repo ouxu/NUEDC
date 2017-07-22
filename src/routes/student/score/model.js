@@ -28,6 +28,11 @@ export default modelExtend(modalModel, tableModel, {
           yield put({type: 'setTable', payload: data.data})
         }
       }
+    },
+    * filter ({payload}, {put, select, call}) {
+      const {contestsId} = yield select(({studentScore}) => studentScore)
+      const data = yield call(getResult, contestsId)
+      yield put({type: 'setTable', payload: data.data})
     }
 
   },

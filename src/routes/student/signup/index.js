@@ -2,13 +2,13 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table } from 'antd'
+import {Button, Form, Modal, Select, Table} from 'antd'
 import formConfig from '../signup/formConfig'
 import './index.less'
 
 const FormItem = Form.Item
 import FormItemRender from '../../../components/FormItemRender/'
-import { connect } from 'dva'
+import {connect} from 'dva'
 // 这一部分代码有毒。
 const schoolId = {
   value: 'schoolId',
@@ -36,7 +36,7 @@ const contestID = {
 
 }
 const StudentSignUpManage = ({studentSignUp, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {contest = [], info = {}, schools = []} = studentSignUp
+  const {contest = [], info = {}, schools = [], contestId} = studentSignUp
   // const onOptionChange = (value) => {
   //   dispatch({type: 'studentSignUp/onFilter', payload: value})
   //   dispatch({type: 'studentSignUp/filter', payload: value})
@@ -82,7 +82,7 @@ const StudentSignUpManage = ({studentSignUp, dispatch, form: {getFieldDecorator,
       {/*{contest.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}*/}
       {/*</Select>*/}
       {/*</div>*/}
-      <Form className='form-content'>
+      <Form className='form-content' key={contestId}>
         {[{
           ...contestID,
           options: contestOptions

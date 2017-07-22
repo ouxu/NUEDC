@@ -2,21 +2,28 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Card, Col, Collapse, Form, Modal, Row, Tag } from 'antd'
+import {Card, Col, Collapse, Form, Modal, Row, Tag} from 'antd'
+import {Link, routerRedux} from 'dva/router'
 import './index.less'
-import { connect } from 'dva'
-import { color } from '../../../utils'
+import {connect} from 'dva'
+import {color, urlEncode} from '../../../utils'
+
 const {confirm} = Modal
 const Panel = Collapse.Panel
 const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, alert,tablePass} = studentContest
+  const {modal = false, modalContent = {}, table, alert, tablePass = []} = studentContest
   const customPanelStyle = {
     background: '#f7f7f7',
     borderRadius: 4,
     marginBottom: 24,
-    border: 0,
+    border: 0
   }
-
+  const SignUpContest = (id) => {
+    dispatch(routerRedux.push(`/student/signup?` + urlEncode({contest_id: id})))
+  }
+  const selectProblem = (id) => {
+    dispatch(routerRedux.push(`/student/problem?` + urlEncode({contest_id: id})))
+  }
   return (
     <div className='contest'>
       <Collapse bordered={false} defaultActiveKey={['1']}>
@@ -25,12 +32,12 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
             {tablePass.map(item => {
               let extra
               if (item.can_select_problem === 1) {
-                extra = (<Tag color={color.blue}>点击进行选题</Tag>)
+                extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)
               } else if (item.can_select_problem === -1) {
                 if (item.problem_start_time > Date.now()) {
                   extra = (<Tag>选题尚未开始</Tag>)
                 } else if (item.problem_end_time > Date.now()) {
-                  extra = (<Tag color={color.blue}>点击进行选题</Tag>)
+                  extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)
                 } else {
                   extra = (<Tag disabled>选题已结束</Tag>)
                 }
@@ -59,12 +66,12 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
             {table.map(item => {
               let extra
               if (item.can_register === 1) {
-                extra = (<Tag color={color.blue}>点击报名本竞赛</Tag>)
+                extra = (<Tag color={color.blue} onClick={() => SignUpContest(item.id)}>点击报名本竞赛</Tag>)
               } else if (item.can_register === -1) {
                 if (item.register_start_time > Date.now()) {
                   extra = (<Tag>报名尚未开始</Tag>)
                 } else if (item.register_end_time > Date.now()) {
-                  extra = (<Tag color={color.blue}>点击报名本竞赛</Tag>)
+                  extra = (<Tag color={color.blue} onClick={() => SignUpContest(item.id)}>点击报名本竞赛</Tag>)
                 } else {
                   extra = (<Tag disabled>报名已结束</Tag>)
                 }
