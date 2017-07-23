@@ -12,7 +12,6 @@ const {confirm} = Modal
 const Panel = Collapse.Panel
 const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, alert, tablePass = []} = studentContest
-  console.log(tablePass)
   const customPanelStyle = {
     background: '#f7f7f7',
     borderRadius: 4,
@@ -33,12 +32,12 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
             {tablePass.map(item => {
               let extra
               if (item.can_select_problem === 1) {
-                extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)
+                extra = (<Tag color={color.blue} onClick={() => selectProblem(item.id)}>点击进行选题</Tag>)
               } else if (item.can_select_problem === -1) {
                 if (item.problem_start_time > Date.now()) {
                   extra = (<Tag>选题尚未开始</Tag>)
                 } else if (item.problem_end_time > Date.now()) {
-                  extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)
+                  extra = (<Tag color={color.blue} onClick={() => selectProblem(item.id)}>点击进行选题</Tag>)
                 } else {
                   extra = (<Tag disabled>选题已结束</Tag>)
                 }

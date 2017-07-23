@@ -2,39 +2,19 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Select } from 'antd'
+import { Alert, Button, Form, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption/'
-import ProblemItem from './ProblemItem'
-const ProblemManage = ({app, contest, problem}) => {
-  const {table = []} = contest
-
+const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
+  const {query} = location
+  const {table = []} = adminProblems
+  const {table: contestTable = []} = contest
   const columns = [
     {title: '序号', dataIndex: 'id', key: 'id', width: 50},
-    {title: '赛事名称', dataIndex: 'title', key: 'title', width: 250},
-    {title: '赛事状态', dataIndex: 'status', key: 'status', width: 100},
-    {title: '报名', dataIndex: 'can_register', key: 'can_register', width: 50},
-    {title: '选题', dataIndex: 'can_select_problem', key: 'can_select_problem', width: 50},
-    {title: '报名开始时间', dataIndex: 'register_start_time', key: 'register_start_time', width: 150},
-    {title: '报名结束时间', dataIndex: 'register_start_time', key: 'register_end_time', width: 150},
-    {title: '选题时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 150},
-    {title: '附加', dataIndex: 'problem_start_time', key: 'problem_end_time'},
-    {
-      title: '操作',
-      render: (record) => {
-        return (
-          <DropOption
-            menuOptions={[{key: 'edit', name: '编辑'}, {key: 'delete', name: '删除'}]}
-            buttonStyle={{border: 'solid 1px #eee', width: 60}}
-            onMenuClick={({key}) => onMenuClick(key, record)}
-          />
-        )
-      },
-      fixed: 'right',
-      width: 100,
-      key: '9'
-    }
+    {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
+    {title: '附加信息', dataIndex: 'status', key: 'status'}
   ]
 
   return (
@@ -42,17 +22,42 @@ const ProblemManage = ({app, contest, problem}) => {
       <div className='problem-header'>
         <Select
           showSearch
-          style={{width: 300}}
-          placeholder='选择年份'
-          defaultValue={table[0] ? table[0].id + '' : ''}
+          style={{width: 260}}
+          placeholder='选择竞赛'
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          onChange={(value) => {
+            dispatch(routerRedux.push(`/admin/problem?contest_id=` + value))
+          }}
+          value={query.contest_id || undefined}
         >
-          {table.map(item => <Select.Option key={'' + item} value={item.id + '' || ''}>{item.title}</Select.Option>)}
+          {contestTable.map(item => (
+            <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
+          ))}
         </Select>
-        <Button type='primary'>编辑题目</Button>
+        <Button type='primary'>添加题目</Button>
       </div>
-      <ProblemItem />
+      {
+        JSON.stringify(query).length < 3 ? (
+          <Alert
+            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+            description='请先在下拉选单中选择竞赛'
+            showIcon
+          />
+        ) : (
+          <Table
+            columns={columns} bordered
+            dataSource={table}
+            pagination={false} rowKey={record => record.id}
+            expandedRowRender={record => (
+              <div className='expanded-row'>
+                <span>{record.content}</span>
+              </div>
+            )}
+          />
+        )
+      }
     </div>
   )
 }
 
-export default connect(({app, contest, problem}) => ({app, contest, problem}))(Form.create()(ProblemManage))
+export default connect(({app, contest, adminProblems}) => ({app, contest, adminProblems}))(Form.create()(ProblemManage))

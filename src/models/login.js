@@ -34,7 +34,7 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
         yield put({type: 'app/setUser', payload: data.data.user})
         yield put({type: 'app/setInfo', payload: {token: data.data.token, role: role}})
         const from = queryURL('from')
-        yield put(routerRedux.push(from || '/'))
+        yield put(routerRedux.push('/' + role))
       }
     },
 

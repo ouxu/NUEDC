@@ -18,7 +18,7 @@ export default {
   deleteCompetition: apiMaker(''),
   signUpContest: apiMaker('user/signUpContest'),
   getAllContest: apiMaker('user/getAllContest'),
-  getContestProblemList: apiMaker('user/:contestId/getContestProblemList'),
+  getContestProblemList: apiMaker('user/:id/getContestProblemList'),
   // getContestProblemList: apiMaker('user/3/getContestProblemList'),
   getContestProblemDetail: apiMaker('user/getContestProblemDetail'),
   updateContestProblemSelect: apiMaker('user/updateContestProblemSelect'),
@@ -65,6 +65,8 @@ export default {
   adminContestRecordDelete: apiMaker('sysadmin/contest-records/:id/delete'),
   adminContestRecordExcel: apiMaker('sysadmin/contest-record/export'),
   adminResultsUpdate: apiMaker('sysadmin/results/update'),
+
+  adminProblems: apiMaker('sysadmin/problem/info'),
 
   adminMessage: apiMaker('sysadmin/message/all'),
   // news

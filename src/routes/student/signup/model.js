@@ -14,7 +14,6 @@ export default modelExtend(modalModel, tableModel, {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         const match = pathname === `/student/signup`
-        console.log(query)
         if (match) {
           dispatch({type: 'getUserSchool'})
         }

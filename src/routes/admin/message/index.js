@@ -7,7 +7,7 @@ class MessageManage extends Component {
   render () {
     return (
       <div className='content-inner' >
-        学校管理员管理
+        开发中
       </div>
     )
   }

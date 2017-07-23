@@ -95,7 +95,6 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
   const allChecked = () => {
     dispatch({type: 'joinedTeams/allChecked'})
   }
-  console.log(selected.length)
   const pagination = {
     pageSize: query.size || 50,
     current: query.page || 1,

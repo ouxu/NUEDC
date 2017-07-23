@@ -115,10 +115,9 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
     <div className='school-admin'>
       <div className='school-admin-header'>
         <div>
-          <span>学校管理员列表</span>
           <Select
             showSearch
-            style={{width: 200, marginRight: 10, marginLeft: 20}}
+            style={{width: 200, marginRight: 10}}
             placeholder='选择学校'
             value={query.school_id || undefined}
             onChange={(value) => {
@@ -126,17 +125,18 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
             }}
             allowClear
           >
-            {table.map(item => (
-              <Select.Option key={'contest-status-' + item.school_id} value={item.school_id + ''}>
-                {item.school_name}
+            {schoolTable.map(item => (
+              <Select.Option key={'school-' + item.id} value={item.id + ''}>
+                {item.name}
               </Select.Option>
             ))}
           </Select>
           <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/schoolAdmin?' + urlEncode({
-            ...query,
-            school_id: undefined
-          })))}>
-            重置筛选</Button>
+              ...query,
+              school_id: undefined
+            })))}>
+            重置筛选
+          </Button>
         </div>
         <Button type='primary' onClick={onCreateClick}>生成账号</Button>
       </div>

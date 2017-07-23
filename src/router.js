@@ -39,25 +39,19 @@ import {
   SchoolResultModel
 } from './routes/school/routes'
 import {
+  SchoolContestManage,
+  SchoolContestModel,
   StudentPage,
-  StudentScoreManage, StudentScoreModel,
-  StudentProblemManage, StudentProblemModel,
-  StudentSignUpManage, StudentSignUpModel,
-  SchoolContestManage, SchoolContestModel
+  StudentProblemManage,
+  StudentProblemModel,
+  StudentScoreManage,
+  StudentScoreModel,
+  StudentSignUpManage,
+  StudentSignUpModel
 } from './routes/student/routes'
 import Home from './routes/home/route'
-import {
-  News,
-  NewsModel,
-  NewsContent,
-  NewsContentModel
-} from './routes/news/route'
-import {
-  Notice,
-  NoticeModel,
-  NoticeContent,
-  NoticeContentModel
-} from './routes/notices/route'
+import { News, NewsContent, NewsContentModel, NewsModel } from './routes/news/route'
+import { Notice, NoticeContent, NoticeContentModel, NoticeModel } from './routes/notices/route'
 import Download from './routes/download'
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
@@ -78,16 +72,15 @@ const Routers = ({history, app}) => (
       </Route>
       <Route path='login' component={Login} />
       <Route path='register' getComponent={Register} />
-      <Route path='admin' component={AdminPage}>
-        <IndexRoute getComponent={ContestManage} onEnter={() => registerModel(app, ContestModel)} />
+      <Route path='admin' component={AdminPage} onEnter={() => registerModel(app, ContestModel)
+      }>
+        <IndexRoute getComponent={ContestManage} />
         <Route
           path='contest' getComponent={ContestManage}
-          onEnter={() => registerModel(app, ContestModel)}
         />
         <Route
           path='problem' getComponent={ProblemManage}
           onEnter={() => {
-            registerModel(app, ContestModel)
             registerModel(app, ProblemModel)
           }}
         />
@@ -98,7 +91,6 @@ const Routers = ({history, app}) => (
         <Route
           path='team' getComponent={TeamAdminManage}
           onEnter={() => {
-            registerModel(app, ContestModel)
             registerModel(app, RecordingModel)
             registerModel(app, ContestRecordModel)
             registerModel(app, TeamAdminModel)
@@ -111,14 +103,12 @@ const Routers = ({history, app}) => (
         <Route
           path='contestRecord' getComponent={ContestRecord}
           onEnter={() => {
-            registerModel(app, ContestModel)
             registerModel(app, ContestRecordModel)
           }}
         />
         <Route
           path='recording' getComponent={RecordingManage}
           onEnter={() => {
-            registerModel(app, ContestModel)
             registerModel(app, RecordingModel)
           }}
         />
@@ -158,14 +148,14 @@ const Routers = ({history, app}) => (
           }}
         />
         <Route path='score' getComponent={StudentScoreManage}
-               onEnter={() => {
-                 registerModel(app, StudentScoreModel)
-               }}
+          onEnter={() => {
+            registerModel(app, StudentScoreModel)
+          }}
         />
-        <Route path="signup" getComponent={StudentSignUpManage}
-               onEnter={() => {
-                 registerModel(app, StudentSignUpModel)
-               }}
+        <Route path='signup' getComponent={StudentSignUpManage}
+          onEnter={() => {
+            registerModel(app, StudentSignUpModel)
+          }}
         />
       </Route>
       <Route path='school' component={SchoolPage}>

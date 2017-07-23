@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { create, fetchTable, remove, update } from './service'
 import { alertModel, inputModel, modalModel, tableModel } from '../../../models/modelExtend'
+import pathToRegexp from 'path-to-regexp'
+
 import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   namespace: 'contest',
@@ -8,8 +10,9 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathname === '/admin/contest' || pathname === '/admin'
-        if (match) {
+        const match = pathToRegexp('/admin/:params').exec(pathname)
+
+        if (match || pathname === '/admin') {
           dispatch({type: 'fetchTable'})
         }
       })
@@ -20,7 +23,6 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
     * fetchTable ({payload = false}, {call, select, put}) {
       const table = yield select(({contest}) => contest.table)
       if (table.length === 0 || payload) {
-        // 已有数据或者不需要强制跟新，不需要获取
         const data = yield call(fetchTable)
         if (data.code === 0) {
           const {contests} = data.data
