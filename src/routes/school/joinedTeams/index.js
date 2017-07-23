@@ -221,12 +221,24 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           showIcon
         />
       )}
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 2000}}
-        rowSelection={rowSelection}
-        pagination={pagination} rowKey={record => record.id}
-      />
+      {
+        JSON.stringify(query.contest_id) ? <div>
+          <Table
+            columns={columns} bordered
+            dataSource={table} scroll={{x: 2000}}
+            rowSelection={rowSelection}
+            pagination={pagination} rowKey={record => record.id}
+          />
+          <div className='joined-teams-check'>
+            <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
+            <Button type='primary' onClick={allChecked}>批量审核</Button>
+          </div>
+        </div> : <Alert
+          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+          description={(<span>请先在下拉选单里选择竞赛</span>)}
+          showIcon
+        />
+      }
       <Modal
         title={`${modal === 'edit' ? '编辑队伍信息' : '增加比赛队伍'}`}
         visible={joinedTeams.modal === 'edit' || joinedTeams.modal === 'add'}
@@ -239,10 +251,6 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           {modal === 'edit' && formConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
         </Form>
       </Modal>
-      <div className='joined-teams-check'>
-        <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
-        <Button type='primary' onClick={allChecked}>批量审核</Button>
-      </div>
     </div>
   )
 }

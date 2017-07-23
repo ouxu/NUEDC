@@ -6,8 +6,8 @@
   "menus": [
     {
       "key": "/school",
-      "value": "竞赛列表",
-      "icon": "clock-circle-o"
+      "value": "校管理员信息",
+      "icon": "user"
     },
     {
       "key": "/school/joinedTeams",

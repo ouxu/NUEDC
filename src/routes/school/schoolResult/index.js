@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Select, Table } from 'antd'
+import { Button, Select, Table, Alert } from 'antd'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
@@ -72,9 +72,9 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             value={query.result_info || undefined}
             onChange={(value) => {
               dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({
-                  ...query,
-                  result_info: value || undefined
-                })))
+                ...query,
+                result_info: value || undefined
+              })))
             }}
             allowClear
           >
@@ -86,19 +86,25 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             </Select.Option>
           </Select>
           <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/schoolResult?' + urlEncode({
-              ...query,
-              contest_id: undefined,
-              result_info: undefined
-            })))}>
+            ...query,
+            contest_id: undefined,
+            result_info: undefined
+          })))}>
             重置筛选</Button>
         </div>
         <Button type='primary' onClick={excelOut}>导出excel</Button>
       </div>
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 2800}}
-        pagination={pagination} rowKey={record => record.id}
-      />
+      {
+        JSON.stringify(query.contest_id) ? <Table
+          columns={columns} bordered
+          dataSource={table} scroll={{x: 2800}}
+          pagination={pagination} rowKey={record => record.id}
+        /> : <Alert
+          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+          description={(<span>请先在下拉选单里选择竞赛</span>)}
+          showIcon
+        />
+      }
     </div>
   )
 }

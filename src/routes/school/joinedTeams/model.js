@@ -21,36 +21,42 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       return history.listen(({pathname, query}) => {
         const match = pathname === '/school/joinedTeams'
         if (match) {
-          dispatch({type: 'fetchJoinedTable', payload: query})
+          dispatch({type: 'selectFilter'})
+          const {contest_id = ''} = query
+          if (contest_id.length > 0) {
+            dispatch({type: 'fetchJoinedTable', payload: query})
+          }
         }
       })
     }
   },
   effects: {
-    * fetchJoinedTable ({payload}, {call, put, select}) {
+    * selectFilter ({payload}, {call, put}) {
       const selectOptions = yield call(fetchSelectOption)
       if (selectOptions.code === 0) {
         yield put({type: 'saveFilter', payload: selectOptions.data})
         yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
-        const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
-        const {contest_id, status, page, size} = payload
-        const query = {
-          page: page || undefined,
-          size: size || undefined,
-          contest_id: contest_id || contestsId,
-          status: status || undefined
+      }
+    },
+    * fetchJoinedTable ({payload}, {call, put, select}) {
+      const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+      const {contest_id, status, page, size} = payload
+      const query = {
+        page: page || undefined,
+        size: size || undefined,
+        contest_id: contest_id || contestsId,
+        status: status || undefined
+      }
+      const data = yield call(fetchJoinedTable, query)
+      if (data.code === 0) {
+        const {data: {count, teams}} = data
+        const tableConfig = {
+          tablePage: page,
+          tableSize: size,
+          tableCount: count
         }
-        const data = yield call(fetchJoinedTable, query)
-        if (data.code === 0) {
-          const {data: {count, teams}} = data
-          const tableConfig = {
-            tablePage: page,
-            tableSize: size,
-            tableCount: count
-          }
-          yield put({type: 'setTable', payload: teams})
-          yield put({type: 'setTableConfig', payload: tableConfig})
-        }
+        yield put({type: 'setTable', payload: teams})
+        yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
     * edit ({payload}, {call, select, put}) {

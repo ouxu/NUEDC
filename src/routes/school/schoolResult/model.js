@@ -12,36 +12,42 @@ export default modelExtend(modalModel, tableModel, {
       return history.listen(({pathname, query}) => {
         const match = pathname === '/school/schoolResult'
         if (match) {
-          dispatch({type: 'fetchResultTable', payload: query})
+          dispatch({type: 'selectFilter'})
+          const {contest_id = ''} = query
+          if (contest_id.length > 0) {
+            dispatch({type: 'fetchResultTable', payload: query})
+          }
         }
       })
     }
   },
   effects: {
-    * fetchResultTable ({payload}, {call, put, select}) {
+    * selectFilter ({payload}, {call, put}) {
       const selectOptions = yield call(fetchSelectOption)
       if (selectOptions.code === 0) {
         yield put({type: 'saveFilter', payload: selectOptions.data})
         yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
-        const {contestsId} = yield select(({schoolResult}) => schoolResult)
-        const {contest_id, result_info, page, size} = payload
-        const query = {
-          page: page || undefined,
-          size: size || undefined,
-          contest_id: contest_id || contestsId,
-          result_info: result_info || undefined
+      }
+    },
+    * fetchResultTable ({payload}, {call, put, select}) {
+      const {contestsId} = yield select(({schoolResult}) => schoolResult)
+      const {contest_id, result_info, page, size} = payload
+      const query = {
+        page: page || undefined,
+        size: size || undefined,
+        contest_id: contest_id || contestsId,
+        result_info: result_info || undefined
+      }
+      const data = yield call(fetchResultTable, query)
+      if (data.code === 0) {
+        const {data: {count, results}} = data
+        const tableConfig = {
+          tablePage: page,
+          tableSize: size,
+          tableCount: count
         }
-        const data = yield call(fetchResultTable, query)
-        if (data.code === 0) {
-          const {data: {count, results}} = data
-          const tableConfig = {
-            tablePage: page,
-            tableSize: size,
-            tableCount: count
-          }
-          yield put({type: 'setTable', payload: results})
-          yield put({type: 'setTableConfig', payload: tableConfig})
-        }
+        yield put({type: 'setTable', payload: results})
+        yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
     * ResultOut ({payload}, {put, call, select}) {
