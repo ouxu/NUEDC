@@ -6,9 +6,9 @@ import { Alert, Button, Form, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import DropOption from '../../../components/DropOption/'
 const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
   const {query} = location
+  const {contest_id = ''} = query
   const {table = []} = adminProblems
   const {table: contestTable = []} = contest
   const columns = [
@@ -16,7 +16,6 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
     {title: '附加信息', dataIndex: 'status', key: 'status'}
   ]
-
   return (
     <div className='problem'>
       <div className='problem-header'>
@@ -37,22 +36,30 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
         <Button type='primary'>添加题目</Button>
       </div>
       {
-        JSON.stringify(query).length < 3 ? (
+        contest_id.length > 0 ? (
+          table.length > 0 ? (
+            <Table
+              columns={columns} bordered
+              dataSource={table}
+              pagination={false} rowKey={record => record.id}
+              expandedRowRender={record => (
+                <div className='expanded-row'>
+                  <span>{record.content}</span>
+                </div>
+              )}
+            />
+          ) : (
+            <Alert
+              message={(<span>暂无题目，请添加</span>)}
+              description='请点击右上角按钮添加题目'
+              showIcon
+            />
+          )
+        ) : (
           <Alert
             message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
             description='请先在下拉选单中选择竞赛'
             showIcon
-          />
-        ) : (
-          <Table
-            columns={columns} bordered
-            dataSource={table}
-            pagination={false} rowKey={record => record.id}
-            expandedRowRender={record => (
-              <div className='expanded-row'>
-                <span>{record.content}</span>
-              </div>
-            )}
           />
         )
       }

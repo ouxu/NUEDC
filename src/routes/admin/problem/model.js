@@ -8,7 +8,8 @@ export default modelExtend(tableModel, {
     problemSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query = {}}) => {
         if (pathname === '/admin/problem') {
-          if (JSON.stringify(query).length > 2) {
+          const {contest_id = ''} = query
+          if (contest_id.length > 0) {
             dispatch({type: 'fetchTable', payload: query})
           }
         }
