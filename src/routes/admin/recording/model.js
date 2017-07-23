@@ -15,17 +15,23 @@ export default modelExtend(modalModel, tableModel, alertModel, {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         if (pathname === '/admin/recording' || pathname === '/admin/team') {
-          dispatch({type: 'contest/fetchTable'})
-          dispatch({type: 'fetchTable', payload: query})
+          dispatch({type: 'selectFilter'})
+          const {contest_id = ''} = query
+          if (contest_id.length > 0) {
+            dispatch({type: 'contest/fetchTable'})
+            dispatch({type: 'fetchTable', payload: query})
+          }
         }
       })
     }
   },
   effects: {
-    * fetchTable ({payload = {}}, {call, select, put}) {
+    * selectFilter ({payload}, {call, put}) {
       const options = yield call(fetchSelectOption)
       const {data} = options
       yield put({type: 'onFilter', payload: data.schools})
+    },
+    * fetchTable ({payload = {}}, {call, select, put}) {
       const {contest_id, status, result, school_id, page, size} = payload
       const query = {
         page: page || 1,

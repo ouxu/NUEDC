@@ -173,7 +173,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           <Select
             showSearch
             style={{width: 300, marginRight: 10}}
-            placeholder='竞赛名称'
+            placeholder='选择竞赛'
             value={query.contest_id || undefined}
             onChange={onOptionChange}
           >

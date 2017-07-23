@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Modal, Select, Table, Upload, Icon, message } from 'antd'
+import { Button, Form, Modal, Select, Table, Upload, Icon, message, Alert } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -218,15 +218,21 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
         <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入Excel模板</Button>
         <Upload {...props}>
           <Button>
-            <Icon type='upload' /> 导入队伍Excel
+            <Icon type='upload' /> 导入Excel
           </Button>
         </Upload>
       </div>
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 1400}}
-        pagination={pagination} rowKey={record => record.id}
-      />
+      {
+        JSON.stringify(query.contest_id) ? <Table
+          columns={columns} bordered
+          dataSource={table} scroll={{x: 1400}}
+          pagination={pagination} rowKey={record => record.id}
+        /> : <Alert
+          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+          description={(<span>请先在下拉选单里选择竞赛</span>)}
+          showIcon
+        />
+      }
       <Modal
         title='录入成绩'
         visible={modal === 'edit'}
