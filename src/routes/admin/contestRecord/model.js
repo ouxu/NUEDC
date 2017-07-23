@@ -10,8 +10,11 @@ export default modelExtend(modalModel, tableModel, {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         if (pathname === '/admin/contestRecord' || pathname === '/admin/team') {
-          dispatch({type: 'contest/fetchTable'})
-          dispatch({type: 'fetchTable', payload: query})
+          const {contest_id = ''} = query
+          if (contest_id.length > 0) {
+            dispatch({type: 'contest/fetchTable'})
+            dispatch({type: 'fetchTable', payload: query})
+          }
         }
       })
     }
