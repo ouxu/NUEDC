@@ -1,7 +1,6 @@
 /**
  * Created by Pororo on 17/7/15.
  */
-import { verify } from '../../../utils/index'
 
 export default [
   {
@@ -24,9 +23,7 @@ export default [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入您的队伍名称',
-      pattern: verify.chinese,
-      patternMessage: '输入包含非中文字符！'
+      requiredMessage: '请输入比赛结果'
     }
   }, {
     value: 'result_info',

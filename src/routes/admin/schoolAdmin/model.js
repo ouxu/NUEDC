@@ -17,7 +17,7 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
-      const {page = 1, size = 20, school_id} = payload
+      const {page = 1, size = 50, school_id} = payload
       const query = {
         page: page,
         size: size,

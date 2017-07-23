@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Modal, Select, Table, Upload, Icon, message, Alert } from 'antd'
+import { Alert, Button, Form, Icon, message, Modal, Select, Table, Upload } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -117,113 +117,79 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
     }
   ]
 
-  const resultArr = [
-    {
-      value: '一等奖',
-      label: '一等奖',
-      color: color.red
-    },
-    {
-      value: '二等奖',
-      label: '二等奖',
-      color: color.blue
-    },
-    {
-      value: '三等奖',
-      label: '三等奖',
-      color: color.blue
-    },
-    {
-      value: '四等奖',
-      label: '四等奖',
-      color: color.blue
-    }
-  ]
-
+  const dataFlag = !!JSON.stringify(query.contest_id)
   return (
     <div className='contest-record'>
       <div className='contest-record-header'>
-        <Select
-          showSearch
-          style={{width: 260}}
-          placeholder='选择竞赛'
-          onChange={(value) => {
-            dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
+        <div>
+          <Select
+            showSearch
+            style={{width: 260}}
+            placeholder='选择竞赛'
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
+                  ...query,
+                  contest_id: value || tableContest[tableContest.length - 1].contest_id
+                })))
+            }}
+            value={query.contest_id || undefined}
+          >
+            {tableContest.map(item => (
+              <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
+            ))}
+          </Select>
+          <Select
+            showSearch
+            style={{width: 100}}
+            placeholder='报名状态'
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, status: value || undefined})))
+            }}
+            allowClear
+            value={query.status || undefined}
+          >
+            {statusArr.map(item => (
+              <Select.Option key={'contest-status-' + item.value} value={item.value}>
+                {item.label}
+              </Select.Option>
+            ))}
+          </Select>
+          <Select
+            showSearch
+            style={{width: 200}}
+            placeholder='学校'
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, school_id: value || undefined})))
+            }}
+            allowClear
+            value={query.school_id || undefined}
+          >
+            {schools.map(item => (
+              <Select.Option key={'contest-school-' + item.id} value={item.id + ''}>
+                {item.name}
+              </Select.Option>
+            ))}
+          </Select>
+          <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/recording?' + urlEncode({
               ...query,
-              contest_id: value || tableContest[tableContest.length - 1].contest_id
-            })))
-          }}
-          value={query.contest_id || undefined}
-        >
-          {tableContest.map(item => (
-            <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
-          ))}
-        </Select>
-        <Select
-          showSearch
-          style={{width: 100}}
-          placeholder='报名状态'
-          onChange={(value) => {
-            dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, status: value || undefined})))
-          }}
-          allowClear
-          value={query.status || undefined}
-        >
-          {statusArr.map(item => (
-            <Select.Option key={'contest-status-' + item.value} value={item.value}>
-              {item.label}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select
-          showSearch
-          style={{width: 100}}
-          placeholder='比赛结果'
-          onChange={(value) => {
-            dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, result: value || undefined})))
-          }}
-          allowClear
-          value={query.result || undefined}
-        >
-          {resultArr.map(item => (
-            <Select.Option key={'contest-result-' + item.value} value={item.value}>
-              {item.label}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select
-          showSearch
-          style={{width: 260}}
-          placeholder='学校'
-          onChange={(value) => {
-            dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, school_id: value || undefined})))
-          }}
-          allowClear
-          value={query.school_id || undefined}
-        >
-          {schools.map(item => (
-            <Select.Option key={'contest-school-' + item.id} value={item.id + ''}>
-              {item.name}
-            </Select.Option>
-          ))}
-        </Select>
-        <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/recording?' + urlEncode({
-          ...query,
-          contest_id: undefined,
-          status: undefined,
-          result: undefined,
-          school_id: undefined
-        })))}>
-          重置筛选</Button>
-        <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入Excel模板</Button>
-        <Upload {...props}>
-          <Button>
-            <Icon type='upload' /> 导入Excel
-          </Button>
-        </Upload>
+              contest_id: undefined,
+              status: undefined,
+              result: undefined,
+              school_id: undefined
+            })))}>
+            重置筛选</Button>
+        </div>
+        <div>
+          <Button type='primary' onClick={getExcel} disabled={!dataFlag}>获取导入模板</Button>
+          <Upload {...props}>
+            <Button>
+              <Icon type='upload' /> 导入Excel
+            </Button>
+          </Upload>
+        </div>
       </div>
       {
-        JSON.stringify(query.contest_id) ? <Table
+        dataFlag ? <Table
           columns={columns} bordered
           dataSource={table} scroll={{x: 1400}}
           pagination={pagination} rowKey={record => record.id}

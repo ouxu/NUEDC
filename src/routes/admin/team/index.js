@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table } from 'antd'
+import { Alert, Button, Form, Modal, Select, Table } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -17,6 +17,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
   const {table: tableContest = []} = contest
   const {table: tableSchool = []} = login
   const {query} = location
+  const dataFlag = !!JSON.stringify(query.contest_id)
   const {selected = []} = teamManage
   const onMenuClick = (key, record) => {
     switch (key) {
@@ -201,12 +202,21 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
           重置筛选
         </Button>
       </div>
-      <Table
-        columns={columns} bordered
-        rowSelection={rowSelection}
-        dataSource={table} scroll={{x: 2000}}
-        pagination={pagination} rowKey={record => record.id}
-      />
+      {dataFlag ? (
+        <Table
+          columns={columns} bordered
+          rowSelection={rowSelection}
+          dataSource={table} scroll={{x: 2000}}
+          pagination={pagination} rowKey={record => record.id}
+        />
+      ) : (
+        <Alert
+          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+          description={(<span>请先在下拉选单里选择竞赛</span>)}
+          showIcon
+        />
+      )}
+
       <Modal
         title='修改队伍信息'
         visible={modal === 'edit'}

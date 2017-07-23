@@ -2,20 +2,50 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Alert, Button, Form, Select, Table } from 'antd'
+import { Alert, Button, Form, Icon, Modal, Select, Table, Upload } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
+import FormItemRender from '../../../components/FormItemRender/'
+import { commonConfig, extra } from './formConfig'
+import { API } from '../../../utils'
+const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
-  const {table = []} = adminProblems
+  const {table = [], modal, modalContent} = adminProblems
   const {table: contestTable = []} = contest
   const columns = [
     {title: '序号', dataIndex: 'id', key: 'id', width: 50},
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
     {title: '附加信息', dataIndex: 'status', key: 'status'}
   ]
+  const onAddClick = (e) => {
+    e.preventDefault()
+    dispatch({type: 'adminProblems/updateModalContent', payload: {modalTitle: '添加竞赛题目'}})
+    dispatch({type: 'adminProblems/showModal', payload: 'add'})
+  }
+  const onModalOk = () => {
+    validateFieldsAndScroll((errors, values) => {
+      if (errors) {
+        return
+      }
+      console.log(values)
+      dispatch({type: 'adminContestRecord/update', payload: values})
+    })
+  }
+  const normFile = (e) => {
+    return e && e.fileList
+  }
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 6}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 16}
+    }
+  }
   return (
     <div className='problem'>
       <div className='problem-header'>
@@ -33,7 +63,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
             <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
           ))}
         </Select>
-        <Button type='primary'>添加题目</Button>
+        <Button type='primary' onClick={onAddClick}>添加题目</Button>
       </div>
       {
         contest_id.length > 0 ? (
@@ -63,6 +93,41 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems}) => {
           />
         )
       }
+      <Modal
+        title={modalContent.modalTitle}
+        visible={modal === 'add'}
+        onCancel={() => dispatch({type: 'adminProblems/hideModal'})}
+        onOk={onModalOk}
+        key={'' + modal}
+      >
+        <Form className='form-content'>
+          {modal === 'add' && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {
+            initialValue: modalContent[config.value] || '' + ''
+          }))}
+          <Form.Item
+            {...formItemLayout}
+            label='Upload'
+            extra='附件上传，用于上传题目相关的附件或者pdf，一道题仅能上传一个附件，请勿上传多个'
+          >
+            {getFieldDecorator('upload', {
+              valuePropName: 'fileList',
+              getValueFromEvent: normFile
+            })(
+              <Upload
+                name='upload' action={API.uploadPrivateFile}
+                headers={{'token': window.localStorage.getItem('nuedcToken')}}
+              >
+                <Button>
+                  <Icon type='upload' /> 点击上传附件
+                </Button>
+              </Upload>
+            )}
+          </Form.Item>
+          {modal === 'add' && FormItemRender(extra, getFieldDecorator, {
+            initialValue: modalContent[extra.value] || '' + ''
+          })}
+        </Form>
+      </Modal>
     </div>
   )
 }

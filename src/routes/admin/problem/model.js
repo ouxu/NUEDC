@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
-import { tableModel } from '../../../models/modelExtend'
+import { modalModel, tableModel } from '../../../models/modelExtend'
 import { fetchTable } from './service'
-export default modelExtend(tableModel, {
+export default modelExtend(tableModel, modalModel, {
   namespace: 'adminProblems',
   state: {},
   subscriptions: {

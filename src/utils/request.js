@@ -11,7 +11,7 @@ const fetch = options => {
   } = options
   const header = token ? {'token': window.localStorage.getItem('nuedcToken')} : {}
   const myAxios = axios.create({
-    timeout: 1000,
+    timeout: 10000,
     headers: header
   })
   switch (method.toLowerCase()) {

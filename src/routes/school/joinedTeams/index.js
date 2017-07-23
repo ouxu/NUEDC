@@ -130,7 +130,17 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
     }
   }
   const allChecked = () => {
-    dispatch({type: 'joinedTeams/allChecked'})
+    confirm({
+      title: '评审确认',
+      content: (
+        <p>确认通过选中队伍的评审吗？</p>
+      ),
+      onOk () {
+        dispatch({type: 'joinedTeams/allChecked'})
+      },
+      onCancel () {}
+    })
+
   }
   const getExcel = () => {
     dispatch({type: 'joinedTeams/downloadExcel'})

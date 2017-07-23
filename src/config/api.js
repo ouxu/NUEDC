@@ -67,6 +67,7 @@ export default {
   adminResultsUpdate: apiMaker('sysadmin/results/update'),
 
   adminProblems: apiMaker('sysadmin/problem/info'),
+  uploadPrivateFile: apiMaker('file/private/upload'),
 
   adminMessage: apiMaker('sysadmin/message/all'),
   // news

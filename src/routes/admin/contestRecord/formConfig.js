@@ -143,7 +143,7 @@ const editConfig = [
       }
     ]
   }, {
-    value: 'result_info',
+    value: 'add_on',
     label: '附加信息',
     formType: 0,
     type: 'textarea',
