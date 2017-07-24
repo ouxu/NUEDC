@@ -19,24 +19,6 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
   const {tablePass: contestTable = []} = studentContest
   const onMenuClick = (key, record) => {
     switch (key) {
-      case 'edit':
-        record.status = '' + record.status
-        dispatch({
-          type: 'adminProblems/updateModalContent', payload: {
-            ...record,
-            modalTitle: '编辑竞赛题目'
-          }
-        })
-        dispatch({type: 'adminProblems/showModal', payload: 'edit'})
-        break
-      case 'delete':
-        confirm({
-          title: '删除确认',
-          content: `您确定要删除 ${record.title} 吗？`,
-          onOk () { dispatch({type: 'adminProblems/delete', payload: {query, record}}) },
-          onCancel () {}
-        })
-        break
       case 'preview':
         confirm({
           title: '预览确认',
@@ -71,13 +53,9 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
         return (
           <DropOption
             menuOptions={[{
-              key: 'edit', name: '编辑题目'
-            }, {
               key: 'preview', name: '附件预览'
             }, {
               key: 'download', name: '附件下载'
-            }, {
-              key: 'delete', name: '删除题目'
             }]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}

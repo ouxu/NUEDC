@@ -13,20 +13,16 @@ const StudentScoreManage = ({ studentScore, dispatch, }) => {
     dispatch({type: 'studentScore/filter', payload: value})
   }
   const columns = [
-    {title: '竞赛名称', dataIndex: 'contestTitle', key: 'contestTitle', width: 400},
-    {title: '学校名称', dataIndex: 'school_name', key: 'school_name', width: 300},
-    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
-    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 300},
-    {title: '竞赛结果', dataIndex: 'result', key: 'result', width: 200},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
-    {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 300},
-    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 200},
-    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 200},
-    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 200},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
-    // {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
-    // {title: '学校id', dataIndex: 'school_id', key: 'school_id', width: 100},
-    {title: '审核状态', dataIndex: 'status', key: 'status', width: 150, fixed: 'right'}
+    {title: '竞赛名称', dataIndex: 'contestTitle', key: 'contestTitle', width: 250},
+    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 250},
+    {title: '竞赛结果', dataIndex: 'result', key: 'result', width: 100},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
+    {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 200},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
+    {title: '审核状态', dataIndex: 'status', key: 'status', width: 100, fixed: 'right'}
   ]
   return (
     <div className='student-score'>
@@ -38,14 +34,17 @@ const StudentScoreManage = ({ studentScore, dispatch, }) => {
             placeholder='竞赛名称'
             onChange={onOptionChange}
           >
-            {contest.map(item => <Select.Option key={'' + item.id}
-                                                value={'' + item.id}>{item.title}</Select.Option>)}
+            {contest.map(item => (
+              <Select.Option key={'' + item.id} value={'' + item.id}>
+                {item.title}
+                </Select.Option>
+            ))}
           </Select>
         </div>
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 2000}}
+        dataSource={table} scroll={{x: 1600}}
         rowKey={record => record.id}
       />
     </div>
