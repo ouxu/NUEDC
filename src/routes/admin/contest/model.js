@@ -6,14 +6,16 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   namespace: 'contest',
-  state: {},
+  state: {
+    contestId: ''
+  },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
         const match = pathToRegexp('/admin/:params').exec(pathname)
-
         if (match || pathname === '/admin') {
           dispatch({type: 'fetchTable'})
+          dispatch({type: 'hideAlert'})
         }
       })
     }
@@ -26,7 +28,11 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
         const data = yield call(fetchTable)
         if (data.code === 0) {
           const {contests} = data.data
-          yield put({type: 'setTable', payload: contests})
+          const table = contests.map((t, i) => ({
+            ...t,
+            fakeId: i + 1
+          }))
+          yield put({type: 'setTable', payload: table})
         }
       }
     },
@@ -57,11 +63,19 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('创建成功')
+        yield put({type: 'changeContestId', payload: data.data.contest_id})
         yield put({type: 'fetchTable', payload: true})
         yield put({type: 'showAlert'})
 
       }
     }
   },
-  reducers: {}
+  reducers: {
+    changeContestId (state, {payload: contestId}) {
+      return {
+        ...state,
+        contestId
+      }
+    }
+  }
 })

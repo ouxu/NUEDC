@@ -7,7 +7,7 @@ import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
-import { editConfig } from './formConfig'
+import { editConfig, passConfig } from './formConfig'
 import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
@@ -29,20 +29,15 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       case 'delete':
         confirm({
           title: '删除确认',
-          content: `您确定要删除 ${record.name} 管理员账号？`,
-          onOk () { dispatch({type: 'adminContestRecord/delete', payload: record}) },
+          content: `您确定要删除 ${record.team_name} 队伍信息吗？`,
+          onOk () { dispatch({type: 'adminContestRecord/delete', payload: {record, query}}) },
           onCancel () {}
         })
         break
       case 'audit':
-        confirm({
-          title: '审核确认',
-          content: `是否通过 ${record.team_name} 的审核`,
-          onOk () {
-            dispatch({type: 'teamManage/audit', payload: record.id})
-          },
-          onCancel () {}
-        })
+        record.status = '' + record.status
+        dispatch({type: 'adminContestRecord/updateModalContent', payload: record})
+        dispatch({type: 'adminContestRecord/showModal', payload: 'audit'})
         break
       default:
         break
@@ -53,11 +48,11 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       if (errors) {
         return
       }
-      dispatch({type: 'adminContestRecord/update', payload: values})
+      dispatch({type: 'adminContestRecord/update', payload: {query, values}})
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'id', key: 'id', width: 50},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '队员1姓名', dataIndex: 'member1', key: 'member1', width: 100},
@@ -75,11 +70,11 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
         return (
           <DropOption
             menuOptions={[{
-              key: 'edit', name: '编辑'
+              key: 'edit', name: '编辑队伍'
             }, {
-              key: 'audit', name: '审核'
+              key: 'audit', name: '审核队伍'
             }, {
-              key: 'delete', name: '删除'
+              key: 'delete', name: '删除队伍'
             }]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
@@ -96,14 +91,15 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       title: '审核确认',
       content: `您确定要将选中的队伍的审核状态更改为已审核吗？`,
       onOk () {
-        dispatch({type: 'teamManage/auditAll'})
+
+        dispatch({type: 'teamManage/auditAll', payload: query})
       },
       onCancel () {}
     })
   }
   const pagination = {
-    pageSize: query.size || 50,
-    current: query.page || 1,
+    pageSize: +query.size || 50,
+    current: +query.page || 1,
     total: +tableCount,
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
@@ -226,13 +222,14 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
 
       <Modal
         title='修改队伍信息'
-        visible={modal === 'edit'}
+        visible={modal}
         onCancel={() => dispatch({type: 'adminContestRecord/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}
       >
         <Form className='form-content'>
           {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
+          {modal === 'audit' && passConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
         </Form>
       </Modal>
     </div>

@@ -2,16 +2,14 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table, Upload, Icon, message, Alert } from 'antd'
+import { Alert, Button, Form, Icon, message, Modal, Select, Table, Upload } from 'antd'
 import formConfig from '../joinedTeams/formConfig'
 import './index.less'
 import { routerRedux } from 'dva/router'
-import { urlEncode } from '../../../utils'
+import { API, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
-
-const Dragger = Upload.Dragger
 const Option = Select.Option
 const confirm = Modal.confirm
 const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
@@ -19,14 +17,14 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   const {contests = []} = contest
   const {school_team_ids = []} = modalContent
   const {query} = location
-
+  const dataFlag = query.contest_id > 0
   const props = {
     name: 'file',
-    action: 'http://nuedc.hrsoft.net/school/admin/team/import' + `/${query.contest_id || contestsId}`,
+    action: API.schoolUploadExcel.replace(':id', query.contest_id),
     headers: {
       token: window.localStorage.getItem('nuedcToken')
     },
-    showUploadList: false,
+    showUploadList: true,
     onChange (info) {
       const {response = {}} = info.file
       const {code = 1, data = []} = response
@@ -67,7 +65,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             <p>确认删除队伍{record.team_name}吗？</p>
           ),
           onOk () {
-            dispatch({type: 'joinedTeams/delete', payload: record})
+            dispatch({type: 'joinedTeams/delete', payload: {record, query}})
           },
           onCancel () {}
         })
@@ -79,7 +77,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             <p>确认审核队伍{record.team_name}吗？</p>
           ),
           onOk () {
-            dispatch({type: 'joinedTeams/audit', payload: record.id})
+            dispatch({type: 'joinedTeams/audit', payload: {query, record}})
           },
           onCancel () {}
         })
@@ -88,14 +86,15 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
         break
     }
   }
-  // const onAddClick = e => {
-  //   e.preventDefault()
-  //   dispatch({type: 'joinedTeams/showModal', payload: 'add'})
-  // }
+  const onAddClick = e => {
+    e.preventDefault()
+    dispatch({type: 'joinedTeams/showModal', payload: 'add'})
+  }
   const pagination = {
-    pageSize: +tableSize,
-    current: +tablePage,
+    pageSize: +query.size || 50,
+    current: +query.page || 1,
     total: +tableCount,
+    pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
       dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, page: current, size: pageSize})))
@@ -112,9 +111,16 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
       if (errors) {
         return
       }
+      const {contest_id = query.contest_id, school_id, school_level, school_name} = modalContent
+      values = {
+        ...values,
+        contest_id,
+        school_id,
+        school_level,
+        school_name
+      }
       dispatch({type: 'joinedTeams/onFormSubmit', payload: values})
-      dispatch({type: `joinedTeams/${modal === 'edit' ? 'edit' : 'add'}`, payload: values})
-      dispatch({type: 'joinedTeams/hideModal'})
+      dispatch({type: `joinedTeams/${modal === 'edit' ? 'edit' : 'add'}`, payload: {query, values}})
     })
   }
   const excelOut = () => {
@@ -147,19 +153,15 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   }
 
   const columns = [
-    {title: '竞赛id', dataIndex: 'contest_id', key: 'contest_id', width: 100},
-    {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
-    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 300},
-    {title: '学校id', dataIndex: 'school_id', key: 'school_id', width: 100},
-    {title: '学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
-    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
-    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 200},
-    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 200},
-    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 200},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
-    {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 300},
-    {title: '参赛状态', dataIndex: 'status', key: 'status', width: 150, fixed: 'right'},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
+    {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 200},
+    {title: '报名状态', dataIndex: 'status', key: 'status', width: 100, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -191,7 +193,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           </Select>
           <Select
             showSearch
-            style={{width: 200, marginRight: 10}}
+            style={{width: 150, marginRight: 10}}
             placeholder='审核状态'
             value={query.status || undefined}
             onChange={(value) => {
@@ -206,21 +208,18 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
               已审核
             </Select.Option>
           </Select>
-          <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/joinedTeams?' + urlEncode({
-            ...query,
-            contest_id: undefined,
-            status: undefined
-          })))}>
-            重置筛选</Button>
         </div>
-        <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入Excel模板</Button>
-        <Upload {...props}>
-          <Button>
-            <Icon type='upload' /> 导入队伍Excel
-          </Button>
-        </Upload>
-        <Button type='primary' onClick={excelOut}>导出excel</Button>
-        {/* <Button type='primary' onClick={onAddClick}>+ 增加比赛队伍</Button> */}
+        <div>
+          <Button type='primary' onClick={onAddClick} style={{marginRight: 10}}>+ 增加队伍</Button>
+          <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入模板</Button>
+          <Button type='primary' onClick={excelOut} style={{marginRight: 10}}>导出excel</Button>
+
+          <Upload {...props}>
+            <Button>
+              <Icon type='upload' /> 导入Excel
+            </Button>
+          </Upload>
+        </div>
       </div>
       {alert && (
         <Alert
@@ -232,22 +231,26 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
         />
       )}
       {
-        JSON.stringify(query.contest_id) ? <div>
-          <Table
-            columns={columns} bordered
-            dataSource={table} scroll={{x: 2000}}
-            rowSelection={rowSelection}
-            pagination={pagination} rowKey={record => record.id}
-          />
-          <div className='joined-teams-check'>
-            <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
-            <Button type='primary' onClick={allChecked}>批量审核</Button>
+        dataFlag ? (
+          <div>
+            <Table
+              columns={columns} bordered
+              dataSource={table} scroll={{x: 1200}}
+              rowSelection={rowSelection}
+              pagination={pagination} rowKey={record => record.id}
+            />
+            <div className='joined-teams-check'>
+              <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
+              <Button type='primary' onClick={allChecked}>批量审核</Button>
+            </div>
           </div>
-        </div> : <Alert
-          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-          description={(<span>请先在下拉选单里选择竞赛</span>)}
-          showIcon
-        />
+        ) : (
+          <Alert
+            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+            description={(<span>请先在下拉选单里选择竞赛</span>)}
+            showIcon
+          />
+        )
       }
       <Modal
         title={`${modal === 'edit' ? '编辑队伍信息' : '增加比赛队伍'}`}
@@ -257,7 +260,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
         key={joinedTeams.modal}
       >
         <Form className='form-content'>
-          {/* {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))} */}
+          {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))}
           {modal === 'edit' && formConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
         </Form>
       </Modal>

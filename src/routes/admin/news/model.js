@@ -22,12 +22,8 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
-      const {page, size, type} = payload
-      const query = {
-        page: page || 1,
-        size: size || 50,
-        type: type || 0
-      }
+      const {page = 1, size = 50, type = 0} = payload
+      const query = {page, size, type}
       const data = yield call(fetchTable, query)
       if (data.code === 0) {
         const {data: {count, messages}} = data
@@ -36,7 +32,11 @@ export default modelExtend(modalModel, tableModel, {
           tableSize: size,
           tableCount: count
         }
-        yield put({type: 'setTable', payload: messages})
+        const table = messages.map((t, i) => ({
+          ...t,
+          fakeId: i + 1 + (page - 1) * size
+        }))
+        yield put({type: 'setTable', payload: table})
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
@@ -48,6 +48,21 @@ export default modelExtend(modalModel, tableModel, {
         message.success('修改成功')
         yield put({type: 'fetchTable', payload: {force: true}})
       }
+    },
+    * preview ({payload}, {call, put, select}) {
+      console.log(payload)
+      const {query, record} = payload
+      let uri = ''
+      if (record.type === 0) {
+        uri += '/news/'
+      } else {
+        uri = '/notices/'
+      }
+      uri += record.id
+      let a = document.createElement('a')
+      a.href = uri
+      a.target = '_blank'
+      a.click()
     },
     * delete ({payload}, {put, call}) {
       const {id} = payload

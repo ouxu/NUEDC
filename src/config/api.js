@@ -19,7 +19,6 @@ export default {
   signUpContest: apiMaker('user/signUpContest'),
   getAllContest: apiMaker('user/getAllContest'),
   getContestProblemList: apiMaker('user/:id/getContestProblemList'),
-  // getContestProblemList: apiMaker('user/3/getContestProblemList'),
   getContestProblemDetail: apiMaker('user/getContestProblemDetail'),
   updateContestProblemSelect: apiMaker('user/updateContestProblemSelect'),
   getContestSignUpStatus: apiMaker('user/:contestId/getContestSignUpStatus'),
@@ -40,7 +39,7 @@ export default {
   schoolAcquireId: apiMaker('school/admin/contest'),
   schoolChecked: apiMaker('school/team/mult-check'),
   schoolImportTeamsExcel: apiMaker('school/admin/team/getImportTemplate'),
-  schoolUploadExcel: apiMaker('school/admin/team/import'),
+  schoolUploadExcel: apiMaker('school/admin/team/import/:id'),
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),
@@ -65,8 +64,9 @@ export default {
   adminContestRecords: apiMaker('sysadmin/contest-records'),
   adminContestRecordUpdate: apiMaker('sysadmin/contest-records/:id/update'),
   adminContestRecordsUpdate: apiMaker('sysadmin/contest-record/update'),
-  adminContestRecordDelete: apiMaker('sysadmin/contest-records/:id/delete'),
+  adminContestRecordDelete: apiMaker('sysadmin/contest-record/delete'),
   adminContestRecordExcel: apiMaker('sysadmin/contest-record/export'),
+  adminContestRecordExcelImport: apiMaker('sysadmin/contest-record/import'),
   adminResultsUpdate: apiMaker('sysadmin/results/update'),
 
   adminProblems: apiMaker('sysadmin/problem/info'),
@@ -74,6 +74,7 @@ export default {
   adminProblemUpdate: apiMaker('sysadmin/problem/update/:id'),
   adminProblemRemove: apiMaker('sysadmin/problem/delete/:id'),
   uploadPrivateFile: apiMaker('file/private/upload'),
+  viewPrivateFile: apiMaker('file/private/get'),
 
   adminMessage: apiMaker('sysadmin/message/all'),
   // news

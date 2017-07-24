@@ -59,7 +59,6 @@ const SchoolInfoManage = ({app, schoolInfo, dispatch, form: {getFieldDecorator, 
   }
   return (
     <div className='school-info-wrapper'>
-      <Card>
         <Form>
           {
             config.map((item, index) => schoolInfoForm(item.label, user[item.value], index))
@@ -108,7 +107,6 @@ const SchoolInfoManage = ({app, schoolInfo, dispatch, form: {getFieldDecorator, 
               <Button type='primary' className='school-info-button' onClick={changeInfo}>修改密码</Button>
           }
         </Form>
-      </Card>
     </div>
   )
 }

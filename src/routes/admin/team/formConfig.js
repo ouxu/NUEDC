@@ -90,15 +90,22 @@ const editConfig = [
 ]
 const passConfig = [{
   value: 'status',
-  label: '队名',
-  formType: 0,
+  label: '审核状态',
+  formType: 1,
   contentType: 'string',
   rules: {
-    required: false,
-    requiredMessage: '请输入队伍名称',
-    pattern: /^[\u4E00-\u9FA5A-Za-z0-9]{2,20}$/,
-    patternMessage: '2-20位英文字母、汉字、数字'
-  }
+    required: true,
+    requiredMessage: '请选择审核状态'
+  },
+  options: [
+    {
+     value: '未审核',
+     label: '未审核'
+    },{
+     value: '已审核',
+     label: '已审核'
+    }
+  ]
 }]
 
 export { editConfig, passConfig }

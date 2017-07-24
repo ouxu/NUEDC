@@ -13,7 +13,7 @@ import moment from 'moment'
 import { color, urlEncode } from '../../../utils'
 const {confirm} = Modal
 const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, alert} = contest
+  const {modal = false, modalContent = {}, table, alert, contestId} = contest
   const onMenuClick = (key, record) => {
     let payload = {}
     switch (key) {
@@ -120,7 +120,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
     value: '开启'
   }]
   const columns = [
-    {title: '序号', dataIndex: 'id', key: 'id', width: 50},
+    {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '赛事名称', dataIndex: 'title', key: 'title'},
     {title: '赛事状态', dataIndex: 'status', key: 'status', width: 100},
     {
@@ -184,7 +184,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       {alert && (
         <Alert
           message={(<span>竞赛添加成功，可进行下一步操作</span>)}
-          description={(<Link to='/admin/problem'>点此为本次竞赛添加题目</Link>)}
+          description={(<Link to={'/admin/problem?contest_id=' + contestId}>点此为本次竞赛添加题目</Link>)}
           type='success'
           closable
           showIcon

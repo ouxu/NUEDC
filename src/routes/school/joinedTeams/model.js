@@ -1,16 +1,16 @@
 import modelExtend from 'dva-model-extend'
 import {
-  fetchJoinedTable,
   add,
-  update,
-  audit,
-  remove,
-  joinedExcelOut,
-  fetchSelectOption,
   allChecked,
-  downloadExcel
+  audit,
+  downloadExcel,
+  fetchJoinedTable,
+  fetchSelectOption,
+  joinedExcelOut,
+  remove,
+  update
 } from './service'
-import { modalModel, tableModel, alertModel } from '../../../models/modelExtend'
+import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
 
 export default modelExtend(modalModel, tableModel, alertModel, {
@@ -40,10 +40,10 @@ export default modelExtend(modalModel, tableModel, alertModel, {
     },
     * fetchJoinedTable ({payload}, {call, put, select}) {
       const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
-      const {contest_id, status, page, size} = payload
+      const {contest_id, status, page = 1, size = 50} = payload
       const query = {
-        page: page || undefined,
-        size: size || undefined,
+        page: page,
+        size: size,
         contest_id: contest_id || contestsId,
         status: status || undefined
       }
@@ -55,43 +55,53 @@ export default modelExtend(modalModel, tableModel, alertModel, {
           tableSize: size,
           tableCount: count
         }
-        yield put({type: 'setTable', payload: teams})
+        const table = teams.map((t, i) => ({
+          ...t,
+          fakeId: i + 1 + (page - 1) * size
+        }))
+        yield put({type: 'setTable', payload: table})
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
     * edit ({payload}, {call, select, put}) {
       const {id} = yield select(({joinedTeams}) => joinedTeams.modalContent)
       const {form} = yield select(({joinedTeams}) => joinedTeams)
-      const data = yield call(update, [form, id])
+      const {query} = payload
+      const data = yield call(update, form, id)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('修改成功')
-        yield put({type: 'fetchJoinedTable', payload: {force: true}})
+        yield put({type: 'fetchJoinedTable', payload: query})
+        yield put({type: 'joinedTeams/hideModal'})
       }
     },
     * delete ({payload}, {put, call}) {
-      const {id} = payload
+      const {query, record} = payload
+      const {id} = record
+
       const data = yield call(remove, id)
       if (data.code === 0) {
         message.success('删除成功')
-        yield put({type: 'fetchJoinedTable', payload: {force: true}})
+        yield put({type: 'fetchJoinedTable', payload: query})
       }
     },
     * add ({payload}, {put, select, call}) {
+      const {query, values} = payload
       const form = yield select(({joinedTeams}) => joinedTeams.form)
       const data = yield call(add, form)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('创建成功')
-        yield put({type: 'fetchJoinedTable', payload: {force: true}})
+        yield put({type: 'fetchJoinedTable', payload: query})
       }
     },
     * audit ({payload}, {put, call}) {
-      const data = yield call(audit, payload)
+      const {query, record} = payload
+      const data = yield call(audit, record.id)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('审核通过')
-        yield put({type: 'fetchJoinedTable', payload: {force: true}})
+        yield put({type: 'fetchJoinedTable', payload: query})
       }
     },
     * joinedOut ({payload}, {call, select}) {

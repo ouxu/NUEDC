@@ -1,42 +1,58 @@
-/**
- * Created by Pororo on 17/7/14.
- */
 import modelExtend from 'dva-model-extend'
-import { fetchProblems } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
-export default modelExtend(modalModel, tableModel, {
-  namespace: 'studentProblem',
-  state: {
-    selectInfo: {}
-  },
+import { API, urlEncode } from '../../../utils'
+import { fetchTable } from './service'
+export default modelExtend(tableModel, modalModel, {
+  namespace: 'studentProblems',
+  state: {},
   subscriptions: {
-    contestSubscriber ({dispatch, history}) {
-      return history.listen(({pathname, query}) => {
-        const match = pathname === '/student/problem'
-        if (match) {
-          console.log(query)
-          dispatch({type: 'fetchProblems', payload: {query}})
+    problemSubscriber ({dispatch, history}) {
+      return history.listen(({pathname, query = {}}) => {
+        if (pathname === '/student/problem') {
+          const {contest_id = ''} = query
+          if (contest_id.length > 0) {
+            dispatch({type: 'fetchTable', payload: query})
+          }
         }
       })
     }
   },
   effects: {
-    * fetchProblems ({query}, {call, put, select}) {
-      if (!!query) {
-        const data = yield call(fetchProblems, query.contest_id)
-        if (data.code === 0) {
-          const {problemList, problemSelectInfo} = data.data
-        }
+    * fetchTable({payload}, {call, put}) {
+      const {contest_id} = payload
+      const data = yield call(fetchTable, contest_id)
+      if (data.code === 0) {
+        const {problemList = [], problemSelectInfo = {}} = data.data
+        const table = problemList.map((item, i) => ({
+          ...item,
+          fakeId: String.fromCharCode(parseInt(problemList.length - i - 1) + 65)
+        }))
+        yield put({type: 'setTable', payload: table})
       }
     },
-
-  },
-  reducers: {
-    setSelectInfo (state, {payload: selectInfo}) {
-      return {
-        ...state,
-        selectInfo
+    * preview ({payload}, {put, call}) {
+      const params = {
+        path: payload.attach_path,
+        token: window.localStorage.getItem('nuedcToken')
       }
+      let url = API.viewPrivateFile + '?' + urlEncode(params)
+      let a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.click()
+    },
+    * download ({payload}, {put, call}) {
+      const params = {
+        path: payload.attach_path,
+        token: window.localStorage.getItem('nuedcToken'),
+        download: 1
+      }
+      let url = API.viewPrivateFile + '?' + urlEncode(params)
+      let a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.click()
     }
-  }
+  },
+  reducers: {}
 })

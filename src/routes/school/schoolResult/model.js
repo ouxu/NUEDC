@@ -31,10 +31,10 @@ export default modelExtend(modalModel, tableModel, {
     },
     * fetchResultTable ({payload}, {call, put, select}) {
       const {contestsId} = yield select(({schoolResult}) => schoolResult)
-      const {contest_id, result_info, page, size} = payload
+      const {contest_id, result_info, page=1, size=50} = payload
       const query = {
-        page: page || undefined,
-        size: size || undefined,
+        page: page,
+        size: size ,
         contest_id: contest_id || contestsId,
         result_info: result_info || undefined
       }
@@ -46,7 +46,11 @@ export default modelExtend(modalModel, tableModel, {
           tableSize: size,
           tableCount: count
         }
-        yield put({type: 'setTable', payload: results})
+        const table = results.map((t, i) => ({
+          ...t,
+          fakeId: i + 1 + (page - 1) * size
+        }))
+        yield put({type: 'setTable', payload: table})
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },

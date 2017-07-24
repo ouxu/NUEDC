@@ -86,12 +86,14 @@ const Routers = ({history, app}) => (
         />
         <Route
           path='school' getComponent={SchoolManage}
-          onEnter={() => registerModel(app, SchoolModel)}
+          onEnter={() => {
+            registerModel(app, SchoolModel)
+            registerModel(app, SchoolAdminModel)
+          }}
         />
         <Route
           path='team' getComponent={TeamAdminManage}
           onEnter={() => {
-            registerModel(app, RecordingModel)
             registerModel(app, ContestRecordModel)
             registerModel(app, TeamAdminModel)
           }}
@@ -109,6 +111,7 @@ const Routers = ({history, app}) => (
         <Route
           path='recording' getComponent={RecordingManage}
           onEnter={() => {
+            registerModel(app, ContestRecordModel)
             registerModel(app, RecordingModel)
           }}
         />
@@ -144,6 +147,7 @@ const Routers = ({history, app}) => (
         <Route
           path='problem' getComponent={StudentProblemManage}
           onEnter={() => {
+            registerModel(app, SchoolContestModel)
             registerModel(app, StudentProblemModel)
           }}
         />

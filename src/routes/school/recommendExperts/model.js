@@ -19,7 +19,6 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchExpertsTable ({payload}, {call, put, select}) {
-      console.log('fetchExperts')
       const table = yield select(({recommendExperts}) => recommendExperts.table)
       if (table.length > 0) {
         // 已有数据，不需要获取

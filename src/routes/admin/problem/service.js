@@ -32,4 +32,11 @@ const add = async (data) => request({
   data
 })
 
-export { remove, update, add, fetchTable }
+const preview = async (data) => request({
+  url: API.viewPrivateFile,
+  method: 'get',
+  token: true,
+  data
+})
+
+export { remove, update, add, fetchTable, preview }

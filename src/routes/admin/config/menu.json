@@ -47,11 +47,6 @@
       "key": "/admin/notices",
       "value": "通知管理",
       "icon": "info-circle-o"
-    },
-    {
-      "key": "/admin/message",
-      "value": "短信群发",
-      "icon": "mail"
     }
   ]
 }

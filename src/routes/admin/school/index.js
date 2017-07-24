@@ -6,7 +6,7 @@ import { Alert, Button, Form, Icon, message, Modal, Table, Upload } from 'antd'
 import { connect } from 'dva'
 import { Link, routerRedux } from 'dva/router'
 import './index.less'
-import { API } from '../../../utils'
+import { API, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 import FormItemRender from '../../../components/FormItemRender/'
 import { commonConfig, createConfig, editConfig } from './formConfig'
@@ -47,7 +47,27 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
   const getExcel = () => {
     dispatch({type: 'adminSchool/downloadExcel'})
   }
-
+  const gotoAdmin = (record) => {
+    confirm({
+      title: '跳转确认',
+      content: `您确定要跳转到 ${record.name} 的管理员列表吗？`,
+      onOk () {
+        const {id, name, level, principal, principal_mobile} = record
+        const payload = {
+          school_id: id,
+          school_name: name,
+          school_level: level,
+          status: '1',
+          name: principal,
+          mobile: principal_mobile,
+          from: 'school'
+        }
+        dispatch(routerRedux.push(`/admin/schoolAdmin?school_id=${record.id}`))
+        dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: payload})
+      },
+      onCancel () {}
+    })
+  }
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
@@ -57,10 +77,13 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
       case 'delete':
         confirm({
           title: '删除确认',
-          content: `您确定要删除 ${record.name} 的记录吗？`,
+          content: `您确定要删除学校 ${record.name} 的记录吗？`,
           onOk () { dispatch({type: 'adminSchool/delete', payload: record}) },
           onCancel () {}
         })
+        break
+      case 'gotoAdmin':
+        gotoAdmin(record)
         break
       default:
         break
@@ -77,7 +100,7 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
     })
   }
   const columns = [
-    {title: '序号', dataIndex: 'id', key: 'id', width: 50},
+    {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '学校名称', dataIndex: 'name', key: 'name', width: 200},
     {title: '学校等级', dataIndex: 'level', key: 'level', width: 80},
     {title: '学校负责人', dataIndex: 'principal', key: 'principal', width: 130},
@@ -135,7 +158,11 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
       {alert && (
         <Alert
           message={(<span>学校添加成功，可进行下一步操作</span>)}
-          description={(<Link to={`/admin/schoolAdmin?school_id=${schoolId}`}>点此为该学校添加管理员</Link>)}
+          description={(
+            <Link to={`/admin/schoolAdmin?` + urlEncode({school_id: schoolId || undefined})}>
+              点此为该学校添加管理员
+            </Link>
+          )}
           type='success'
           closable
           showIcon

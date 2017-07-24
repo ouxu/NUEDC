@@ -24,8 +24,16 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
       case 'delete':
         confirm({
           title: '删除确认',
-          content: `您确定要删除 ${record.name} 管理员账号？`,
+          content: `您确定要删除新闻 ${record.title} ？`,
           onOk () { dispatch({type: 'adminNews/delete', payload: record}) },
+          onCancel () {}
+        })
+        break
+      case 'preview':
+        confirm({
+          title: '跳转确认',
+          content: `您确定在新窗口预览 ${record.title}？`,
+          onOk () { dispatch({type: 'adminNews/preview', payload: {query, record}}) },
           onCancel () {}
         })
         break
@@ -42,7 +50,7 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'id', key: 'id', width: 50},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '标题', dataIndex: 'title', key: 'team_name'},
     {title: '创建于', dataIndex: 'created_at', key: 'school_name', width: 200},
     {title: '更新于', dataIndex: 'updated_at', key: 'contest_id', width: 200},
@@ -53,6 +61,8 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
           <DropOption
             menuOptions={[{
               key: 'edit', name: '编辑'
+            }, {
+              key: 'preview', name: '预览'
             }, {
               key: 'delete', name: '删除'
             }]}

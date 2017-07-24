@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Modal, Radio, Select, Table, Tag } from 'antd'
+import { Button, Form, Modal, Select, Table, Tag } from 'antd'
 
 import { connect } from 'dva'
 import './index.less'
@@ -19,7 +19,9 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
   const {query} = location
   const onCreateClick = e => {
     e.preventDefault()
-    dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: {}})
+    if (modalContent.form) {
+      dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: {}})
+    }
     dispatch({type: 'adminSchoolAdmin/showModal', payload: 'create'})
   }
 
@@ -54,7 +56,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
     })
   }
   const columns = [
-    {title: 'id', dataIndex: 'id', key: 'id', width: 50},
+    {title: 'id', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '用户名', dataIndex: 'name', key: 'name', width: 150},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
     {title: '手机号', dataIndex: 'mobile', key: 'mobile', width: 120},
@@ -160,11 +162,12 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
               {...formItemLayout}
             >
               {getFieldDecorator('school_id', {
-                rules: [{required: true, message: '请选择学校'}]
+                rules: [{required: true, message: '请选择学校'}],
+                initialValue: query.school_id || undefined
               })(
                 <Select>
                   {schoolTable.map(option => (
-                    <Radio value={'' + option.id} key={option.id}>{option.name}</Radio>
+                    <Select.Option value={'' + option.id} key={option.id}>{option.name}</Select.Option>
                   ))}
                 </Select>
               )}

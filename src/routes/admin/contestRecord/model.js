@@ -21,10 +21,10 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
-      const {contest_id, status, result, school_id, page, size} = payload
+      const {contest_id, status, result, school_id, page = 1, size = 50} = payload
       const query = {
-        page: page || 1,
-        size: size || 50,
+        page: page,
+        size: size,
         contest_id: contest_id || undefined,
         status: status || undefined,
         result: result || undefined,
@@ -38,25 +38,40 @@ export default modelExtend(modalModel, tableModel, {
           tableSize: size,
           tableCount: count
         }
-        yield put({type: 'setTable', payload: records})
+        const table = records.map((t, i) => ({
+          ...t,
+          fakeId: i + 1 + (page - 1) * size
+        }))
+        yield put({type: 'setTable', payload: table})
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({adminContestRecord}) => adminContestRecord.modalContent)
-      const data = yield call(update, payload, id)
+      const {query, values} = payload
+      const body = {
+        updates: [{
+          record_id: id,
+          ...values
+        }]
+      }
+      const data = yield call(update, body)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('修改成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: query})
       }
     },
     * delete ({payload}, {put, call}) {
-      const {id} = payload
-      const data = yield call(remove, id)
+      const {query, record} = payload
+      const {id} = record
+      const body = {
+        record_ids: [id]
+      }
+      const data = yield call(remove, body)
       if (data.code === 0) {
         message.success('删除成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: query})
       }
     }
   },

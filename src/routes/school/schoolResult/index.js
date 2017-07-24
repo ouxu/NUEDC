@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Select, Table, Alert } from 'antd'
+import { Alert, Button, Icon, Select, Table, Tooltip } from 'antd'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
@@ -15,9 +15,10 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
   const {query} = location
 
   const pagination = {
-    pageSize: +tableSize,
-    current: +tablePage,
+    pageSize: +query.size || 50,
+    current: +query.page || 1,
     total: +tableCount,
+    pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
       dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, page: current, size: pageSize})))
@@ -33,19 +34,30 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
     dispatch({type: 'schoolResult/ResultOut', payload: {...query, page: undefined, size: undefined}})
   }
   const columns = [
-    {title: '竞赛id', dataIndex: 'contest_id', key: 'contest_id', width: 100},
-    {title: '队伍id', dataIndex: 'id', key: 'id', width: 100},
-    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 300},
-    {title: '学校id', dataIndex: 'school_id', key: 'school_id', width: 100},
-    {title: '学校名称', dataIndex: 'school_name', key: 'school_name', width: 300},
-    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
-    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 200},
-    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 200},
-    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 200},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
-    {title: '邮箱', dataIndex: 'email', key: 'email', width: 300},
-    {title: '所选题目', dataIndex: 'problem_selected', key: 'problem_selected', width: 200},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
+    {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
+    {
+      title: (
+        <Tooltip title='-1 代表未选题'>
+          <span> 选题情况 <Icon type="question-circle-o" /></span>
+        </Tooltip>
+      ),
+      render: (record) => {
+        if (record.problem_selected === -1) {
+          return '未选题'
+        } else {
+          return problem_selected
+        }
+      },
+      key: 'problem_selected',
+      width: 100
+    },
     {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 200},
     {title: '奖项确定时间', dataIndex: 'result_at', key: 'result_at', width: 200},
     {title: '现场赛相关信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
@@ -72,9 +84,9 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             value={query.result_info || undefined}
             onChange={(value) => {
               dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({
-                ...query,
-                result_info: value || undefined
-              })))
+                  ...query,
+                  result_info: value || undefined
+                })))
             }}
             allowClear
           >
@@ -86,10 +98,10 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             </Select.Option>
           </Select>
           <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/schoolResult?' + urlEncode({
-            ...query,
-            contest_id: undefined,
-            result_info: undefined
-          })))}>
+              ...query,
+              contest_id: undefined,
+              result_info: undefined
+            })))}>
             重置筛选</Button>
         </div>
         <Button type='primary' onClick={excelOut}>导出excel</Button>
@@ -97,7 +109,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
       {
         JSON.stringify(query.contest_id) ? <Table
           columns={columns} bordered
-          dataSource={table} scroll={{x: 2800}}
+          dataSource={table} scroll={{x: 2000}}
           pagination={pagination} rowKey={record => record.id}
         /> : <Alert
           message={(<span>暂未选择竞赛，请先选择竞赛</span>)}

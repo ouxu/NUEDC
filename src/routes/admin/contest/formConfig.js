@@ -27,7 +27,7 @@ const commonConfig = [
     value: 'registerTimes',
     label: '竞赛报名时间',
     formType: 3,
-    extra: '请不要忘记选择具体时分秒',
+    extra: '时间具体到小时',
     contentType: 'array',
     rules: {
       required: true,
@@ -36,7 +36,7 @@ const commonConfig = [
   }, {
     value: 'problemTimes',
     label: '竞赛选题时间',
-    extra: '请不要忘记选择具体时分秒',
+    extra: '时间具体到小时',
     formType: 3,
     contentType: 'array',
     rules: {
@@ -44,17 +44,6 @@ const commonConfig = [
       requiredMessage: '请选择选题时间'
     }
   }
-  // , {
-  //   value: 'add_on',
-  //   label: '附加说明',
-  //   formType: 0,
-  //   type: 'textarea',
-  //   contentType: 'string',
-  //   rules: {
-  //     required: false,
-  //     requiredMessage: ''
-  //   }
-  // }
 ]
 const statusConfig = [
   {
@@ -100,4 +89,4 @@ const statusConfig = [
   },
 ]
 
-export {commonConfig,statusConfig}
+export { commonConfig, statusConfig }

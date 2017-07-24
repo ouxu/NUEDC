@@ -1,44 +1,58 @@
 /**
- * Created by Pororo on 17/7/14.
+ * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table } from 'antd'
-import formConfig from './formConfig'
+import { Alert, Button, Form, Icon, Modal, Select, Table, Upload } from 'antd'
 import './index.less'
-import DropOption from '../../../components/DropOption/'
-import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
+import FormItemRender from '../../../components/FormItemRender/'
+import { commonConfig, extra } from './formConfig'
+import { API } from '../../../utils'
+import DropOption from '../../../components/DropOption/index'
+const {confirm} = Modal
 
-const Option = Select.Option
-const confirm = Modal.confirm
-const JoinedTeamsManage = ({studentProblem, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, modalContent, contest = {}} = studentProblem
-  const {contests = []} = contest
+const ProblemManage = ({app, dispatch, location, studentContest, studentProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
+  const {query} = location
+  const {contest_id = ''} = query
+  const {modal, modalContent, table = []} = studentProblems
+  const {tablePass: contestTable = []} = studentContest
   const onMenuClick = (key, record) => {
-    const {
-      contest_id
-    } = record
-    const payload = {
-      ...record,
-      contest_id: contest_id + ''
-    }
     switch (key) {
-      case 'view':
-        dispatch({type: 'studentProblem/view', payload: payload})
-        dispatch({type: 'studentProblem/showModal', payload: 'view'})
+      case 'edit':
+        record.status = '' + record.status
+        dispatch({
+          type: 'adminProblems/updateModalContent', payload: {
+            ...record,
+            modalTitle: '编辑竞赛题目'
+          }
+        })
+        dispatch({type: 'adminProblems/showModal', payload: 'edit'})
+        break
+      case 'delete':
+        confirm({
+          title: '删除确认',
+          content: `您确定要删除 ${record.title} 吗？`,
+          onOk () { dispatch({type: 'adminProblems/delete', payload: {query, record}}) },
+          onCancel () {}
+        })
+        break
+      case 'preview':
+        confirm({
+          title: '预览确认',
+          content: `您确定要在新窗口预览 ${record.title} 的附件吗？`,
+          onOk () {
+            dispatch({type: 'adminProblems/preview', payload: record})
+          },
+          onCancel () {}
+        })
         break
       case 'download':
-        dispatch({type: 'studentProblem/view', payload: payload})
-        dispatch({type: 'studentProblem/showModal', payload: 'view'})
-        break
-      case 'choose':
         confirm({
-          title: '选择确认',
-          content: (
-            <p>确认选择{record.team_name}吗？</p>
-          ),
+          title: '下载确认',
+          content: `您确定要下载 ${record.title} 的附件吗？`,
           onOk () {
-            dispatch({type: 'studentProblem/choose', payload: record})
+            dispatch({type: 'adminProblems/download', payload: record})
           },
           onCancel () {}
         })
@@ -47,71 +61,161 @@ const JoinedTeamsManage = ({studentProblem, dispatch, form: {getFieldDecorator, 
         break
     }
   }
-  const onAddClick = e => {
+  const columns = [
+    {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
+    {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
+    {title: '附加信息', dataIndex: 'add_on', key: 'status'},
+    {
+      title: '操作',
+      render: (record) => {
+        return (
+          <DropOption
+            menuOptions={[{
+              key: 'edit', name: '编辑题目'
+            }, {
+              key: 'preview', name: '附件预览'
+            }, {
+              key: 'download', name: '附件下载'
+            }, {
+              key: 'delete', name: '删除题目'
+            }]}
+            buttonStyle={{border: 'solid 1px #eee', width: 60}}
+            onMenuClick={({key}) => onMenuClick(key, record)}
+          />
+        )
+      },
+      width: 100,
+      key: 'edit'
+    }
+  ]
+  const onAddClick = (e) => {
     e.preventDefault()
-    dispatch({type: 'studentProblem/showModal', payload: 'add'})
-  }
-  const onOptionChange = (value) => {
-    dispatch({type: 'studentProblem/onFilter', payload: value})
-    dispatch({type: 'studentProblem/filter', payload: value})
+    dispatch({type: 'adminProblems/updateModalContent', payload: {modalTitle: '添加竞赛题目'}})
+    dispatch({type: 'adminProblems/showModal', payload: 'add'})
   }
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
         return
       }
-      dispatch({type: 'studentProblem/onFormSubmit', payload: values})
-      dispatch({type: `studentProblem/${modal === 'edit' ? 'edit' : 'add'}`, payload: values})
-      dispatch({type: 'studentProblem/hideModal'})
+      const {title, content, add_on = '', upload} = values
+      const body = {
+        title, content, add_on, contest_id,
+      }
+      if (upload) {
+        body.attach_path = upload[0].response.data.path
+      }
+      if (modal === 'edit') {
+        dispatch({type: 'adminProblems/edit', payload: {body, query}})
+      } else if (modal === 'add') {
+        dispatch({type: 'adminProblems/add', payload: {body, query}})
+      }
     })
   }
-  const excelOut = () => {
-    dispatch({type: 'studentProblem/joinedOut', payload: 'out'})
+  const normFile = (e) => {
+    return e && e.fileList
   }
-
-  const columns = [
-    {title: '序号', dataIndex: 'id', key: 'id', width: 50},
-    {title: '竞赛ID', dataIndex: 'contest_id', key: 'contest_id', width: 250},
-    {title: '题目名称', dataIndex: 'title', key: 'title', width: 100},
-    // {title: '选题时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 150},
-    // {title: '说明', dataIndex: 'problem_start_time', key: 'problem_end_time'},
-    {
-      title: '操作',
-      render: (record) => {
-        return (
-          <DropOption
-            menuOptions={[{key: 'view', name: '查看'}, {key: 'download', name: '下载'}, {key: 'choose', name: '选择'}]}
-            buttonStyle={{border: 'solid 1px #eee', width: 60}}
-            onMenuClick={({key}) => onMenuClick(key, record)}
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 6}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 16}
+    }
+  }
+  return (
+    <div className='problem'>
+      <div className='problem-header'>
+        <Select
+          showSearch
+          style={{width: 260}}
+          placeholder='选择竞赛'
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          onChange={(value) => {
+            dispatch(routerRedux.push(`/student/problem?contest_id=` + value))
+          }}
+          value={query.contest_id || undefined}
+        >
+          {contestTable.map(item => (
+            <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
+          ))}
+        </Select>
+        <Button type='primary' disabled={contest_id.length < 1} onClick={onAddClick}>确认选题</Button>
+      </div>
+      {
+        contest_id.length > 0 ? (
+          table.length > 0 ? (
+            <Table
+              columns={columns} bordered
+              dataSource={table}
+              pagination={false} rowKey={record => record.id}
+              expandedRowRender={record => (
+                <div className='expanded-row'>
+                  <span>{record.content}</span>
+                </div>
+              )}
+            />
+          ) : (
+            <Alert
+              message={(<span>暂无题目，请添加</span>)}
+              description='请点击右上角按钮添加题目'
+              showIcon
+            />
+          )
+        ) : (
+          <Alert
+            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+            description='请先在下拉选单中选择竞赛'
+            showIcon
           />
         )
-      },
-      // fixed: 'right',
-      width: 100,
-      key: '9'
-    }
-  ]
-  return (
-    <div className='joined-teams'>
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 2000}}
-        pagination={false} rowKey={record => record.id}
-      />
+      }
       <Modal
-        title={`${modal === 'edit' ? '编辑队伍信息' : '增加比赛队伍'}`}
-        visible={studentProblem.modal === 'edit' || studentProblem.modal === 'add'}
-        onCancel={() => dispatch({type: 'studentProblem/hideModal'})}
+        title={modalContent.modalTitle}
+        visible={modal}
+        onCancel={() => dispatch({type: 'adminProblems/hideModal'})}
         onOk={onModalOk}
-        key={studentProblem.modal}
+        key={'' + modal}
       >
         <Form className='form-content'>
-          {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))}
-          {modal === 'edit' && formConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {modal && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {
+            initialValue: modalContent[config.value] || '' + ''
+          }))}
+          <Form.Item
+            {...formItemLayout}
+            label='附件上传'
+            extra={
+              modal === 'edit' ? '如果不需要更改附件，请勿上传文件' : '用于上传题目相关的附件或者pdf，一道题仅能上传一个附件，请勿上传多个'
+            }
+          >
+            {getFieldDecorator('upload', {
+              valuePropName: 'fileList',
+              getValueFromEvent: normFile
+            })(
+              <Upload
+                name='upload' action={API.uploadPrivateFile}
+                accept='.pdf'
+                headers={{'token': window.localStorage.getItem('nuedcToken')}}
+              >
+                <Button>
+                  <Icon type='upload' /> 点击上传附件
+                </Button>
+              </Upload>
+            )}
+          </Form.Item>
+          {modal && FormItemRender(extra, getFieldDecorator, {
+            initialValue: modalContent[extra.value] || '' + ''
+          })}
         </Form>
       </Modal>
     </div>
   )
 }
 
-export default connect(({app, studentProblem}) => ({app, studentProblem}))(Form.create()(JoinedTeamsManage))
+export default connect(({app, studentProblems, studentContest}) => ({
+  app,
+  studentProblems,
+  studentContest
+}))(Form.create()(ProblemManage))

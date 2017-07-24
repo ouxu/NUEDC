@@ -16,48 +16,6 @@ export default [
       patternMessage: '输入包含非中文字符！'
     }
   }, {
-    value: 'school_id',
-    label: '学校id',
-    formType: 0,
-    contentType: 'int',
-    rules: {
-      required: true,
-      requiredMessage: '请输入您的学校id',
-      patternMessage: '输入包含非数字字符！'
-    }
-  }, {
-    value: 'school_name',
-    label: '学校名称',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入您的学校名称',
-      patternMessage: '输入包含非数字字符！'
-    }
-  }, {
-    value: 'contest_id',
-    label: '竞赛id',
-    formType: 0,
-    contentType: 'int',
-    rules: {
-      required: true,
-      requiredMessage: '请输入竞赛id',
-      pattern: '',
-      patternMessage: ''
-    }
-  }, {
-    value: 'school_level',
-    label: '学校等级',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: true,
-      requiredMessage: '请输入学校等级',
-      pattern: '',
-      patternMessage: ''
-    }
-  }, {
     value: 'member1',
     label: '成员1',
     formType: 0,

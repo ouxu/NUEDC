@@ -10,31 +10,12 @@ export default modelExtend(modalModel, tableModel, {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         if (pathname === '/admin/schoolAdmin') {
-          dispatch({type: 'fetchTable', payload: query})
+          dispatch({type: 'adminContestRecord/fetchTable', payload: query})
         }
       })
     }
   },
   effects: {
-    * fetchTable ({payload = {}}, {call, select, put}) {
-      const {page = 1, size = 50, school_id} = payload
-      const query = {
-        page: page,
-        size: size,
-        school_id: school_id || undefined
-      }
-      const data = yield call(fetchTable, query)
-      if (data.code === 0) {
-        const {data: {count, school_admins}} = data
-        const tableConfig = {
-          tablePage: page,
-          tableSize: size,
-          tableCount: count
-        }
-        yield put({type: 'setTable', payload: school_admins})
-        yield put({type: 'setTableConfig', payload: tableConfig})
-      }
-    },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({adminSchoolAdmin}) => adminSchoolAdmin.modalContent)
       const data = yield call(update, payload, id)

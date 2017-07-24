@@ -83,7 +83,7 @@ const editConfig = [
     rules: {
       required: false,
       requiredMessage: '请输入邮箱',
-      pattern: verify.password,
+      pattern: verify.mail,
       patternMessage: '输入合法的邮箱'
     }
   }, {
@@ -94,9 +94,10 @@ const editConfig = [
     rules: {
       required: false,
       requiredMessage: '请输入所选题目号',
-      pattern: verify.number,
-      patternMessage: '请勿输入非数字字符'
-    }
+      pattern: '',
+      patternMessage: ''
+    },
+    extra: '-1 代表未选题'
   }, {
     value: 'status',
     label: '报名状态',
@@ -142,17 +143,6 @@ const editConfig = [
         label: '已审核'
       }
     ]
-  }, {
-    value: 'add_on',
-    label: '附加信息',
-    formType: 0,
-    type: 'textarea',
-    placeholder: '现场赛等其他附加信息',
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请选择报名状态'
-    }
   }
 ]
 

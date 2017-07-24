@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { fetchTable, fetchTablePass } from './service'
+import pathToRegexp from 'path-to-regexp'
 import { alertModel, inputModel, modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   namespace: 'studentContest',
@@ -9,8 +10,9 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   subscriptions: {
     studentContestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathname === '/student/contest' || pathname === '/student'
-        if (match) {
+        const match = pathToRegexp('/student/:params').exec(pathname)
+
+        if (match || pathname === '/student') {
           dispatch({type: 'fetchTable'})
         }
       })

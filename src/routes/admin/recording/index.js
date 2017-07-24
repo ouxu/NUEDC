@@ -1,21 +1,23 @@
 import React from 'react'
-import { Alert, Button, Form, Icon, message, Modal, Select, Table, Upload } from 'antd'
+import { Alert, Button, Form, Icon, message, Modal, Select, Table, Tooltip, Upload } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
 import recordConfig from './formConfig'
-import { color, urlEncode } from '../../../utils'
+import { API, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 
-const RecordingManage = ({location, recording, contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, schools = [], table, tableSize, tableCount, tablePage} = recording
+const RecordingManage = ({location, recording, contest, adminContestRecord, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  const {modal = false, modalContent = {}, table, tableCount} = adminContestRecord
+
   const {table: tableContest = []} = contest
   const {query} = location
+  const {table: schools = []} = login
 
   const props = {
     name: 'data',
-    action: 'http://nuedc.hrsoft.net/sysadmin/contest-record/import',
+    action: API.adminContestRecordExcelImport,
     headers: {
       token: window.localStorage.getItem('nuedcToken')
     },
@@ -26,9 +28,11 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
         const {fail = []} = data
         if (fail.length) {
         } else {
+          dispatch({type: 'adminContestRecord/fetchTable', payload: query})
           message.success(`文件上传成功`)
+          message.success('成绩已更新')
         }
-        dispatch({type: 'recording/fetchTable', payload: query})
+        dispatch({type: 'adminContestRecord/fetchTable', payload: query})
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
       }
@@ -44,8 +48,8 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
     switch (key) {
       case 'edit':
         record.id = '' + record.id
-        dispatch({type: 'recording/updateModalContent', payload: record})
-        dispatch({type: 'recording/showModal', payload: 'edit'})
+        dispatch({type: 'adminContestRecord/updateModalContent', payload: record})
+        dispatch({type: 'adminContestRecord/showModal', payload: 'edit'})
         break
       default:
         break
@@ -70,14 +74,30 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'id', key: 'id', width: 100},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 100},
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
+    {
+      title: (
+        <Tooltip title='-1 代表未选题'>
+          <span> 选题情况 <Icon type="question-circle-o" /></span>
+        </Tooltip>
+      ),
+      render: (record) => {
+        if (record.problem_selected === -1) {
+          return '未选题'
+        } else {
+          return problem_selected
+        }
+      },
+      key: 'problem_selected',
+      width: 200
+    },
     {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
-    {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'},
+    {title: '成绩审核', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -95,8 +115,8 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
     }
   ]
   const pagination = {
-    pageSize: +tableSize || 50,
-    current: +tablePage || 1,
+    pageSize: +query.size || 50,
+    current: +query.page || 1,
     total: +tableCount,
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
@@ -107,19 +127,6 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
       dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, page: current})))
     }
   }
-
-  const statusArr = [
-    {
-      value: '未审核',
-      label: '未审核',
-      color: color.red
-    },
-    {
-      value: '已审核',
-      label: '已审核',
-      color: color.blue
-    }
-  ]
 
   const dataFlag = !!JSON.stringify(query.contest_id)
   return (
@@ -133,7 +140,7 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
             onChange={(value) => {
               dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
                   ...query,
-                  contest_id: value || tableContest[tableContest.length - 1].contest_id
+                  contest_id: value || undefined
                 })))
             }}
             value={query.contest_id}
@@ -202,9 +209,11 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
   )
 }
 
-export default connect(({app, loading, contest, recording}) => ({
+export default connect(({app, adminContestRecord, login, loading, contest, recording}) => ({
   app,
+  adminContestRecord,
   loading,
+  login,
   recording,
   contest
 }))(Form.create()(RecordingManage))

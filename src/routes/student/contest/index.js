@@ -62,7 +62,7 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
           </Row>
         </Panel>
         <Panel header='全部竞赛' key='2' style={customPanelStyle}>
-          <Row type='flex' gutter='12'>
+          <Row type='flex' gutter={12}>
             {table.map(item => {
               let extra
               if (item.can_register === 1) {

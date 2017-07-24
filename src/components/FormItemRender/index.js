@@ -107,8 +107,8 @@ export default (config, getFieldDecorator, extra = {}) => {
           })(
             <RangePicker
               style={{width: '100%'}}
-              showTime={{format: 'HH:mm'}}
-              format='YYYY-MM-DD HH:mm'
+              showTime={{format: 'HH:00'}}
+              format='YYYY-MM-DD HH:00'
               renderExtraFooter={() => 'extra footer'}
             />
           )}

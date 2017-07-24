@@ -15,8 +15,7 @@ const {confirm} = Modal
 const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
-  const {modal, modalContent} = adminProblems
-  let {table = []} = adminProblems
+  const {modal, modalContent, table = []} = adminProblems
   const {table: contestTable = []} = contest
   const onMenuClick = (key, record) => {
     switch (key) {
@@ -38,16 +37,32 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
           onCancel () {}
         })
         break
+      case 'preview':
+        confirm({
+          title: '预览确认',
+          content: `您确定要在新窗口预览 ${record.title} 的附件吗？`,
+          onOk () {
+            dispatch({type: 'adminProblems/preview', payload: record})
+          },
+          onCancel () {}
+        })
+        break
+      case 'download':
+        confirm({
+          title: '下载确认',
+          content: `您确定要下载 ${record.title} 的附件吗？`,
+          onOk () {
+            dispatch({type: 'adminProblems/download', payload: record})
+          },
+          onCancel () {}
+        })
+        break
       default:
         break
     }
   }
-  table = table.map((item, i) => ({
-    ...item,
-    idShow: String.fromCharCode(parseInt(i) + 65)
-  }))
   const columns = [
-    {title: '序号', dataIndex: 'idShow', key: 'id', width: 50},
+    {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
     {title: '附加信息', dataIndex: 'add_on', key: 'status'},
     {
@@ -56,9 +71,13 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
         return (
           <DropOption
             menuOptions={[{
-              key: 'edit', name: '编辑'
+              key: 'edit', name: '编辑题目'
             }, {
-              key: 'delete', name: '删除'
+              key: 'preview', name: '附件预览'
+            }, {
+              key: 'download', name: '附件下载'
+            }, {
+              key: 'delete', name: '删除题目'
             }]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
@@ -123,7 +142,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
             <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
           ))}
         </Select>
-        <Button type='primary' onClick={onAddClick}>添加题目</Button>
+        <Button type='primary' disabled={contest_id.length < 1} onClick={onAddClick}>添加题目</Button>
       </div>
       {
         contest_id.length > 0 ? (

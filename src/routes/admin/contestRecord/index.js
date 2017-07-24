@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table, Alert } from 'antd'
+import { Alert, Button, Form, Icon, Modal, Select, Table, Tooltip } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
@@ -28,8 +28,8 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
       case 'delete':
         confirm({
           title: '删除确认',
-          content: `您确定要删除 ${record.name} 管理员账号？`,
-          onOk () { dispatch({type: 'adminContestRecord/delete', payload: record}) },
+          content: `您确定要删除 ${record.team_name} 队伍记录？`,
+          onOk () { dispatch({type: 'adminContestRecord/delete', payload: {query, record}})},
           onCancel () {}
         })
         break
@@ -42,13 +42,12 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
       if (errors) {
         return
       }
-      dispatch({type: 'adminContestRecord/update', payload: values})
+      dispatch({type: 'adminContestRecord/update', payload: {query, values}})
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'id', key: 'id', width: 50, fixed: 'left'},
-    {title: '报名ID', dataIndex: 'register_id', key: 'register_id', width: 70, fixed: 'left'},
-    {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200, fixed: 'left'},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 90},
     {title: '队员1姓名', dataIndex: 'member1', key: 'member1', width: 100},
@@ -57,7 +56,22 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 90},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
-    {title: '所选题目', dataIndex: 'problem_selected', key: 'problem_selected', width: 100},
+    {
+      title: (
+        <Tooltip title='-1 代表未选题'>
+          <span> 选题情况 <Icon type="question-circle-o" /></span>
+        </Tooltip>
+      ),
+      render: (record) => {
+        if (record.problem_selected === -1) {
+          return '未选题'
+        } else {
+          return problem_selected
+        }
+      },
+      key: 'problem_selected',
+      width: 200
+    },
     {title: '报名状态', dataIndex: 'status', key: 'status', width: 100},
     {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100},
     {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100},
@@ -149,22 +163,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
               </Select.Option>
             ))}
           </Select>
-          <Select
-            showSearch
-            style={{width: 100}}
-            placeholder='比赛结果'
-            onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({...query, result: value || undefined})))
-            }}
-            allowClear
-            value={query.result || undefined}
-          >
-            {statusArr.map(item => (
-              <Select.Option key={'contest-result-' + item.value} value={item.value}>
-                {item.label}
-              </Select.Option>
-            ))}
-          </Select>
+
           <Select
             showSearch
             style={{width: 260}}

@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
+import { API, urlEncode } from '../../../utils'
 import { add, fetchTable, remove, update } from './service'
 export default modelExtend(tableModel, modalModel, {
   namespace: 'adminProblems',
@@ -22,7 +23,11 @@ export default modelExtend(tableModel, modalModel, {
       const data = yield call(fetchTable, payload)
       if (data.code === 0) {
         const {problems = []} = data.data
-        yield put({type: 'setTable', payload: problems})
+        const table = problems.map((item, i) => ({
+          ...item,
+          fakeId: String.fromCharCode(parseInt(problems.length - i - 1) + 65)
+        }))
+        yield put({type: 'setTable', payload: table})
       }
     },
     * add ({payload}, {call, put}) {
@@ -51,6 +56,29 @@ export default modelExtend(tableModel, modalModel, {
         message.success('删除成功')
         yield put({type: 'fetchTable', payload: query})
       }
+    },
+    * preview ({payload}, {put, call}) {
+      const params = {
+        path: payload.attach_path,
+        token: window.localStorage.getItem('nuedcToken')
+      }
+      let url = API.viewPrivateFile + '?' + urlEncode(params)
+      let a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.click()
+    },
+    * download ({payload}, {put, call}) {
+      const params = {
+        path: payload.attach_path,
+        token: window.localStorage.getItem('nuedcToken'),
+        download: 1
+      }
+      let url = API.viewPrivateFile + '?' + urlEncode(params)
+      let a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.click()
     }
   },
   reducers: {}

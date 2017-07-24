@@ -31,7 +31,11 @@ export default modelExtend(modalModel, tableModel, alertModel, {
             tableSize: size,
             tableCount: count
           }
-          yield put({type: 'setTable', payload: schools})
+          const table = schools.map((t, i) => ({
+            ...t,
+            fakeId: i + 1 + (page - 1) * size
+          }))
+          yield put({type: 'setTable', payload: table})
           yield put({type: 'setTableConfig', payload: tableConfig})
         }
       }
