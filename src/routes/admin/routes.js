@@ -10,7 +10,6 @@ import { SchoolAdminManage, SchoolAdminModel } from './schoolAdmin/route'
 import { ContestRecord, ContestRecordModel } from './contestRecord/route'
 import { RecordingManage, RecordingModel } from './recording/route'
 import { PrivilegeManage, PrivilegeModel } from './privilege/route'
-import { MessageManage, MessageModel } from './message/route'
 import { TeamAdminManage, TeamAdminModel } from './team/route'
 import { AdminNews, AdminNewsModel, NewsEdit, NewsEditModel } from './news/route'
 
@@ -23,7 +22,6 @@ export {
   ContestRecord, ContestRecordModel,
   RecordingManage, RecordingModel,
   PrivilegeManage, PrivilegeModel,
-  MessageManage, MessageModel,
   AdminNews, AdminNewsModel,
   NewsEdit, NewsEditModel,
   TeamAdminManage, TeamAdminModel

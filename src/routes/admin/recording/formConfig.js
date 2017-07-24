@@ -4,8 +4,8 @@
 
 export default [
   {
-    value: 'id',
-    label: '队伍id',
+    value: 'team_name',
+    label: '队伍名称',
     formType: 0,
     contentType: 'string',
     disabled: true,

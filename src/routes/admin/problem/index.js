@@ -9,15 +9,65 @@ import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
 import { commonConfig, extra } from './formConfig'
 import { API } from '../../../utils'
+import DropOption from '../../../components/DropOption/index'
+const {confirm} = Modal
+
 const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
-  const {table = [], modal, modalContent} = adminProblems
+  const {modal, modalContent} = adminProblems
+  let {table = []} = adminProblems
   const {table: contestTable = []} = contest
+  const onMenuClick = (key, record) => {
+    switch (key) {
+      case 'edit':
+        record.status = '' + record.status
+        dispatch({
+          type: 'adminProblems/updateModalContent', payload: {
+            ...record,
+            modalTitle: '编辑竞赛题目'
+          }
+        })
+        dispatch({type: 'adminProblems/showModal', payload: 'edit'})
+        break
+      case 'delete':
+        confirm({
+          title: '删除确认',
+          content: `您确定要删除 ${record.title} 吗？`,
+          onOk () { dispatch({type: 'adminProblems/delete', payload: {query, record}}) },
+          onCancel () {}
+        })
+        break
+      default:
+        break
+    }
+  }
+  table = table.map((item, i) => ({
+    ...item,
+    idShow: String.fromCharCode(parseInt(i) + 65)
+  }))
   const columns = [
-    {title: '序号', dataIndex: 'id', key: 'id', width: 50},
+    {title: '序号', dataIndex: 'idShow', key: 'id', width: 50},
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
-    {title: '附加信息', dataIndex: 'status', key: 'status'}
+    {title: '附加信息', dataIndex: 'add_on', key: 'status'},
+    {
+      title: '操作',
+      render: (record) => {
+        return (
+          <DropOption
+            menuOptions={[{
+              key: 'edit', name: '编辑'
+            }, {
+              key: 'delete', name: '删除'
+            }]}
+            buttonStyle={{border: 'solid 1px #eee', width: 60}}
+            onMenuClick={({key}) => onMenuClick(key, record)}
+          />
+        )
+      },
+      width: 100,
+      key: 'edit'
+    }
   ]
   const onAddClick = (e) => {
     e.preventDefault()
@@ -29,8 +79,18 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
       if (errors) {
         return
       }
-      console.log(values)
-      dispatch({type: 'adminContestRecord/update', payload: values})
+      const {title, content, add_on = '', upload} = values
+      const body = {
+        title, content, add_on, contest_id,
+      }
+      if (upload) {
+        body.attach_path = upload[0].response.data.path
+      }
+      if (modal === 'edit') {
+        dispatch({type: 'adminProblems/edit', payload: {body, query}})
+      } else if (modal === 'add') {
+        dispatch({type: 'adminProblems/add', payload: {body, query}})
+      }
     })
   }
   const normFile = (e) => {
@@ -95,19 +155,21 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
       }
       <Modal
         title={modalContent.modalTitle}
-        visible={modal === 'add'}
+        visible={modal}
         onCancel={() => dispatch({type: 'adminProblems/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}
       >
         <Form className='form-content'>
-          {modal === 'add' && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {
+          {modal && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {
             initialValue: modalContent[config.value] || '' + ''
           }))}
           <Form.Item
             {...formItemLayout}
-            label='Upload'
-            extra='附件上传，用于上传题目相关的附件或者pdf，一道题仅能上传一个附件，请勿上传多个'
+            label='附件上传'
+            extra={
+              modal === 'edit' ? '如果不需要更改附件，请勿上传文件' : '用于上传题目相关的附件或者pdf，一道题仅能上传一个附件，请勿上传多个'
+            }
           >
             {getFieldDecorator('upload', {
               valuePropName: 'fileList',
@@ -115,6 +177,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
             })(
               <Upload
                 name='upload' action={API.uploadPrivateFile}
+                accept='.pdf'
                 headers={{'token': window.localStorage.getItem('nuedcToken')}}
               >
                 <Button>
@@ -123,7 +186,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
               </Upload>
             )}
           </Form.Item>
-          {modal === 'add' && FormItemRender(extra, getFieldDecorator, {
+          {modal && FormItemRender(extra, getFieldDecorator, {
             initialValue: modalContent[extra.value] || '' + ''
           })}
         </Form>

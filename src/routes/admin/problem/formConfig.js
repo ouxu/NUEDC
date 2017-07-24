@@ -18,6 +18,7 @@ const commonConfig = [
     label: '题目内容',
     formType: 0,
     contentType: 'string',
+    extra: '题目内容长度不限，仅为纯文本',
     type: 'textarea',
     rules: {
       required: true,

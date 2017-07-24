@@ -16,7 +16,7 @@ const fetchSelectOption = async () => request({
   token: true
 })
 
-const allChecked = async (data) => request({
+const resultUpdate = async (data) => request({
   url: API.adminResultsUpdate,
   method: 'put',
   token: true,
@@ -30,4 +30,4 @@ const downloadExcel = async ({filename}, data) => request({
   filename
 })
 
-export { fetchTable, fetchSelectOption, allChecked, downloadExcel }
+export { fetchTable, fetchSelectOption, resultUpdate, downloadExcel }

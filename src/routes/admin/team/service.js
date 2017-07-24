@@ -3,13 +3,6 @@
  */
 import { API, request } from '../../../utils'
 
-const fetchTable = async (data) => request({
-  url: API.adminContestRecords,
-  method: 'get',
-  token: true,
-  data
-})
-
 const remove = async (id) => request({
   url: API.adminContestRecordDelete.replace(':id', id),
   method: 'get',
@@ -23,4 +16,10 @@ const update = async (data, id) => request({
   data
 })
 
-export { remove, update, fetchTable }
+const auditAll = async (data) => request({
+  url: API.adminContestRecordsUpdate,
+  method: 'post',
+  token: true,
+  data
+})
+export { remove, update, auditAll }

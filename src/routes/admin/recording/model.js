@@ -1,11 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import {
-  fetchTable,
-  allChecked,
-  downloadExcel,
-  fetchSelectOption
-} from './service'
-import { modalModel, tableModel, alertModel } from '../../../models/modelExtend'
+import { downloadExcel, fetchSelectOption, fetchTable, resultUpdate } from './service'
+import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
 
 export default modelExtend(modalModel, tableModel, alertModel, {
@@ -31,7 +26,7 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       const {data} = options
       yield put({type: 'onFilter', payload: data.schools})
     },
-    * fetchTable ({payload = {}}, {call, select, put}) {
+    * fetchTable ({payload = {}}, {call, put}) {
       const {contest_id, status, result, school_id, page, size} = payload
       const query = {
         page: page || 1,
@@ -53,24 +48,15 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
-    * downloadExcel ({payload}, {call, put, select}) {
+    * downloadExcel ({payload}, {call}) {
       yield call(downloadExcel, {filename: '成绩导入Excel模板.xlsx'}, payload)
     },
-    * checkRecording ({payload}, {call, put}) {
-      console.log(payload)
-      const body = {
-        results: [
-          {
-            record_id: parseInt(payload.id),
-            result: payload.result,
-            result_info: payload.result_info
-          }
-        ]
-      }
-      const data = yield call(allChecked, body)
+    * checkRecording ({payload}, {call, put, select}) {
+      const {query, body} = payload
+      const data = yield call(resultUpdate, body)
       if (data.code === 0) {
         message.success('成绩录入成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: query})
       }
     }
   },

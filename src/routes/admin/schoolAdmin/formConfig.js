@@ -80,6 +80,7 @@ const editConfig = [
     label: '用户状态',
     formType: 1,
     contentType: 'string',
+    extra: '选择未激活表示本用户暂不可用',
     rules: {
       required: true,
       requiredMessage: '请选择用户状态'

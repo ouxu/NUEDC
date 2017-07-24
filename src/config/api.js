@@ -54,6 +54,8 @@ export default {
   adminSchoolCreate: apiMaker('sysadmin/school/create'),
   adminSchoolUpdate: apiMaker('sysadmin/school/:id/update'),
   adminSchoolDelete: apiMaker('sysadmin/school/:id/delete'),
+  adminSchoolTemp: apiMaker('sysadmin/getSchoolListTemplateFile'),
+  adminSchoolImport: apiMaker('sysadmin/school/import'),
 
   adminSchoolAdmins: apiMaker('sysadmin/school-admins'),
   adminSchoolAdminCreate: apiMaker('sysadmin/school-admin/create'),
@@ -62,11 +64,15 @@ export default {
 
   adminContestRecords: apiMaker('sysadmin/contest-records'),
   adminContestRecordUpdate: apiMaker('sysadmin/contest-records/:id/update'),
+  adminContestRecordsUpdate: apiMaker('sysadmin/contest-record/update'),
   adminContestRecordDelete: apiMaker('sysadmin/contest-records/:id/delete'),
   adminContestRecordExcel: apiMaker('sysadmin/contest-record/export'),
   adminResultsUpdate: apiMaker('sysadmin/results/update'),
 
   adminProblems: apiMaker('sysadmin/problem/info'),
+  adminProblemAdd: apiMaker('sysadmin/problem/add'),
+  adminProblemUpdate: apiMaker('sysadmin/problem/update/:id'),
+  adminProblemRemove: apiMaker('sysadmin/problem/delete/:id'),
   uploadPrivateFile: apiMaker('file/private/upload'),
 
   adminMessage: apiMaker('sysadmin/message/all'),

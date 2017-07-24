@@ -136,7 +136,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
         <p>确认通过选中队伍的评审吗？</p>
       ),
       onOk () {
-        dispatch({type: 'joinedTeams/allChecked'})
+        dispatch({type: 'joinedTeams/resultUpdate'})
       },
       onCancel () {}
     })

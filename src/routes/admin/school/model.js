@@ -1,16 +1,19 @@
 import modelExtend from 'dva-model-extend'
 import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
-import { create, fetchTable, remove, update } from './service'
+import { create, downloadExcel, fetchTable, remove, update } from './service'
 import { message } from 'antd'
 
 export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'adminSchool',
-  state: {},
+  state: {
+    schoolId: ''
+  },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         if (pathname === '/admin/school') {
           dispatch({type: 'fetchTable', payload: query})
+          dispatch({type: 'hideAlert'})
         }
       })
     }
@@ -50,15 +53,26 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         yield put({type: 'fetchTable', payload: {force: true}})
       }
     },
+    * downloadExcel ({}, {call}) {
+      yield call(downloadExcel, {filename: '学校导入Excel模板.xlsx'})
+    },
     * create ({payload}, {put, call}) {
       const data = yield call(create, payload)
       if (data.code === 0) {
         yield put({type: 'fetchTable', payload: {force: true}})
         message.success('添加成功')
+        yield put({type: 'changeSchoolId', payload: data.data.school_id})
         yield put({type: 'hideModal'})
         yield put({type: 'showAlert'})
       }
     }
   },
-  reducers: {}
+  reducers: {
+    changeSchoolId (state, {payload: schoolId}) {
+      return {
+        ...state,
+        schoolId
+      }
+    }
+  }
 })

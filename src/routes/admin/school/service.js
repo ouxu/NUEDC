@@ -10,6 +10,13 @@ const fetchTable = async (data) => request({
   data
 })
 
+const downloadExcel = async ({filename}) => request({
+  url: API.adminSchoolTemp,
+  method: 'export',
+  token: true,
+  filename
+})
+
 const remove = async (id) => request({
   url: API.adminSchoolDelete.replace(':id', id),
   method: 'get',
@@ -30,4 +37,4 @@ const create = async (data) => request({
   data
 })
 
-export { remove, update, create, fetchTable }
+export { remove, update, create, fetchTable,downloadExcel }

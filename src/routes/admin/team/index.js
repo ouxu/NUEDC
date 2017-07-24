@@ -13,7 +13,7 @@ import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
 const ContestRecordManage = ({location, teamManage, adminContestRecord, contest, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminContestRecord
+  const {modal = false, modalContent = {}, table, tableCount} = adminContestRecord
   const {table: tableContest = []} = contest
   const {table: tableSchool = []} = login
   const {query} = location
@@ -37,9 +37,9 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       case 'audit':
         confirm({
           title: '审核确认',
-          content: '是否通过这些队伍的审核',
+          content: `是否通过 ${record.team_name} 的审核`,
           onOk () {
-            dispatch({type: 'joinedTeams/audit', payload: record.id})
+            dispatch({type: 'teamManage/audit', payload: record.id})
           },
           onCancel () {}
         })
@@ -57,8 +57,8 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'id', key: 'id', width: 50, fixed: 'left'},
-    {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200, fixed: 'left'},
+    {title: '#', dataIndex: 'id', key: 'id', width: 50},
+    {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '队员1姓名', dataIndex: 'member1', key: 'member1', width: 100},
     {title: '队员2姓名', dataIndex: 'member2', key: 'member2', width: 100},
@@ -66,11 +66,9 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 90},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
-    {title: '所选题目', dataIndex: 'problem_selected', key: 'problem_selected', width: 100},
-    {title: '报名状态', dataIndex: 'status', key: 'status', width: 100},
-    {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 170},
     {title: '报名时间', dataIndex: 'created_at', key: 'created_at', width: 170},
     {title: '上次编辑时间', dataIndex: 'updated_at', key: 'updated_at', width: 170},
+    {title: '报名状态', dataIndex: 'status', key: 'status', width: 100, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -94,7 +92,14 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
     }
   ]
   const allChecked = () => {
-    dispatch({type: 'joinedTeams/allChecked'})
+    confirm({
+      title: '审核确认',
+      content: `您确定要将选中的队伍的审核状态更改为已审核吗？`,
+      onOk () {
+        dispatch({type: 'teamManage/auditAll'})
+      },
+      onCancel () {}
+    })
   }
   const pagination = {
     pageSize: query.size || 50,
@@ -192,13 +197,15 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
             ))}
           </Select>
         </div>
-        <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/team?' + urlEncode({
-            ...query,
-            contest_id: undefined,
-            status: undefined,
-            result: undefined,
-            school_id: undefined
-          })))}>
+        <Button
+          type='primary'
+          onClick={() => dispatch(routerRedux.push('/admin/team?' + urlEncode({
+              ...query,
+              contest_id: undefined,
+              status: undefined,
+              result: undefined,
+              school_id: undefined
+            })))}>
           重置筛选
         </Button>
       </div>
@@ -206,7 +213,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
         <Table
           columns={columns} bordered
           rowSelection={rowSelection}
-          dataSource={table} scroll={{x: 2000}}
+          dataSource={table} scroll={{x: 1800}}
           pagination={pagination} rowKey={record => record.id}
         />
       ) : (

@@ -2,11 +2,11 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Alert, Button, Form, Modal, Table } from 'antd'
+import { Alert, Button, Form, Icon, message, Modal, Table, Upload } from 'antd'
 import { connect } from 'dva'
 import { Link, routerRedux } from 'dva/router'
 import './index.less'
-
+import { API } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 import FormItemRender from '../../../components/FormItemRender/'
 import { commonConfig, createConfig, editConfig } from './formConfig'
@@ -14,11 +14,38 @@ import { commonConfig, createConfig, editConfig } from './formConfig'
 const {confirm} = Modal
 
 const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage, alert} = adminSchool
+  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage, alert, schoolId} = adminSchool
   const onCreateClick = e => {
     e.preventDefault()
     dispatch({type: 'adminSchool/updateModalContent', payload: {}})
     dispatch({type: 'adminSchool/showModal', payload: 'create'})
+  }
+
+  const props = {
+    name: 'file',
+    action: API.adminSchoolImport,
+    headers: {
+      token: window.localStorage.getItem('nuedcToken')
+    },
+    onChange (info) {
+      const {response = {}} = info.file
+      const {code = 1, data = []} = response
+      if (code === 0) {
+        const {fail = []} = data
+        if (fail.length) {
+        } else {
+          message.success(`文件上传成功，学校添加成功`)
+        }
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 文件上传失败，稍后再试。`)
+      }
+    },
+    data: (file) => { // 支持自定义保存文件名、扩展名支持
+      console.log('uploadProps data', file)
+    }
+  }
+  const getExcel = () => {
+    dispatch({type: 'adminSchool/downloadExcel'})
   }
 
   const onMenuClick = (key, record) => {
@@ -46,7 +73,6 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
       }
       const {post_code, principal, principal_mobile, address} = values
       let payload = modal === 'create' ? values : {post_code, principal, principal_mobile, address}
-
       dispatch({type: `adminSchool/${modal === 'edit' ? 'update' : 'create'}`, payload: payload})
     })
   }
@@ -96,13 +122,20 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
   return (
     <div className='school'>
       <div className='school-header'>
-        <div>学校列表</div>
-        <Button type='primary' onClick={onCreateClick}>添加学校</Button>
+        <Button type='primary' onClick={onCreateClick}>添加单个学校</Button>
+        <div>
+          <Button type='primary' onClick={getExcel}>获取导入模板</Button>
+          <Upload {...props}>
+            <Button>
+              <Icon type='upload' /> 导入Excel
+            </Button>
+          </Upload>
+        </div>
       </div>
       {alert && (
         <Alert
           message={(<span>学校添加成功，可进行下一步操作</span>)}
-          description={(<Link to='/admin/schoolAdmin'>点此为该学校添加管理员</Link>)}
+          description={(<Link to={`/admin/schoolAdmin?school_id=${schoolId}`}>点此为该学校添加管理员</Link>)}
           type='success'
           closable
           showIcon

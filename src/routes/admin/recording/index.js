@@ -8,7 +8,6 @@ import recordConfig from './formConfig'
 import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 
-const Dragger = Upload.Dragger
 const RecordingManage = ({location, recording, contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, schools = [], table, tableSize, tableCount, tablePage} = recording
   const {table: tableContest = []} = contest
@@ -20,20 +19,16 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
     headers: {
       token: window.localStorage.getItem('nuedcToken')
     },
-    showUploadList: false,
     onChange (info) {
       const {response = {}} = info.file
       const {code = 1, data = []} = response
       if (code === 0) {
         const {fail = []} = data
         if (fail.length) {
-          dispatch({type: 'recording/saveSuccessExcel', payload: fail})
-          dispatch({type: 'recording/showAlert'})
         } else {
-          dispatch({type: 'recording/hideAlert'})
           message.success(`文件上传成功`)
         }
-        dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query})))
+        dispatch({type: 'recording/fetchTable', payload: query})
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
       }
@@ -59,20 +54,28 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (!errors) {
-        dispatch({type: 'recording/checkRecording', payload: values})
+        const {result, result_info} = values
+        const body = {
+          results: [
+            {
+              record_id: modalContent.id,
+              result,
+              result_info
+            }
+          ]
+        }
+        dispatch({type: 'recording/checkRecording', payload: {body, query}})
         dispatch({type: 'recording/hideModal'})
       }
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'id', key: 'id', width: 100, fixed: 'left'},
-    {title: '报名ID', dataIndex: 'register_id', key: 'register_id', width: 100, fixed: 'left'},
-    {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200, fixed: 'left'},
+    {title: '#', dataIndex: 'id', key: 'id', width: 100},
+    {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
-    {title: '报名状态', dataIndex: 'status', key: 'status', width: 100, fixed: 'right'},
     {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
     {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'},
     {
@@ -92,9 +95,10 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
     }
   ]
   const pagination = {
-    pageSize: +tableSize,
-    current: +tablePage,
+    pageSize: +tableSize || 50,
+    current: +tablePage || 1,
     total: +tableCount,
+    pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
       dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, page: current, size: pageSize})))
@@ -132,26 +136,10 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
                   contest_id: value || tableContest[tableContest.length - 1].contest_id
                 })))
             }}
-            value={query.contest_id || undefined}
+            value={query.contest_id}
           >
             {tableContest.map(item => (
               <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
-            ))}
-          </Select>
-          <Select
-            showSearch
-            style={{width: 100}}
-            placeholder='报名状态'
-            onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, status: value || undefined})))
-            }}
-            allowClear
-            value={query.status || undefined}
-          >
-            {statusArr.map(item => (
-              <Select.Option key={'contest-status-' + item.value} value={item.value}>
-                {item.label}
-              </Select.Option>
             ))}
           </Select>
           <Select
@@ -191,7 +179,7 @@ const RecordingManage = ({location, recording, contest, dispatch, form: {getFiel
       {
         dataFlag ? <Table
           columns={columns} bordered
-          dataSource={table} scroll={{x: 1400}}
+          dataSource={table} scroll={{x: 1200}}
           pagination={pagination} rowKey={record => record.id}
         /> : <Alert
           message={(<span>暂未选择竞赛，请先选择竞赛</span>)}

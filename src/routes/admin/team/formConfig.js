@@ -83,77 +83,22 @@ const editConfig = [
     rules: {
       required: false,
       requiredMessage: '请输入邮箱',
-      pattern: verify.password,
+      pattern: verify.mail,
       patternMessage: '输入合法的邮箱'
-    }
-  }, {
-    value: 'problem_selected',
-    label: '所选题目号',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请输入所选题目号',
-      pattern: verify.number,
-      patternMessage: '请勿输入非数字字符'
-    }
-  }, {
-    value: 'status',
-    label: '报名状态',
-    formType: 1,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请选择报名状态'
-    },
-    options: [
-      {
-        value: '未审核',
-        label: '未审核'
-      }, {
-        value: '已审核',
-        label: '已审核'
-      }
-    ]
-  }, {
-    value: 'result',
-    label: '获奖情况',
-    formType: 0,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请输入获奖情况'
-    }
-  }, {
-    value: 'result_info',
-    label: '审核状态',
-    formType: 1,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请选择审核状态'
-    },
-    options: [
-      {
-        value: '未审核',
-        label: '未审核'
-      }, {
-        value: '已审核',
-        label: '已审核'
-      }
-    ]
-  }, {
-    value: 'result_info',
-    label: '附加信息',
-    formType: 0,
-    type: 'textarea',
-    placeholder: '现场赛等其他附加信息',
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请选择报名状态'
     }
   }
 ]
+const passConfig = [{
+  value: 'status',
+  label: '队名',
+  formType: 0,
+  contentType: 'string',
+  rules: {
+    required: false,
+    requiredMessage: '请输入队伍名称',
+    pattern: /^[\u4E00-\u9FA5A-Za-z0-9]{2,20}$/,
+    patternMessage: '2-20位英文字母、汉字、数字'
+  }
+}]
 
-export { editConfig }
+export { editConfig, passConfig }

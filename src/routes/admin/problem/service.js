@@ -13,25 +13,23 @@ const fetchTable = async (data) => request({
   data: data
 })
 
-const remove = async (data, id) => request({
-  url: API.adminContestDelete.replace(':id', id),
-  method: 'post',
+const remove = async (id) => request({
+  url: API.adminProblemRemove.replace(':id', id),
+  method: 'delete',
   token: true,
-  data
 })
 
 const update = async (data, id) => request({
-  url: API.adminContestUpdate.replace(':id', id),
+  url: API.adminProblemUpdate.replace(':id', id),
+  method: 'put',
+  token: true,
+  data
+})
+const add = async (data) => request({
+  url: API.adminProblemAdd,
   method: 'post',
   token: true,
   data
 })
 
-const create = async (data) => request({
-  url: API.adminContestCreate,
-  method: 'post',
-  token: true,
-  data
-})
-
-export { remove, update, create, fetchTable }
+export { remove, update, add, fetchTable }

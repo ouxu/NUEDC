@@ -90,6 +90,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     pageSize: +tableSize,
     current: +tablePage,
     total: +tableCount,
+    pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
       dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({...query, page: current, size: pageSize})))
