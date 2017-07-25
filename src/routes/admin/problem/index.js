@@ -68,17 +68,33 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
     {
       title: '操作',
       render: (record) => {
-        return (
-          <DropOption
-            menuOptions={[{
-              key: 'edit', name: '编辑题目'
-            }, {
+        let menuOptions = [{key: 'edit', name: '编辑题目'}]
+        if (record.attach_path) {
+          menuOptions = [
+            ...menuOptions,
+            {
               key: 'preview', name: '附件预览'
             }, {
               key: 'download', name: '附件下载'
-            }, {
-              key: 'delete', name: '删除题目'
-            }]}
+            }
+          ]
+        } else {
+          menuOptions = [
+            ...menuOptions,
+            {
+              key: 'none', name: '无附件'
+            }
+          ]
+        }
+        menuOptions = [
+          ...menuOptions,
+          {
+            key: 'delete', name: '删除题目'
+          }
+        ]
+        return (
+          <DropOption
+            menuOptions={menuOptions}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
           />
