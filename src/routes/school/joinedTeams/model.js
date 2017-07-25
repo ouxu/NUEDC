@@ -105,7 +105,7 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       }
     },
     * joinedOut ({payload}, {call, select}) {
-      const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
+      const {contest_id: contestsId} = payload
       const date = new Date().valueOf() + ''
       const data = {
         ...payload,
@@ -114,11 +114,12 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       yield call(joinedExcelOut, {filename: date.substr(-3, 3) + '本校参赛队伍竞赛' + contestsId + '.xlsx'}, data)
     },
     * allChecked ({payload}, {call, select, put}) {
+      const query = payload
       const {school_team_ids} = yield select(({joinedTeams}) => joinedTeams.modalContent)
       const data = yield call(allChecked, {school_team_ids: school_team_ids})
       if (data.code === 0) {
         message.success('批量审核成功')
-        yield put({type: 'fetchJoinedTable', payload: {force: true}})
+        yield put({type: 'fetchJoinedTable', payload: query})
       }
     },
     * downloadExcel ({payload}, {call, put, select}) {

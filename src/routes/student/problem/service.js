@@ -12,30 +12,11 @@ const fetchTable = async (id) => request({
   token: true,
 })
 
-const remove = async (id) => request({
-  url: API.adminProblemRemove.replace(':id', id),
-  method: 'delete',
-  token: true,
-})
-
-const update = async (data, id) => request({
-  url: API.adminProblemUpdate.replace(':id', id),
-  method: 'put',
-  token: true,
-  data
-})
-const add = async (data) => request({
-  url: API.adminProblemAdd,
-  method: 'post',
-  token: true,
-  data
-})
-
-const preview = async (data) => request({
-  url: API.viewPrivateFile,
+const update = async (data) => request({
+  url: API.updateContestProblemSelect,
   method: 'get',
   token: true,
   data
 })
 
-export { remove, update, add, fetchTable, preview }
+export { update, fetchTable }

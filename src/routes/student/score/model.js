@@ -22,8 +22,8 @@ export default modelExtend(modalModel, tableModel, {
       if (allPassContest.code === 0) {
         yield put({type: 'saveFilter', payload: allPassContest.data.contestList})
         yield put({type: 'onFilter', payload: allPassContest.data.contestList[0].id})
-        const {contestsId} = yield select(({studentScore}) => studentScore)
-        const data = yield call(getResult, contestsId)
+        const {contest_id: contestId} = payload
+        const data = yield call(getResult, contestId)
         if (data.code === 0) {
           yield put({type: 'setTable', payload: data.data})
         }

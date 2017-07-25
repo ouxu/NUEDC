@@ -13,7 +13,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
   const {table, contest = {}, tableSize, tableCount, tablePage} = schoolResult
   const {contests = []} = contest
   const {query} = location
-
+  const dataFlag = query.contest_id > 0
   const pagination = {
     pageSize: +query.size || 50,
     current: +query.page || 1,
@@ -104,7 +104,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             })))}>
             重置筛选</Button>
         </div>
-        <Button type='primary' onClick={excelOut}>导出excel</Button>
+        <Button type='primary' disabled={!dataFlag} onClick={excelOut}>导出excel</Button>
       </div>
       {
         JSON.stringify(query.contest_id) ? <Table

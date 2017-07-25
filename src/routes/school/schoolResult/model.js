@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { fetchResultTable, resultExcelOut, fetchSelectOption } from './service'
+import { fetchResultTable, fetchSelectOption, resultExcelOut } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 
 export default modelExtend(modalModel, tableModel, {
@@ -31,10 +31,10 @@ export default modelExtend(modalModel, tableModel, {
     },
     * fetchResultTable ({payload}, {call, put, select}) {
       const {contestsId} = yield select(({schoolResult}) => schoolResult)
-      const {contest_id, result_info, page=1, size=50} = payload
+      const {contest_id, result_info, page = 1, size = 50} = payload
       const query = {
         page: page,
-        size: size ,
+        size: size,
         contest_id: contest_id || contestsId,
         result_info: result_info || undefined
       }
@@ -55,7 +55,7 @@ export default modelExtend(modalModel, tableModel, {
       }
     },
     * ResultOut ({payload}, {put, call, select}) {
-      const {contestsId} = yield select(({schoolResult}) => schoolResult)
+      const {contest_id: contestsId} = payload
       const date = new Date().valueOf() + ''
       const data = {
         ...payload,

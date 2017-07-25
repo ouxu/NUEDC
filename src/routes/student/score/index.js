@@ -2,16 +2,15 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Form, Modal, Select, Table } from 'antd'
+import { Alert, Form, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 
-const StudentScoreManage = ({ studentScore, dispatch, }) => {
+const StudentScoreManage = ({studentScore, dispatch, location}) => {
   const {table, contest = []} = studentScore
-  const onOptionChange = (value) => {
-    dispatch({type: 'studentScore/onFilter', payload: value})
-    dispatch({type: 'studentScore/filter', payload: value})
-  }
+  const {query} = location
+
   const columns = [
     {title: '竞赛名称', dataIndex: 'contestTitle', key: 'contestTitle', width: 250},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 250},
@@ -32,21 +31,33 @@ const StudentScoreManage = ({ studentScore, dispatch, }) => {
             showSearch
             style={{width: 300, marginRight: 10}}
             placeholder='竞赛名称'
-            onChange={onOptionChange}
+            onChange={(value) => {
+              dispatch(routerRedux.push(`/student/score?contest_id=` + value))
+            }}
+            value={query.contest_id || undefined}
           >
             {contest.map(item => (
               <Select.Option key={'' + item.id} value={'' + item.id}>
                 {item.title}
-                </Select.Option>
+              </Select.Option>
             ))}
           </Select>
         </div>
       </div>
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 1600}}
-        rowKey={record => record.id}
-      />
+      {
+        JSON.stringify(query.contest_id) ? (
+          <Table
+            columns={columns} bordered
+            dataSource={table} scroll={{x: 1600}}
+            rowKey={record => record.id}
+          />
+        ) : <Alert
+          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+          description={(<span>请先在下拉选单里选择竞赛</span>)}
+          showIcon
+        />
+      }
+
     </div>
   )
 }

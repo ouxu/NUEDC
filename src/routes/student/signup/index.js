@@ -53,10 +53,13 @@ const StudentSignUpManage = ({location, app, login, studentSignUp, dispatch, for
   })
   return (
     <div className='sign-up'>
-      <div className='sign-up-header'>
-        报名参加竞赛
-      </div>
       <Form className='form-content'>
+        <Row className='sign-up-header'>
+          <Col offset={6}>
+            <h2>报名{query.title}</h2>
+          </Col>
+        </Row>
+
         {
           FormItemRender({
             value: 'schoolId',

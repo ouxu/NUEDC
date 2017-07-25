@@ -15,4 +15,10 @@ const fetchTablePass = async (data) => request({
   token: true
 })
 
-export { fetchTable, fetchTablePass }
+const fetchTableSignUp = async (data) => request({
+  url: API.signedUpContests,
+  method: 'get',
+  token: true
+})
+
+export { fetchTable, fetchTablePass, fetchTableSignUp }

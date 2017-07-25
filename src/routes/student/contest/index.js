@@ -2,42 +2,48 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import {Card, Col, Collapse, Form, Modal, Row, Tag} from 'antd'
-import {Link, routerRedux} from 'dva/router'
+import { Card, Col, Collapse, Form, Modal, Row, Tag } from 'antd'
+import { routerRedux } from 'dva/router'
 import './index.less'
-import {connect} from 'dva'
-import {color, urlEncode} from '../../../utils'
+import { connect } from 'dva'
+import { color, newDate, urlEncode } from '../../../utils'
 
 const {confirm} = Modal
 const Panel = Collapse.Panel
 const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, alert, tablePass = []} = studentContest
+  const {modal = false, modalContent = {}, table, alert, tablePass = [], tableSignUp = []} = studentContest
   const customPanelStyle = {
     background: '#f7f7f7',
     borderRadius: 4,
     marginBottom: 24,
     border: 0
   }
-  const SignUpContest = (id) => {
-    dispatch(routerRedux.push(`/student/signup?` + urlEncode({contest_id: id})))
+  const SignUpContest = (item) => {
+    console.log(item)
+    const {id: contest_id, title} = item
+    dispatch(routerRedux.push(`/student/signup?` + urlEncode({contest_id, title})))
   }
-  const selectProblem = (id) => {
-    dispatch(routerRedux.push(`/student/problem?` + urlEncode({contest_id: id})))
+  const selectProblem = (item) => {
+    const {id: contest_id} = item
+    dispatch(routerRedux.push(`/student/problem?` + urlEncode({contest_id})))
   }
   return (
     <div className='contest'>
       <Collapse bordered={false} defaultActiveKey={['1']}>
         <Panel header='已报名竞赛' key='1' style={customPanelStyle}>
           <Row type='flex' gutter={12}>
-            {tablePass.map(item => {
+            {tableSignUp.map(item => {
               let extra
-              if (item.can_select_problem === 1) {
-                extra = (<Tag color={color.blue} onClick={() => selectProblem(item.id)}>点击进行选题</Tag>)
+              if (item.signUpStatus === '待审核') {
+                extra = (<Tag color={color.red}>审核暂未通过</Tag>)
+              }
+              else if (item.can_select_problem === 1) {
+                extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)
               } else if (item.can_select_problem === -1) {
                 if (item.problem_start_time > Date.now()) {
                   extra = (<Tag>选题尚未开始</Tag>)
                 } else if (item.problem_end_time > Date.now()) {
-                  extra = (<Tag color={color.blue} onClick={() => selectProblem(item.id)}>点击进行选题</Tag>)
+                  extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)
                 } else {
                   extra = (<Tag disabled>选题已结束</Tag>)
                 }
@@ -61,17 +67,17 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
             })}
           </Row>
         </Panel>
-        <Panel header='全部竞赛' key='2' style={customPanelStyle}>
+        <Panel header='可报名竞赛' key='2' style={customPanelStyle}>
           <Row type='flex' gutter={12}>
             {table.map(item => {
               let extra
               if (item.can_register === 1) {
-                extra = (<Tag color={color.blue} onClick={() => SignUpContest(item.id)}>点击报名本竞赛</Tag>)
+                extra = (<Tag color={color.blue} onClick={() => SignUpContest(item)}>点击报名本竞赛</Tag>)
               } else if (item.can_register === -1) {
-                if (item.register_start_time > Date.now()) {
+                if (newDate(item.register_start_time) > Date.now()) {
                   extra = (<Tag>报名尚未开始</Tag>)
-                } else if (item.register_end_time > Date.now()) {
-                  extra = (<Tag color={color.blue} onClick={() => SignUpContest(item.id)}>点击报名本竞赛</Tag>)
+                } else if (newDate(item.register_end_time) > Date.now()) {
+                  extra = (<Tag color={color.blue} onClick={() => SignUpContest(item)}>点击报名本竞赛</Tag>)
                 } else {
                   extra = (<Tag disabled>报名已结束</Tag>)
                 }

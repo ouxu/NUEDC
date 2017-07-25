@@ -2,20 +2,17 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Alert, Button, Form, Icon, Modal, Select, Table, Upload } from 'antd'
+import { Alert, Button, Form, Modal, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import FormItemRender from '../../../components/FormItemRender/'
-import { commonConfig, extra } from './formConfig'
-import { API } from '../../../utils'
 import DropOption from '../../../components/DropOption/index'
 const {confirm} = Modal
 
 const ProblemManage = ({app, dispatch, location, studentContest, studentProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
-  const {modal, modalContent, table = []} = studentProblems
+  const {modal, modalContent, problemSelectInfo, table = []} = studentProblems
   const {tablePass: contestTable = []} = studentContest
   const onMenuClick = (key, record) => {
     switch (key) {
@@ -24,7 +21,7 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
           title: '预览确认',
           content: `您确定要在新窗口预览 ${record.title} 的附件吗？`,
           onOk () {
-            dispatch({type: 'adminProblems/preview', payload: record})
+            dispatch({type: 'studentProblems/preview', payload: record})
           },
           onCancel () {}
         })
@@ -34,7 +31,7 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
           title: '下载确认',
           content: `您确定要下载 ${record.title} 的附件吗？`,
           onOk () {
-            dispatch({type: 'adminProblems/download', payload: record})
+            dispatch({type: 'studentProblems/download', payload: record})
           },
           onCancel () {}
         })
@@ -50,13 +47,27 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
     {
       title: '操作',
       render: (record) => {
-        return (
-          <DropOption
-            menuOptions={[{
+        let menuOptions = []
+        if (record.attach_path) {
+          menuOptions = [
+            ...menuOptions,
+            {
               key: 'preview', name: '附件预览'
             }, {
               key: 'download', name: '附件下载'
-            }]}
+            }
+          ]
+        } else {
+          menuOptions = [
+            ...menuOptions,
+            {
+              key: 'none', name: '无附件'
+            }
+          ]
+        }
+        return (
+          <DropOption
+            menuOptions={menuOptions}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
           />
@@ -68,31 +79,29 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
   ]
   const onAddClick = (e) => {
     e.preventDefault()
-    dispatch({type: 'adminProblems/updateModalContent', payload: {modalTitle: '添加竞赛题目'}})
-    dispatch({type: 'adminProblems/showModal', payload: 'add'})
+    dispatch({type: 'studentProblems/updateModalContent', payload: {modalTitle: '选定题目'}})
+    dispatch({type: 'studentProblems/showModal', payload: 'add'})
+  }
+  const onEditClick = (e) => {
+    e.preventDefault()
+    dispatch({type: 'studentProblems/updateModalContent', payload: {modalTitle: '修改选题'}})
+    dispatch({type: 'studentProblems/showModal', payload: 'edit'})
   }
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
         return
       }
-      const {title, content, add_on = '', upload} = values
+      const {contest_id: contestId} = query
+      const {problemId} = values
       const body = {
-        title, content, add_on, contest_id,
+        contestId,
+        problemId
       }
-      if (upload) {
-        body.attach_path = upload[0].response.data.path
-      }
-      if (modal === 'edit') {
-        dispatch({type: 'adminProblems/edit', payload: {body, query}})
-      } else if (modal === 'add') {
-        dispatch({type: 'adminProblems/add', payload: {body, query}})
-      }
+      dispatch({type: 'studentProblems/edit', payload: {body, query}})
     })
   }
-  const normFile = (e) => {
-    return e && e.fileList
-  }
+
   const formItemLayout = {
     labelCol: {
       xs: {span: 24},
@@ -120,25 +129,42 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
             <Select.Option key={'contest-id-' + item} value={item.id + '' || ''}>{item.title}</Select.Option>
           ))}
         </Select>
-        <Button type='primary' disabled={contest_id.length < 1} onClick={onAddClick}>确认选题</Button>
+        <div>
+          <span style={{marginRight: 10}}>
+            选题情况： {problemSelectInfo.title}
+          </span>
+          {problemSelectInfo.problemId === -1 ? (
+            <Button type='primary' disabled={contest_id.length < 1} onClick={onAddClick}>确认选题</Button>
+          ) : (
+            <Button type='primary' disabled={contest_id.length < 1} onClick={onEditClick}>修改选题</Button>
+          )}
+        </div>
+
       </div>
       {
         contest_id.length > 0 ? (
           table.length > 0 ? (
-            <Table
-              columns={columns} bordered
-              dataSource={table}
-              pagination={false} rowKey={record => record.id}
-              expandedRowRender={record => (
-                <div className='expanded-row'>
-                  <span>{record.content}</span>
-                </div>
-              )}
-            />
+            <div>
+              <Alert
+                message={(<span>请在规定时间内完成选题</span>)}
+                description='规定时间内未完成选题的队伍视为放弃比赛'
+                showIcon
+              />
+              <Table
+                columns={columns} bordered
+                dataSource={table}
+                pagination={false} rowKey={record => record.id}
+                expandedRowRender={record => (
+                  <div className='expanded-row'>
+                    <span>{record.content}</span>
+                  </div>
+                )}
+              />
+            </div>
           ) : (
             <Alert
-              message={(<span>暂无题目，请添加</span>)}
-              description='请点击右上角按钮添加题目'
+              message={(<span>暂无题目，请题目发布后再进行选题</span>)}
+              description='赛事管理员暂未添加题目'
               showIcon
             />
           )
@@ -153,39 +179,29 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
       <Modal
         title={modalContent.modalTitle}
         visible={modal}
-        onCancel={() => dispatch({type: 'adminProblems/hideModal'})}
+        onCancel={() => dispatch({type: 'studentProblems/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}
       >
         <Form className='form-content'>
-          {modal && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {
-            initialValue: modalContent[config.value] || '' + ''
-          }))}
           <Form.Item
+            label='选择题目'
             {...formItemLayout}
-            label='附件上传'
-            extra={
-              modal === 'edit' ? '如果不需要更改附件，请勿上传文件' : '用于上传题目相关的附件或者pdf，一道题仅能上传一个附件，请勿上传多个'
-            }
+            extra='在选题时间结束前可以修改选题'
           >
-            {getFieldDecorator('upload', {
-              valuePropName: 'fileList',
-              getValueFromEvent: normFile
+            {getFieldDecorator('problemId', {
+              rules: [{required: true, message: '请选择题目'}],
+              initialValue: (problemSelectInfo.problemId === -1 ? '' : problemSelectInfo.problemId) + ''
             })(
-              <Upload
-                name='upload' action={API.uploadPrivateFile}
-                accept='.pdf'
-                headers={{'token': window.localStorage.getItem('nuedcToken')}}
-              >
-                <Button>
-                  <Icon type='upload' /> 点击上传附件
-                </Button>
-              </Upload>
+              <Select>
+                {table.map((option,i) => (
+                  <Select.Option value={option.id + ''} key={option.id}>
+                    {`${String.fromCharCode(parseInt(table.length - i - 1) + 65)} ${option.title}`}
+                  </Select.Option>
+                ))}
+              </Select>
             )}
           </Form.Item>
-          {modal && FormItemRender(extra, getFieldDecorator, {
-            initialValue: modalContent[extra.value] || '' + ''
-          })}
         </Form>
       </Modal>
     </div>

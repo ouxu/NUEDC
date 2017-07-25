@@ -20,12 +20,13 @@ export default {
   getAllContest: apiMaker('user/getAllContest'),
   getContestProblemList: apiMaker('user/:id/getContestProblemList'),
   getContestProblemDetail: apiMaker('user/getContestProblemDetail'),
+  getContestProblemFile: apiMaker('user/problem/:id/attachment'),
   updateContestProblemSelect: apiMaker('user/updateContestProblemSelect'),
   getContestSignUpStatus: apiMaker('user/:contestId/getContestSignUpStatus'),
   abandonContest: apiMaker('user/:contestId/abandonContest'),
   getAllPassContest: apiMaker('user/getAllPassContest'),
   userSchools: apiMaker('user/schools'),
-
+  signedUpContests: apiMaker('user/getSignedUpContest'),
   // school
   schoolLogin: apiMaker('school/admin/login'),
   schoolJoinedTeams: apiMaker('school/team/info'),

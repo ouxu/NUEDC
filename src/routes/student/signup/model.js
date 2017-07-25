@@ -29,7 +29,6 @@ export default modelExtend(modalModel, tableModel, {
     },
     * signUpContest ({payload}, {call, put, select}) {
       const data = yield call(signUpContest, payload)
-      console.log(data)
       if (data.code === 0) {
         message.success('报名成功，请等待审核')
         yield put({type: 'onFormSubmit', payload: payload})

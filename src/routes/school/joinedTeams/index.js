@@ -129,7 +129,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       let selectedId = []
-      selectedRows.map((item) => {
+      selectedRows.forEach((item) => {
         selectedId.push(item.id)
       })
       dispatch({type: 'joinedTeams/updateModalContent', payload: {school_team_ids: selectedId}})
@@ -142,7 +142,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
         <p>确认通过选中队伍的评审吗？</p>
       ),
       onOk () {
-        dispatch({type: 'joinedTeams/resultUpdate'})
+        dispatch({type: 'joinedTeams/allChecked', payload: query})
       },
       onCancel () {}
     })
@@ -175,7 +175,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
       },
       width: 100,
       fixed: 'right',
-      key: '9'
+      key: 'edit'
     }
   ]
   return (
@@ -210,12 +210,13 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           </Select>
         </div>
         <div>
-          <Button type='primary' onClick={onAddClick} style={{marginRight: 10}}>+ 增加队伍</Button>
-          <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入模板</Button>
-          <Button type='primary' onClick={excelOut} style={{marginRight: 10}}>导出excel</Button>
+          <Button type='primary' onClick={onAddClick} disabled={!dataFlag} style={{marginRight: 10}}>+ 增加队伍</Button>
+          <Button type='primary' onClick={excelOut} disabled={!dataFlag} style={{marginRight: 10}}>导出excel</Button>
+          <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
+
 
           <Upload {...props}>
-            <Button>
+            <Button disabled={!dataFlag}>
               <Icon type='upload' /> 导入Excel
             </Button>
           </Upload>
