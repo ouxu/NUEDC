@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import {getAllContest, signUpContest, getContestSignUpStatus, userSchools} from './service'
 import {modalModel, tableModel} from '../../../models/modelExtend'
 import {message} from 'antd'
+import { routerRedux } from 'dva/router'
 
 export default modelExtend(modalModel, tableModel, {
   namespace: 'studentSignUp',
@@ -32,6 +33,8 @@ export default modelExtend(modalModel, tableModel, {
       if (data.code === 0) {
         message.success('报名成功，请等待审核')
         yield put({type: 'onFormSubmit', payload: payload})
+        yield put(routerRedux.push(`/student`))
+
       }
     }
   },

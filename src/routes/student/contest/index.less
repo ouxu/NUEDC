@@ -1,5 +1,15 @@
 .contest {
   padding-bottom: 10px;
+  .contest-card-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  @media (max-width: 1920px) {
+    .contest-card-title {
+      width: 180px;
+    }
+  }
   &-header {
     margin-bottom: 10px;
     display: flex;

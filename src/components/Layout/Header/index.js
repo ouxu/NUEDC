@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'dva/router'
 import TweenOne from 'rc-tween-one'
-import { enquireScreen, goto } from '../../../utils/'
+import { enquireScreen, goto,config } from '../../../utils/'
 import './index.less'
 import navConfig from './header.json'
 import { Dropdown, Icon, Menu, Modal } from 'antd'
@@ -100,7 +100,7 @@ class Header extends React.Component {
           >
             <Link to='/' key='logo' onClick={(e) => { this.phoneClick(e, this.state.phoneOpen, '/', true) }}>
               <span style={{fontSize: 20, color: '#fff'}}>
-                电子设计大赛
+                {config.name}
              </span>
             </Link>
           </TweenOne>

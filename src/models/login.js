@@ -15,7 +15,7 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
         const match = pathToRegexp('/admin/:params').exec(pathname)
         if (pathname === '/register' || match || pathname === '/student/signup') {
           dispatch({type: 'querySchools'})
-        } else if (pathname==='/login') {
+        } else if (pathname === '/login') {
           dispatch({type: 'roleChange', payload: 'student'})
         }
       })
@@ -49,9 +49,11 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
       yield put(routerRedux.push('/'))
     },
 
-    * getCode ({payload}, {call}) {
+    * getCode ({payload}, {call, put}) {
       const data = yield call(getCode, payload)
-      console.log(data)
+      if (data.code !== 0) {
+        yield put({type: 'login/counterReset'})
+      }
     },
 
     * register ({payload}, {put, call}) {

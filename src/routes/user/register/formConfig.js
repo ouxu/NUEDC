@@ -53,6 +53,7 @@ export default [
     label: '密码',
     formType: 0,
     contentType: 'string',
+    type: 'password',
     rules: {
       required: true,
       requiredMessage: '请输入您的密码',

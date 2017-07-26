@@ -1,9 +1,5 @@
 export default [
   {
-    value: 'id',
-    label: '用户id',
-    disabled: true
-  }, {
     value: 'login_name',
     label: '登录名',
     disabled: true
@@ -16,12 +12,8 @@ export default [
     label: '邮箱',
     disabled: true
   }, {
-    value: 'contact_mobile',
+    value: 'mobile',
     label: '手机号',
-    disabled: true
-  }, {
-    value: 'school_id',
-    label: '学校编号',
     disabled: true
   }, {
     value: 'school_name',
@@ -34,10 +26,6 @@ export default [
   }, {
     value: 'add_on',
     label: '备注信息',
-    disabled: true
-  }, {
-    value: 'status',
-    label: '用户状态',
     disabled: true
   }
 ]

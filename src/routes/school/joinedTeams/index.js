@@ -101,7 +101,13 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
     },
     onChange: (current) => {
       dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, page: current})))
-    }
+    },
+    showTotal: () => (
+      <div className='joined-teams-check'>
+        <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
+        <Button type='primary' onClick={allChecked}>批量审核</Button>
+      </div>
+    )
   }
   const onOptionChange = (value) => {
     dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, contest_id: value || undefined})))
@@ -186,7 +192,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             showSearch
             style={{width: 300, marginRight: 10}}
             placeholder='选择竞赛'
-            value={query.contest_id || undefined}
+            value={(query.contest_id || contests[contests.length - 1].id) + ''}
             onChange={onOptionChange}
           >
             {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
@@ -231,28 +237,14 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
           showIcon
         />
       )}
-      {
-        dataFlag ? (
-          <div>
-            <Table
-              columns={columns} bordered
-              dataSource={table} scroll={{x: 1200}}
-              rowSelection={rowSelection}
-              pagination={pagination} rowKey={record => record.id}
-            />
-            <div className='joined-teams-check'>
-              <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
-              <Button type='primary' onClick={allChecked}>批量审核</Button>
-            </div>
-          </div>
-        ) : (
-          <Alert
-            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-            description={(<span>请先在下拉选单里选择竞赛</span>)}
-            showIcon
-          />
-        )
-      }
+      <div>
+        <Table
+          columns={columns} bordered
+          dataSource={table} scroll={{x: 1200}}
+          rowSelection={rowSelection}
+          pagination={pagination} rowKey={record => record.id}
+        />
+      </div>
       <Modal
         title={`${modal === 'edit' ? '编辑队伍信息' : '增加比赛队伍'}`}
         visible={joinedTeams.modal === 'edit' || joinedTeams.modal === 'add'}

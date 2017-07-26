@@ -22,10 +22,7 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         const match = pathname === '/school/joinedTeams'
         if (match) {
           dispatch({type: 'selectFilter'})
-          const {contest_id = ''} = query
-          if (contest_id.length > 0) {
-            dispatch({type: 'fetchJoinedTable', payload: query})
-          }
+          dispatch({type: 'fetchJoinedTable', payload: query})
         }
       })
     }
@@ -39,12 +36,11 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       }
     },
     * fetchJoinedTable ({payload}, {call, put, select}) {
-      const {contestsId} = yield select(({joinedTeams}) => joinedTeams)
       const {contest_id, status, page = 1, size = 50} = payload
       const query = {
         page: page,
         size: size,
-        contest_id: contest_id || contestsId,
+        contest_id: contest_id || undefined,
         status: status || undefined
       }
       const data = yield call(fetchJoinedTable, query)

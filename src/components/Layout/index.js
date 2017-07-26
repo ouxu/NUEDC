@@ -10,7 +10,6 @@ const Layout = (props) => (
   <div
     className='layout'>
     <div className='layout-content'>
-
       <TweenOne
         animation={[{blur: '3px', type: 'from'}]}
         reverseDelay={10}

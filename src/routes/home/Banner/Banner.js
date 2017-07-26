@@ -21,7 +21,7 @@ class Banner extends React.Component {
             key='title'
           >
             <br />
-            <span className='title-number'>电子设计竞赛</span>
+            <span className='title-number'>中国大学生电子设计竞赛</span>
 
             <br />
             <span className='title-number'>河北赛区</span>

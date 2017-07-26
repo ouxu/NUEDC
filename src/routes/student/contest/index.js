@@ -53,7 +53,7 @@ const ContestManage = ({studentContest, dispatch, form: {getFieldDecorator, vali
               return (
                 <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={item.id} className='contest-item'>
                   <Card
-                    title={item.title} extra={item.register_start_time.substring(0, 10)}
+                    title={<div className='contest-card-title'>{item.title}</div>} extra={item.register_start_time.substring(0, 10)}
                     bodyStyle={{padding: '20px 0 20px 20px'}}>
                     <div className='contest-item-content'>
                       <p>{item.description}</p>

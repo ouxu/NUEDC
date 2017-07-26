@@ -26,7 +26,16 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
       if (errors) {
         return
       }
-      values.schoolName = formConfig[4].options[values.schoolId - 1].label
+      let schoolName = ''
+      schoolOptions.forEach(item => {
+        if (item.value === values.schoolId) {
+          schoolName = item.label
+        }
+      })
+      values = {
+        ...values,
+        schoolName
+      }
       dispatch({type: 'login/register', payload: values})
     })
   }

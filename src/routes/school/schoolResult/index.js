@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Alert, Button, Icon, Select, Table, Tooltip } from 'antd'
+import { Button, Icon, Select, Table, Tooltip } from 'antd'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
@@ -52,7 +52,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
         if (record.problem_selected === -1) {
           return '未选题'
         } else {
-          return problem_selected
+          return record.problem_selected
         }
       },
       key: 'problem_selected',
@@ -72,30 +72,10 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             showSearch
             style={{width: 300, marginRight: 10}}
             placeholder='选择竞赛'
-            value={query.contest_id || undefined}
+            value={(query.contest_id || undefined)}
             onChange={onOptionChange}
           >
             {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
-          </Select>
-          <Select
-            showSearch
-            style={{width: 200, marginRight: 10}}
-            placeholder='审核状态'
-            value={query.result_info || undefined}
-            onChange={(value) => {
-              dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({
-                  ...query,
-                  result_info: value || undefined
-                })))
-            }}
-            allowClear
-          >
-            <Select.Option key={'school-result-' + 1} value='未审核'>
-              未审核
-            </Select.Option>
-            <Select.Option key={'school-result-' + 2} value='已审核'>
-              已审核
-            </Select.Option>
           </Select>
           <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/schoolResult?' + urlEncode({
               ...query,
@@ -104,19 +84,13 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             })))}>
             重置筛选</Button>
         </div>
-        <Button type='primary' disabled={!dataFlag} onClick={excelOut}>导出excel</Button>
+        <Button type='primary' onClick={excelOut}>导出excel</Button>
       </div>
-      {
-        JSON.stringify(query.contest_id) ? <Table
-          columns={columns} bordered
-          dataSource={table} scroll={{x: 2000}}
-          pagination={pagination} rowKey={record => record.id}
-        /> : <Alert
-          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-          description={(<span>请先在下拉选单里选择竞赛</span>)}
-          showIcon
-        />
-      }
+      <Table
+        columns={columns} bordered
+        dataSource={table} scroll={{x: 2000}}
+        pagination={pagination} rowKey={record => record.id}
+      />
     </div>
   )
 }

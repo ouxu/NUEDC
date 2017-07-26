@@ -13,10 +13,7 @@ export default modelExtend(modalModel, tableModel, {
         const match = pathname === '/school/schoolResult'
         if (match) {
           dispatch({type: 'selectFilter'})
-          const {contest_id = ''} = query
-          if (contest_id.length > 0) {
-            dispatch({type: 'fetchResultTable', payload: query})
-          }
+          dispatch({type: 'fetchResultTable', payload: query})
         }
       })
     }
@@ -30,12 +27,11 @@ export default modelExtend(modalModel, tableModel, {
       }
     },
     * fetchResultTable ({payload}, {call, put, select}) {
-      const {contestsId} = yield select(({schoolResult}) => schoolResult)
       const {contest_id, result_info, page = 1, size = 50} = payload
       const query = {
         page: page,
         size: size,
-        contest_id: contest_id || contestsId,
+        contest_id: contest_id || undefined,
         result_info: result_info || undefined
       }
       const data = yield call(fetchResultTable, query)
