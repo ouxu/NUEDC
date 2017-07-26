@@ -82,5 +82,5 @@ export default {
   newsMessageAll: apiMaker('sysadmin/message/all'),
   newsPassage: apiMaker('sysadmin/message/info'),
   newsUpdate: apiMaker('sysadmin/message/update/:id'),
-  newsCreate: apiMaker('sysadmin/message/add'),
+  newsCreate: apiMaker('sysadmin/message/add')
 }

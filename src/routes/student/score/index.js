@@ -5,7 +5,7 @@ import React from 'react'
 import { Alert, Form, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 
 const StudentScoreManage = ({studentScore, dispatch, location}) => {
   const {table, contest = []} = studentScore
@@ -45,17 +45,18 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
         </div>
       </div>
       {
-        JSON.stringify(query.contest_id) ? (
+        query.contest_id === 'none' ? (
+          <Alert
+            message={(<span>您尚未参加过任何比赛</span>)}
+            description={(<Link to='/student'> 点击报名参赛</Link>)}
+            showIcon
+          />
+        ) : (
           <Table
             columns={columns} bordered
             dataSource={table} scroll={{x: 1600}}
             rowKey={record => record.id}
-          />
-        ) : <Alert
-          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-          description={(<span>请先在下拉选单里选择竞赛</span>)}
-          showIcon
-        />
+          />)
       }
 
     </div>

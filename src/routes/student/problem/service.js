@@ -6,6 +6,12 @@
  */
 import { API, request } from '../../../utils'
 
+const fetchTablePass = async (data) => request({
+  url: API.getAllPassContest,
+  method: 'get',
+  token: true
+})
+
 const fetchTable = async (id) => request({
   url: API.getContestProblemList.replace(':id', id),
   method: 'get',
@@ -19,4 +25,4 @@ const update = async (data) => request({
   data
 })
 
-export { update, fetchTable }
+export { update, fetchTable, fetchTablePass }

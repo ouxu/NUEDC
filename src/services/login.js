@@ -5,9 +5,6 @@ const login = async (data, role) => {
   if (role === 'admin') {
     url = API.adminLogin
   }
-  if (role === 'school') {
-    url = API.schoolLogin
-  }
   return request({
     url: url,
     method: 'post',

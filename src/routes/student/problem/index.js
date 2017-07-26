@@ -5,15 +5,15 @@ import React from 'react'
 import { Alert, Button, Form, Modal, Select, Table } from 'antd'
 import './index.less'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption/index'
 const {confirm} = Modal
 
 const ProblemManage = ({app, dispatch, location, studentContest, studentProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
-  const {modal, modalContent, problemSelectInfo, table = []} = studentProblems
   const {tablePass: contestTable = []} = studentContest
+  const {modal, modalContent, problemSelectInfo, table = []} = studentProblems
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'preview':
@@ -142,7 +142,7 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
 
       </div>
       {
-        contest_id.length > 0 ? (
+        contest_id !== 'none' ? (
           table.length > 0 ? (
             <div>
               <Alert
@@ -170,8 +170,8 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
           )
         ) : (
           <Alert
-            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-            description='请先在下拉选单中选择竞赛'
+            message={(<span>您尚未参加过任何比赛</span>)}
+            description={(<Link to='/student'> 点击报名参赛</Link>)}
             showIcon
           />
         )
@@ -194,7 +194,7 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
               initialValue: (problemSelectInfo.problemId === -1 ? '' : problemSelectInfo.problemId) + ''
             })(
               <Select>
-                {table.map((option,i) => (
+                {table.map((option, i) => (
                   <Select.Option value={option.id + ''} key={option.id}>
                     {`${String.fromCharCode(parseInt(table.length - i - 1) + 65)} ${option.title}`}
                   </Select.Option>

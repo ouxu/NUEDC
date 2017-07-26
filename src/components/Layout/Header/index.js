@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'dva/router'
 import TweenOne from 'rc-tween-one'
-import { enquireScreen, goto,config } from '../../../utils/'
+import { config, enquireScreen, goto } from '../../../utils/'
 import './index.less'
 import navConfig from './header.json'
 import { Dropdown, Icon, Menu, Modal } from 'antd'
@@ -9,7 +9,6 @@ class Header extends React.Component {
   static defaultProps = {
     className: 'home-header'
   }
-
   constructor (props) {
     super(props)
     this.state = {
@@ -60,8 +59,8 @@ class Header extends React.Component {
     e.preventDefault()
     const {dispatch} = this.props
     Modal.confirm({
-      title: '登出确认',
-      content: '是否登出？登出后下次进入需要重新登录',
+      title: '退出确认',
+      content: '是否退出？退出后下次进入需要重新登录。',
       onOk () {
         dispatch({type: 'login/logout'})
       },
@@ -100,7 +99,9 @@ class Header extends React.Component {
           >
             <Link to='/' key='logo' onClick={(e) => { this.phoneClick(e, this.state.phoneOpen, '/', true) }}>
               <span style={{fontSize: 20, color: '#fff'}}>
-                {config.name}
+                {this.state.isMode ? (
+                  '中国大学生电子设计竞赛'
+                ) : config.name}
              </span>
             </Link>
           </TweenOne>
@@ -117,9 +118,27 @@ class Header extends React.Component {
                   animation={this.state.openAnim}
                   style={{pointerEvents: this.state.phoneOpen ? 'auto' : 'none'}}
                 >
-                  <ul>
-                    {this.state.phoneOpen && navToRender}
-                  </ul>
+                  {this.state.phoneOpen && (
+                    <ul>
+                      {navToRender}
+                      <li key='user'>
+                        {app.user.id ? (
+                          <Link to={`/${app.role}`}> {app.role === 'student' ? '参与竞赛' : '进入后台'} </Link>
+                        ) : (
+                          <Link to={`/login?from=${location.pathname}`}
+                          >
+                            登录注册
+                          </Link>
+                        )}
+                      </li>
+                      {app.user.id && (
+                        <li key='logout'>
+                          <Link onClick={this.onClickLogout}> 退出登录 </Link>
+                        </li>
+                      )}
+                    </ul>
+                  )}
+
                 </TweenOne>
               </div>
             ) : (

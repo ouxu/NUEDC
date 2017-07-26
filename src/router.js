@@ -1,5 +1,6 @@
 import React from 'react'
 import { IndexRoute, Route, Router } from 'dva/router'
+import { message } from 'antd'
 import App from './routes/app'
 import NotFound from './routes/404'
 
@@ -58,6 +59,15 @@ const registerModel = (app, model) => {
     app.model(model)
   }
 }
+const checkAuth = (nextState, replace) => {
+  const userRole = window.localStorage.getItem('nuedcRole')
+  const {routes = []} = nextState
+  if (userRole !== routes[1].path) {
+    message.error('权限不足')
+    replace({pathname: '/'})
+  }
+}
+
 const Routers = ({history, app}) => (
   <Router history={history}>
     <Route path='/' component={App}>
@@ -72,8 +82,11 @@ const Routers = ({history, app}) => (
       </Route>
       <Route path='login' component={Login} />
       <Route path='register' getComponent={Register} />
-      <Route path='admin' component={AdminPage} onEnter={() => registerModel(app, ContestModel)
-      }>
+      <Route path='admin' component={AdminPage} onEnter={(nextState, replace) => {
+        checkAuth(nextState, replace)
+        registerModel(app, ContestModel)
+      }}
+      >
         <IndexRoute getComponent={ContestManage} />
         <Route
           path='contest' getComponent={ContestManage}
@@ -141,8 +154,12 @@ const Routers = ({history, app}) => (
         />
 
       </Route>
-      <Route path='student' component={StudentPage}>
-        <IndexRoute getComponent={SchoolContestManage} onEnter={() => registerModel(app, SchoolContestModel)} />
+      <Route path='student' component={StudentPage} onEnter={(nextState, replace) => {
+        checkAuth(nextState, replace)
+        registerModel(app, SchoolContestModel)
+      }}
+      >
+        <IndexRoute getComponent={SchoolContestManage} />
 
         <Route
           path='problem' getComponent={StudentProblemManage}
@@ -162,7 +179,9 @@ const Routers = ({history, app}) => (
           }}
         />
       </Route>
-      <Route path='school' component={SchoolPage}>
+      <Route path='school' component={SchoolPage} onEnter={(nextState, replace) => {
+        checkAuth(nextState, replace)
+      }}>
         <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)} />
         <Route
           path='schoolInfo' getComponent={SchoolInfoManage}

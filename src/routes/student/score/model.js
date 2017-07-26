@@ -1,33 +1,42 @@
 import modelExtend from 'dva-model-extend'
 import { getAllPassContest, getResult } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
-
+import { routerRedux } from 'dva/router'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'studentScore',
-  state: {},
+  state: {
+    contest: []
+  },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         const match = pathname === '/student/score'
         if (match) {
-          dispatch({type: 'getAllPassContest', payload: query})
+          dispatch({type: 'fetchTable', payload: query})
         }
       })
     }
   },
   effects: {
-    * getAllPassContest ({payload}, {call, put, select}) {
-      const allPassContest = yield call(getAllPassContest)
-      if (allPassContest.code === 0) {
-        yield put({type: 'saveFilter', payload: allPassContest.data.contestList})
-        const {contest_id: contestId} = payload
-        if (contestId) {
-          const data = yield call(getResult, contestId)
-          if (data.code === 0) {
-            yield put({type: 'setTable', payload: data.data})
-          }
-        }
+    * fetchTable ({payload}, {call, put, select}) {
+      let {contest = []} = yield select(({studentScore}) => studentScore)
+      if (contest.length === 0) {
+        const {data: allPassContest = {}} = yield call(getAllPassContest)
+        contest = allPassContest.contestList || [{}]
+        yield put({type: 'saveContest', payload: contest.reverse()})
       }
+      const {contest_id: contestId} = payload
+      if (contestId) {
+        if (contestId === 'none') return
+
+        const data = yield call(getResult, contestId)
+        if (data.code === 0) {
+          yield put({type: 'setTable', payload: data.data})
+        }
+      } else {
+        yield put(routerRedux.push(`/student/score?contest_id=` + (contest[0].id || 'none')))
+      }
+
     },
     * filter ({payload}, {put, select, call}) {
       const {contestsId} = yield select(({studentScore}) => studentScore)
@@ -49,7 +58,7 @@ export default modelExtend(modalModel, tableModel, {
         contestsId: payload
       }
     },
-    saveFilter (state, {payload}) {
+    saveContest (state, {payload}) {
       return {
         ...state,
         contest: payload

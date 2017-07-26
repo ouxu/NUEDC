@@ -13,26 +13,25 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       return history.listen(({pathname}) => {
         const match = pathToRegexp('/student/:params').exec(pathname)
         if (match || pathname === '/student') {
-          dispatch({type: 'fetchTable'})
+          dispatch({type: 'init', payload: pathname})
         }
       })
     }
   },
-
   effects: {
-    * fetchTable ({payload = false}, {call, select, put}) {
-      const data = yield call(fetchTable)
-      const dataPass = yield call(fetchTablePass)
-      const dataSignUp = yield call(fetchTableSignUp)
-      if (data.code === 0) {
-        yield put({type: 'setTable', payload: data.data})
+    * init  ({payload: pathname}, {call, select, put}) {
+      if (pathname === '/student') {
+        const {data: contestTable = []} = yield call(fetchTable)
+        yield put({type: 'setTable', payload: contestTable})
       }
-      if (dataSignUp.code === 0) {
-        yield put({type: 'setTableSignUp', payload: dataSignUp.data})
+      let {tablePass = [], tableSignUp = []} = yield select((studentContest) => studentContest)
+      if (tablePass.length === 0) {
+        const {data: {contestList = []}} = yield call(fetchTablePass)
+        yield put({type: 'setTablePass', payload: contestList.reverse()})
       }
-      if (dataPass.code === 0) {
-        yield put({type: 'setTablePass', payload: dataPass.data.contestList})
-
+      if (tableSignUp.length === 0) {
+        const {data = []} = yield call(fetchTableSignUp)
+        yield put({type: 'setTableSignUp', payload: data.reverse()})
       }
     }
   },

@@ -6,7 +6,7 @@
   "menus": [
     {
       "key": "/student",
-      "value": "参赛信息",
+      "value": "报名参赛",
       "icon": "edit"
     },
     {

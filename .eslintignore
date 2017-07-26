@@ -3,3 +3,4 @@ dist/
 public/
 .roadhogrc.js
 .roadhogrc.mock.js
+dist/*

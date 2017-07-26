@@ -1,13 +1,13 @@
 import { getCode, login, register, schoolQuery } from '../services/login'
 import { routerRedux } from 'dva/router'
-import { queryURL, sleep } from '../utils'
+import { sleep } from '../utils'
 import modelExtend from 'dva-model-extend'
 import { counterModel, loadingModel, tableModel } from './modelExtend'
 import pathToRegexp from 'path-to-regexp'
 export default modelExtend(counterModel, tableModel, loadingModel, {
   namespace: 'login',
   state: {
-    role: 'student'
+    role: ''
   },
   subscriptions: {
     schoolsSubscriber ({dispatch, history}) {
@@ -24,7 +24,7 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
   effects: {
     * login ({payload}, {put, call, select}) {
       yield put({type: 'showLoading'})
-      const {role} = yield select(({login}) => login)
+      const {role = 'student'} = yield select(({login}) => login)
 
       const data = yield call(login, payload, role)
 
@@ -32,19 +32,27 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
       yield put({type: 'hideLoading'})
 
       if (data.code === 0) {
-        window.localStorage.setItem('nuedcToken', data.data.token)
-        window.localStorage.setItem('nuedcRole', role)
-        yield put({type: 'app/setUser', payload: data.data.user})
-        yield put({type: 'app/setInfo', payload: {token: data.data.token, role: role}})
-        const from = queryURL('from')
-        yield put(routerRedux.push('/' + role))
+        const {data: {token, user}} = data
+        if (user.role === 'school_admin') {
+          user.role = 'school'
+        }
+        window.localStorage.setItem('nuedcToken', token)
+        window.localStorage.setItem('nuedcRole', user.role)
+        yield put({type: 'app/setUser', payload: user})
+        yield put({type: 'app/setInfo', payload: {token: token, role: user.role}})
+
+        yield put(routerRedux.push('/' + user.role))
+      } else {
+        window.localStorage.removeItem('nuedcToken')
+        window.localStorage.removeItem('nuedcRole')
+        yield put({type: 'app/setUser', payload: {}})
+        yield put({type: 'app/setInfo', payload: {}})
       }
     },
 
     * logout ({}, {put}) {
       window.localStorage.removeItem('nuedcToken')
       window.localStorage.removeItem('nuedcRole')
-
       yield put({type: 'app/logout'})
       yield put(routerRedux.push('/'))
     },
