@@ -19,30 +19,36 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
     }
   },
   effects: {
-    * init  ({payload: pathname}, {call, select, put}) {
-      if (pathname === '/student') {
+    * init ({payload: pathname}, {call, select, put}) {
+      let {tablePass = [], tableSignUp = [], table = []} = yield select(({studentContest}) => studentContest)
+      if (pathname === '/student' && table.length === 0) {
         const {data: contestTable = []} = yield call(fetchTable)
-        yield put({type: 'setTable', payload: contestTable})
+        yield put({type: 'setTable', payload: contestTable.reverse()})
       }
-      let {tablePass = [], tableSignUp = []} = yield select((studentContest) => studentContest)
       if (tablePass.length === 0) {
-        const {data: {contestList = []}} = yield call(fetchTablePass)
-        yield put({type: 'setTablePass', payload: contestList.reverse()})
+        yield put({type: 'fetchTablePass'})
       }
       if (tableSignUp.length === 0) {
-        const {data = []} = yield call(fetchTableSignUp)
-        yield put({type: 'setTableSignUp', payload: data.reverse()})
+        yield put({type: 'fetchTableSignUp'})
       }
+    },
+    * fetchTablePass ({}, {call, put}) {
+      const {data: {contestList = []}} = yield call(fetchTablePass)
+      yield put({type: 'setTablePass', payload: contestList.reverse()})
+    },
+    * fetchTableSignUp ({}, {call, put}) {
+      const {data = []} = yield call(fetchTableSignUp)
+      yield put({type: 'setTableSignUp', payload: data.reverse()})
     }
   },
   reducers: {
-    setTablePass(state, {payload: tablePass}) {
+    setTablePass (state, {payload: tablePass}) {
       return {
         ...state,
         tablePass
       }
     },
-    setTableSignUp(state, {payload: tableSignUp}) {
+    setTableSignUp (state, {payload: tableSignUp}) {
       return {
         ...state,
         tableSignUp

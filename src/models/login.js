@@ -3,7 +3,6 @@ import { routerRedux } from 'dva/router'
 import { sleep } from '../utils'
 import modelExtend from 'dva-model-extend'
 import { counterModel, loadingModel, tableModel } from './modelExtend'
-import pathToRegexp from 'path-to-regexp'
 export default modelExtend(counterModel, tableModel, loadingModel, {
   namespace: 'login',
   state: {
@@ -12,10 +11,8 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
   subscriptions: {
     schoolsSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const match = pathToRegexp('/admin/:params').exec(pathname)
-        if (pathname === '/register' || match || pathname === '/student/signup') {
-          dispatch({type: 'querySchools'})
-        } else if (pathname === '/login') {
+        dispatch({type: 'querySchools'})
+        if (pathname === '/login') {
           dispatch({type: 'roleChange', payload: 'student'})
         }
       })

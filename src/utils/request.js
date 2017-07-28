@@ -64,7 +64,8 @@ export default async options => {
   } catch (e) {
     message.error('网络错误，请刷新页面重试')
     return {
-      code: -1
+      code: -1,
+      data: {}
     }
   }
 }

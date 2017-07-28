@@ -161,7 +161,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
         <Button type='primary' disabled={contest_id.length < 1} onClick={onAddClick}>添加题目</Button>
       </div>
       {
-        contest_id.length > 0 ? (
+        contest_id !== 'none' ? (
           table.length > 0 ? (
             <Table
               columns={columns} bordered
@@ -179,15 +179,15 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
               description='请点击右上角按钮添加题目'
               showIcon
             />
-          )
-        ) : (
+          )) : (
           <Alert
-            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-            description='请先在下拉选单中选择竞赛'
+            message={(<span>网络故障</span>)}
+            description={(<span>请在下拉选单中重新选择竞赛</span>)}
             showIcon
           />
         )
       }
+
       <Modal
         title={modalContent.modalTitle}
         visible={modal}

@@ -9,6 +9,7 @@ class Header extends React.Component {
   static defaultProps = {
     className: 'home-header'
   }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -154,7 +155,7 @@ class Header extends React.Component {
                       <Dropdown overlay={(
                         <Menu theme='dark' style={{width: 90, float: 'right'}}>
                           <Menu.Item key=''>
-                            <Link to={`/${app.role}`}> 进入后台 </Link>
+                            <Link to={`/${app.role}`}>{app.role === 'student' ? '参与竞赛' : '进入后台'}  </Link>
                           </Menu.Item>
                           <Menu.Item key='2'>
                             <Link onClick={this.onClickLogout}> 退出登录 </Link>

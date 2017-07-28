@@ -9,7 +9,7 @@ import { Link, routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption/index'
 const {confirm} = Modal
 
-const ProblemManage = ({app, dispatch, location, studentContest, studentProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
+const ProblemManage = ({dispatch, location, studentContest, studentProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
   const {tablePass: contestTable = []} = studentContest
@@ -134,9 +134,11 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
             选题情况： {problemSelectInfo.title}
           </span>
           {problemSelectInfo.problemId === -1 ? (
-            <Button type='primary' disabled={contest_id.length < 1} onClick={onAddClick}>确认选题</Button>
+            <Button type='primary' disabled={table.length === 0}
+              onClick={onAddClick}>确认选题</Button>
           ) : (
-            <Button type='primary' disabled={contest_id.length < 1} onClick={onEditClick}>修改选题</Button>
+            <Button type='primary' disabled={contest_id === 'none' || table.length === 0 }
+              onClick={onEditClick}>修改选题</Button>
           )}
         </div>
 
@@ -170,8 +172,8 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
           )
         ) : (
           <Alert
-            message={(<span>您尚未参加过任何比赛</span>)}
-            description={(<Link to='/student'> 点击报名参赛</Link>)}
+            message={(<span>请在下拉选单中选择竞赛</span>)}
+            description={(<span>如果您尚未参加过任何比赛，<Link to='/student'> 请点此参赛</Link></span>)}
             showIcon
           />
         )
@@ -208,8 +210,7 @@ const ProblemManage = ({app, dispatch, location, studentContest, studentProblems
   )
 }
 
-export default connect(({app, studentProblems, studentContest}) => ({
-  app,
+export default connect(({studentProblems, studentContest}) => ({
   studentProblems,
   studentContest
 }))(Form.create()(ProblemManage))

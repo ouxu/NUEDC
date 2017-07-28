@@ -6,6 +6,11 @@
  */
 import { API, request } from '../../../utils'
 
+const fetchContest = async (data) => request({
+  url: API.adminContests,
+  method: 'get',
+  token: true
+})
 const fetchTable = async (data) => request({
   url: API.adminProblems,
   method: 'get',
@@ -39,4 +44,4 @@ const preview = async (data) => request({
   data
 })
 
-export { remove, update, add, fetchTable, preview }
+export { remove, update, add, fetchTable, preview, fetchContest }

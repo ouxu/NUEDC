@@ -8,7 +8,7 @@ import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
-import { editConfig } from './formConfig'
+import { createConfig, editConfig } from './formConfig'
 import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
@@ -19,7 +19,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
   const {query} = location
   const onCreateClick = e => {
     e.preventDefault()
-    if (modalContent.form) {
+    if (!modalContent.from) {
       dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: {}})
     }
     dispatch({type: 'adminSchoolAdmin/showModal', payload: 'create'})
@@ -28,7 +28,6 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
   const onMenuClick = (key, record) => {
     switch (key) {
       case 'edit':
-        record.status = '' + record.status
         dispatch({type: 'adminSchoolAdmin/updateModalContent', payload: record})
         dispatch({type: 'adminSchoolAdmin/showModal', payload: 'edit'})
         break
@@ -49,14 +48,12 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
       if (errors) {
         return
       }
-      if (modal === 'edit') {
-        values.status = +values.status
-      }
+      values.status = 1
       dispatch({type: `adminSchoolAdmin/${modal === 'edit' ? 'update' : 'create'}`, payload: values})
     })
   }
   const columns = [
-    {title: 'id', dataIndex: 'fakeId', key: 'id', width: 50},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '用户名', dataIndex: 'name', key: 'name', width: 150},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
     {title: '手机号', dataIndex: 'mobile', key: 'mobile', width: 120},
@@ -121,6 +118,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
             showSearch
             style={{width: 200, marginRight: 10}}
             placeholder='选择学校'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             value={query.school_id || undefined}
             onChange={(value) => {
               dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, school_id: value || undefined})))
@@ -149,8 +147,11 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
       />
       <Modal
         title={`${modal === 'edit' ? '修改学校管理员信息' : '添加学校管理员'}`}
-        visible={modal === 'edit' || modal === 'create'}
-        onCancel={() => dispatch({type: 'adminSchoolAdmin/hideModal'})}
+        visible={modal}
+        onCancel={() => {
+          dispatch({type: 'adminSchoolAdmin/hideModal'})
+          dispatch
+        }}
         onOk={onModalOk}
         key={'' + modal}
       >
@@ -173,8 +174,11 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
               )}
             </Form.Item>
           )}
-          { editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
-
+          {modal === 'create' ? (
+            createConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))
+          ) : (
+            editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})))
+          }
         </Form>
       </Modal>
     </div>

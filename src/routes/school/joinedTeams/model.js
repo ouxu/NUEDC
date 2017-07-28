@@ -10,54 +10,65 @@ import {
   remove,
   update
 } from './service'
+import { routerRedux } from 'dva/router'
 import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
 
 export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'joinedTeams',
-  state: {},
+  state: {
+    contests: [],
+    content: []
+  },
   subscriptions: {
-    contestSubscriber ({dispatch, history}) {
+    joinedTeamsSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         const match = pathname === '/school/joinedTeams'
         if (match) {
-          dispatch({type: 'selectFilter'})
           dispatch({type: 'fetchJoinedTable', payload: query})
         }
       })
     }
   },
   effects: {
-    * selectFilter ({payload}, {call, put}) {
-      const selectOptions = yield call(fetchSelectOption)
-      if (selectOptions.code === 0) {
-        yield put({type: 'saveFilter', payload: selectOptions.data})
-        yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
-      }
-    },
     * fetchJoinedTable ({payload}, {call, put, select}) {
+      let {contests = [{}]} = yield select(({joinedTeams}) => joinedTeams)
+      if (contests.length === 0) {
+        const {data = {}} = yield call(fetchSelectOption)
+        contests = data.contests || [{}]
+        yield put({type: 'saveContest', payload: contests.reverse()})
+      }
+
       const {contest_id, status, page = 1, size = 50} = payload
-      const query = {
-        page: page,
-        size: size,
-        contest_id: contest_id || undefined,
-        status: status || undefined
-      }
-      const data = yield call(fetchJoinedTable, query)
-      if (data.code === 0) {
-        const {data: {count, teams}} = data
-        const tableConfig = {
-          tablePage: page,
-          tableSize: size,
-          tableCount: count
+      if (!contest_id) {
+        yield put(routerRedux.push(`/school/joinedTeams?contest_id=` + (contests[0].id || 'none')))
+      } else {
+        if (contest_id === 'none') return
+        const query = {
+          page: page,
+          size: size,
+          contest_id,
+          status: status || undefined
         }
-        const table = teams.map((t, i) => ({
-          ...t,
-          fakeId: i + 1 + (page - 1) * size
-        }))
-        yield put({type: 'setTable', payload: table})
-        yield put({type: 'setTableConfig', payload: tableConfig})
+        const {data: {count = '', teams = []}, code} = yield call(fetchJoinedTable, query)
+        if (code === 0) {
+          const tableConfig = {
+            tablePage: page,
+            tableSize: size,
+            tableCount: count
+          }
+          const table = teams.map((t, i) => ({
+            ...t,
+            fakeId: i + 1 + (page - 1) * size
+          }))
+          yield put({type: 'setTable', payload: table})
+          yield put({type: 'setTableConfig', payload: tableConfig})
+        } else {
+          yield put({type: 'setTable', payload: []})
+          yield put({type: 'setTableConfig', payload: {}})
+        }
       }
+
     },
     * edit ({payload}, {call, select, put}) {
       const {id} = yield select(({joinedTeams}) => joinedTeams.modalContent)
@@ -129,22 +140,16 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         form: payload
       }
     },
-    onFilter (state, {payload}) {
-      return {
-        ...state,
-        contestsId: payload
-      }
-    },
-    saveFilter (state, {payload}) {
-      return {
-        ...state,
-        contest: payload
-      }
-    },
     saveSuccessExcel (state, {payload}) {
       return {
         ...state,
         content: payload
+      }
+    },
+    saveContest (state, {payload}) {
+      return {
+        ...state,
+        contests: payload
       }
     }
   }

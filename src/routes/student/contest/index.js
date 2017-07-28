@@ -18,7 +18,6 @@ const ContestManage = ({studentContest, dispatch}) => {
     border: 0
   }
   const SignUpContest = (item) => {
-    console.log(item)
     const {id: contest_id, title} = item
     dispatch(routerRedux.push(`/student/signup?` + urlEncode({contest_id, title})))
   }

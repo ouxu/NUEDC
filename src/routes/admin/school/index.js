@@ -13,8 +13,9 @@ import { commonConfig, createConfig, editConfig } from './formConfig'
 
 const {confirm} = Modal
 
-const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage, alert, schoolId} = adminSchool
+const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  const {modal = false, modalContent = {}, content = [], table, tableSize, tableCount, tablePage, alert, schoolId} = adminSchool
+  const {query} = location
   const onCreateClick = e => {
     e.preventDefault()
     dispatch({type: 'adminSchool/updateModalContent', payload: {}})
@@ -33,9 +34,13 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
       if (code === 0) {
         const {fail = []} = data
         if (fail.length) {
+          dispatch({type: 'adminSchool/saveExcelFail', payload: fail})
         } else {
-          message.success(`文件上传成功，学校添加成功`)
+          dispatch({type: 'adminSchool/saveExcelFail', payload: []})
+          message.success(`文件上传成功`)
         }
+        dispatch({type: 'adminSchool/showAlert'})
+        dispatch({type: 'adminSchool/fetchTable', payload: query})
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
       }
@@ -155,18 +160,28 @@ const SchoolManage = ({adminSchool, dispatch, form: {getFieldDecorator, validate
           </Upload>
         </div>
       </div>
-      {alert && (
-        <Alert
-          message={(<span>学校添加成功，可进行下一步操作</span>)}
-          description={(
-            <Link to={`/admin/schoolAdmin?` + urlEncode({school_id: schoolId || undefined})}>
-              点此为该学校添加管理员
-            </Link>
-          )}
-          type='success'
-          closable
-          showIcon
-        />
+      {alert && (content.length > 0 ? ((
+          <Alert
+            message={(<span>以下学校导入失败（学校名与已有学校重复）,请修改后再导入以下学校</span>)}
+            description={(content.map((item, index) => <div key={index}><span>队伍名称:{item[0]}</span>
+            </div>))}
+            type='error'
+            showIcon
+          />
+        )) : (
+          <Alert
+            message={(<span>学校添加成功，可进行下一步操作</span>)}
+            description={(
+              <Link to={`/admin/schoolAdmin?` + urlEncode({school_id: schoolId || undefined})}>
+                点此为该学校添加管理员
+              </Link>
+            )}
+            type='success'
+            closable
+            showIcon
+          />
+        )
+
       )}
       <Table
         columns={columns} bordered

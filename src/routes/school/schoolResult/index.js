@@ -2,18 +2,15 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Button, Icon, Select, Table, Tooltip } from 'antd'
+import { Alert, Button, Icon, Select, Table, Tooltip } from 'antd'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
 import { connect } from 'dva'
 
-const Option = Select.Option
 const SchoolResultManage = ({location, schoolResult, dispatch}) => {
-  const {table, contest = {}, tableSize, tableCount, tablePage} = schoolResult
-  const {contests = []} = contest
+  const {table, contests = {}, tableCount} = schoolResult
   const {query} = location
-  const dataFlag = query.contest_id > 0
   const pagination = {
     pageSize: +query.size || 50,
     current: +query.page || 1,
@@ -74,23 +71,36 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             placeholder='选择竞赛'
             value={(query.contest_id || undefined)}
             onChange={onOptionChange}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
           </Select>
-          <Button type='primary' onClick={() => dispatch(routerRedux.push('/school/schoolResult?' + urlEncode({
-              ...query,
-              contest_id: undefined,
-              result_info: undefined
-            })))}>
-            重置筛选</Button>
         </div>
         <Button type='primary' onClick={excelOut}>导出excel</Button>
       </div>
-      <Table
-        columns={columns} bordered
-        dataSource={table} scroll={{x: 2000}}
-        pagination={pagination} rowKey={record => record.id}
-      />
+      {
+        query.contest_id === 'none' ? (
+          <Alert
+            message={(<span>您尚未参加过任何比赛</span>)}
+            description={(<Link to='/student'> 点击报名参赛</Link>)}
+            showIcon
+          />
+        ) : (
+          table.length > 0 ? (
+            <Table
+              columns={columns} bordered
+              dataSource={table} scroll={{x: 2000}}
+              pagination={pagination} rowKey={record => record.id}
+            />
+          ) : (
+            <Alert
+              message={(<span>比赛结果尚未公布</span>)}
+              description={' '}
+              showIcon
+            />
+          )
+        )
+      }
     </div>
   )
 }

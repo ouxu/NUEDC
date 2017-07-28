@@ -32,7 +32,7 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
             ...t,
             fakeId: i + 1
           }))
-          yield put({type: 'setTable', payload: table})
+          yield put({type: 'setTable', payload: table.reverse()})
         }
       }
     },

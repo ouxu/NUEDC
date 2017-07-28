@@ -19,7 +19,7 @@ export default modelExtend(modalModel, tableModel, {
   },
   effects: {
     * fetchTable ({payload}, {call, put, select}) {
-      let {contest = []} = yield select(({studentScore}) => studentScore)
+      let {contest = [{}]} = yield select(({studentScore}) => studentScore)
       if (contest.length === 0) {
         const {data: allPassContest = {}} = yield call(getAllPassContest)
         contest = allPassContest.contestList || [{}]
@@ -28,7 +28,6 @@ export default modelExtend(modalModel, tableModel, {
       const {contest_id: contestId} = payload
       if (contestId) {
         if (contestId === 'none') return
-
         const data = yield call(getResult, contestId)
         if (data.code === 0) {
           yield put({type: 'setTable', payload: data.data})
@@ -36,26 +35,13 @@ export default modelExtend(modalModel, tableModel, {
       } else {
         yield put(routerRedux.push(`/student/score?contest_id=` + (contest[0].id || 'none')))
       }
-
-    },
-    * filter ({payload}, {put, select, call}) {
-      const {contestsId} = yield select(({studentScore}) => studentScore)
-      const data = yield call(getResult, contestsId)
-      yield put({type: 'setTable', payload: data.data})
     }
-
   },
   reducers: {
     onFormSubmit (state, {payload}) {
       return {
         ...state,
         form: payload
-      }
-    },
-    onFilter (state, {payload}) {
-      return {
-        ...state,
-        contestsId: payload
       }
     },
     saveContest (state, {payload}) {

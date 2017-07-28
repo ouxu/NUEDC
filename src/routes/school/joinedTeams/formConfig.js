@@ -12,39 +12,39 @@ export default [
     rules: {
       required: true,
       requiredMessage: '请输入您的队伍名称',
-      pattern: verify.chinese,
-      patternMessage: '输入包含非中文字符！'
+      pattern: '',
+      patternMessage: '！'
     }
   }, {
     value: 'member1',
-    label: '成员1',
+    label: '队长姓名',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入成员1',
+      requiredMessage: '请输入队长的姓名',
       pattern: '',
       patternMessage: ''
     }
   }, {
     value: 'member2',
-    label: '成员2',
+    label: '成员1',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入成员2',
+      requiredMessage: '请输入成员1的姓名',
       pattern: '',
       patternMessage: ''
     }
   }, {
     value: 'member3',
-    label: '成员3',
+    label: '成员2',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入成员3',
+      requiredMessage: '请输入成员2的姓名',
       pattern: '',
       patternMessage: ''
     }
@@ -55,7 +55,7 @@ export default [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入指导老师'
+      requiredMessage: '请输入指导教师姓名'
     }
   }, {
     value: 'contact_mobile',
@@ -64,7 +64,7 @@ export default [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入您的手机',
+      requiredMessage: '请输入队伍队长的手机号',
       pattern: verify.mobile,
       patternMessage: '输入合法的手机！'
     }
@@ -75,7 +75,7 @@ export default [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入您的邮箱',
+      requiredMessage: '请输入队伍队长的邮箱',
       pattern: verify.mail,
       patternMessage: '输入合法的邮箱！'
     }

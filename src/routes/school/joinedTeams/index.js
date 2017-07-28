@@ -10,11 +10,9 @@ import { API, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
-const Option = Select.Option
 const confirm = Modal.confirm
-const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, content, modalContent, contest = {}, tableSize, tableCount, tablePage, contestsId, alert} = joinedTeams
-  const {contests = []} = contest
+const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  const {modal = false, table, content, modalContent, contests = [], tableCount, alert} = joinedTeams
   const {school_team_ids = []} = modalContent
   const {query} = location
   const dataFlag = query.contest_id > 0
@@ -88,6 +86,21 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   }
   const onAddClick = e => {
     e.preventDefault()
+    let school_level = ''
+    const {table: schools} = login
+    const {user: {school_id = ''}} = app
+    schools.forEach(item => {
+      if (item.id === +school_id) {
+        school_level = item.level
+      }
+    })
+    const payload = {
+      school_level,
+      school_id,
+      school_name: app.user.school_name,
+      contest_id: query.contest_id
+    }
+    dispatch({type: 'joinedTeams/updateModalContent', payload: payload})
     dispatch({type: 'joinedTeams/showModal', payload: 'add'})
   }
   const pagination = {
@@ -108,9 +121,6 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
         <Button type='primary' onClick={allChecked}>批量审核</Button>
       </div>
     )
-  }
-  const onOptionChange = (value) => {
-    dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, contest_id: value || undefined})))
   }
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
@@ -173,7 +183,7 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
       render: (record) => {
         return (
           <DropOption
-            menuOptions={[{key: 'edit', name: '编辑'}, {key: 'delete', name: '删除'}, {key: 'audit', name: '审核'}]}
+            menuOptions={[{key: 'edit', name: '编辑'}, {key: 'audit', name: '审核'}, {key: 'delete', name: '删除'}]}
             buttonStyle={{border: 'solid 1px #eee', width: 60}}
             onMenuClick={({key}) => onMenuClick(key, record)}
           />
@@ -192,8 +202,11 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             showSearch
             style={{width: 300, marginRight: 10}}
             placeholder='选择竞赛'
-            value={(query.contest_id || contests[contests.length - 1].id) + ''}
-            onChange={onOptionChange}
+            value={query.contest_id || undefined}
+            onChange={(value) => dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({
+                ...query, contest_id: value
+              })))}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
           </Select>
@@ -205,7 +218,6 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
             onChange={(value) => {
               dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, status: value || undefined})))
             }}
-            allowClear
           >
             <Select.Option key={'joined-result-' + 1} value='未审核'>
               未审核
@@ -261,4 +273,4 @@ const JoinedTeamsManage = ({location, joinedTeams, dispatch, form: {getFieldDeco
   )
 }
 
-export default connect(({app, joinedTeams}) => ({app, joinedTeams}))(Form.create()(JoinedTeamsManage))
+export default connect(({app, joinedTeams, login}) => ({app, joinedTeams, login}))(Form.create()(JoinedTeamsManage))

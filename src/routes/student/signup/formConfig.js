@@ -12,7 +12,7 @@ const commonConfig = [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入队伍名称',
+      requiredMessage: '请输入您的队伍名称',
       pattern: '',
       patternMessage: ''
     }
@@ -60,9 +60,7 @@ const commonConfig = [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入指导教师姓名',
-      pattern: '',
-      patternMessage: ''
+      requiredMessage: '请输入指导教师姓名'
     }
   }, {
     value: 'mobile',

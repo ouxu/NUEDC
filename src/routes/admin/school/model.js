@@ -6,7 +6,8 @@ import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'adminSchool',
   state: {
-    schoolId: ''
+    schoolId: '',
+    content: []
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
@@ -77,6 +78,12 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         ...state,
         schoolId
       }
-    }
+    },
+    saveExcelFail (state, {payload}) {
+      return {
+        ...state,
+        content: payload
+      }
+    },
   }
 })

@@ -10,7 +10,6 @@ import { Link, routerRedux } from 'dva/router'
 const StudentScoreManage = ({studentScore, dispatch, location}) => {
   const {table, contest = []} = studentScore
   const {query} = location
-
   const columns = [
     {title: '竞赛名称', dataIndex: 'contestTitle', key: 'contestTitle', width: 250},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 250},
@@ -34,6 +33,7 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
             onChange={(value) => {
               dispatch(routerRedux.push(`/student/score?contest_id=` + value))
             }}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             value={query.contest_id || undefined}
           >
             {contest.map(item => (
@@ -52,13 +52,21 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
             showIcon
           />
         ) : (
-          <Table
-            columns={columns} bordered
-            dataSource={table} scroll={{x: 1600}}
-            rowKey={record => record.id}
-          />)
+          table.length > 0 ? (
+            <Table
+              columns={columns} bordered
+              dataSource={table} scroll={{x: 1600}}
+              rowKey={record => record.id}
+            />
+          ) : (
+            <Alert
+              message={(<span>比赛结果尚未公布</span>)}
+              description={' '}
+              showIcon
+            />
+          )
+        )
       }
-
     </div>
   )
 }

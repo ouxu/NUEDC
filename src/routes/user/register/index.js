@@ -34,12 +34,19 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
       })
       values = {
         ...values,
-        schoolName
+        schoolName,
+        passwordConfirmation: undefined
       }
       dispatch({type: 'login/register', payload: values})
     })
   }
-
+  const checkPassword = (rule, value, callback) => {
+    if (value && value !== getFieldValue('password')) {
+      callback('两次输入的密码不一致！')
+    } else {
+      callback()
+    }
+  }
   const counterStart = (e) => {
     e.preventDefault()
     const data = {
@@ -64,7 +71,6 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
         <div className='login-title'>
           <span>{config.name} · 注册账户</span>
         </div>
-
         <Form>
           {
             FormItemRender({
@@ -80,6 +86,21 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
             }, getFieldDecorator, extra)
           }
           {formConfig.map(config => FormItemRender(config, getFieldDecorator, extra))}
+          <FormItem
+            label='确认密码'
+            hasFeedback
+            key='register-check-password'
+          >
+            {getFieldDecorator('passwordConfirmation', {
+              rules: [{
+                required: true, message: '与上一次密码不一致'
+              }, {
+                validator: checkPassword
+              }]
+            })(
+              <Input type='password' />,
+            )}
+          </FormItem>
           <FormItem
             label='验证码'
           >

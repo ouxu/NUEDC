@@ -1,53 +1,60 @@
 import modelExtend from 'dva-model-extend'
 import { fetchResultTable, fetchSelectOption, resultExcelOut } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
-
+import { routerRedux } from 'dva/router'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'schoolResult',
   state: {
-    input: ''
+    input: '',
+    contests: []
   },
   subscriptions: {
-    contestSubscriber ({dispatch, history}) {
+    schoolResultSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         const match = pathname === '/school/schoolResult'
         if (match) {
-          dispatch({type: 'selectFilter'})
           dispatch({type: 'fetchResultTable', payload: query})
         }
       })
     }
   },
   effects: {
-    * selectFilter ({payload}, {call, put}) {
-      const selectOptions = yield call(fetchSelectOption)
-      if (selectOptions.code === 0) {
-        yield put({type: 'saveFilter', payload: selectOptions.data})
-        yield put({type: 'onFilter', payload: selectOptions.data.contests[0].id})
-      }
-    },
     * fetchResultTable ({payload}, {call, put, select}) {
-      const {contest_id, result_info, page = 1, size = 50} = payload
-      const query = {
-        page: page,
-        size: size,
-        contest_id: contest_id || undefined,
-        result_info: result_info || undefined
+      let {contests = [{}]} = yield select(({schoolResult}) => schoolResult)
+      if (contests.length === 0) {
+        const {data = {}} = yield call(fetchSelectOption)
+        contests = data.contests || [{}]
+        yield put({type: 'saveContest', payload: contests.reverse()})
       }
-      const data = yield call(fetchResultTable, query)
-      if (data.code === 0) {
-        const {data: {count, results}} = data
-        const tableConfig = {
-          tablePage: page,
-          tableSize: size,
-          tableCount: count
+
+      const {contest_id, result_info, page = 1, size = 50} = payload
+      if (!contest_id) {
+        yield put(routerRedux.push(`/school/schoolResult?contest_id=` + (contests[0].id || 'none')))
+      } else {
+        if (contest_id === 'none') return
+        const query = {
+          page: page,
+          size: size,
+          contest_id: contest_id,
+          result_info: result_info || undefined
         }
-        const table = results.map((t, i) => ({
-          ...t,
-          fakeId: i + 1 + (page - 1) * size
-        }))
-        yield put({type: 'setTable', payload: table})
-        yield put({type: 'setTableConfig', payload: tableConfig})
+        const {code, data: {count, results}} = yield call(fetchResultTable, query)
+        if (code === 0) {
+          const tableConfig = {
+            tablePage: page,
+            tableSize: size,
+            tableCount: count
+          }
+          const table = results.map((t, i) => ({
+            ...t,
+            fakeId: i + 1 + (page - 1) * size
+          }))
+          yield put({type: 'setTable', payload: table})
+          yield put({type: 'setTableConfig', payload: tableConfig})
+        } else {
+          yield put({type: 'setTable', payload: []})
+          yield put({type: 'setTableConfig', payload: {}})
+        }
       }
     },
     * ResultOut ({payload}, {put, call, select}) {
@@ -61,16 +68,10 @@ export default modelExtend(modalModel, tableModel, {
     }
   },
   reducers: {
-    onFilter (state, {payload}) {
+    saveContest (state, {payload}) {
       return {
         ...state,
-        contestsId: payload
-      }
-    },
-    saveFilter (state, {payload}) {
-      return {
-        ...state,
-        contest: payload
+        contests: payload
       }
     }
   }

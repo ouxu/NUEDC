@@ -1,17 +1,19 @@
 import modelExtend from 'dva-model-extend'
 import { modalModel, tableModel } from '../../../models/modelExtend'
-import { API, urlEncode } from '../../../utils'
+import { API, sleep, urlEncode } from '../../../utils'
 import { fetchTable, update } from './service'
+
 import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 export default modelExtend(tableModel, modalModel, {
   namespace: 'studentProblems',
   state: {
     problemSelectInfo: {},
+    tablePass: []
   },
   subscriptions: {
     problemSubscriber ({dispatch, history}) {
-      return history.listen(({pathname, query = {}}) => {
+      return history.listen(({pathname, query}) => {
         if (pathname === '/student/problem') {
           dispatch({type: 'fetchTable', payload: query})
         }
@@ -20,17 +22,24 @@ export default modelExtend(tableModel, modalModel, {
   },
   effects: {
     * fetchTable ({payload}, {call, put, select}) {
-      let {tablePass = [{}]} = yield select(({studentContest}) => studentContest)
       const {contest_id = ''} = payload
-      if (tablePass.length === 0 || contest_id === 'none') {
-        return
-      }
-      if (contest_id) {
+      if (!contest_id) {
+        let {tablePass: contest} = yield select(({studentContest}) => studentContest)
+        if (contest.length === 0) {
+          yield call(sleep, 1000)
+          let {tablePass: contestNow} = yield select(({studentContest}) => studentContest)
+          contest = contestNow
+        }
+        const preId = contest[0] || {id: 'none'}
+        yield call(sleep, 10)
+        yield put(routerRedux.push(`/student/problem?contest_id=` + preId.id))
+      } else {
+        if (contest_id === 'none') return
         const {code = '', data: {problemList = [], problemSelectInfo = {}}} = yield call(fetchTable, contest_id)
         if (code === 0) {
           const table = problemList.map((item, i) => ({
             ...item,
-            fakeId: String.fromCharCode(i + 65)
+            fakeId: String.fromCharCode((problemList.length - 1) + ( 65 - i))
           }))
           let info = problemSelectInfo
           if (problemSelectInfo.problemId === -1) {
@@ -55,8 +64,6 @@ export default modelExtend(tableModel, modalModel, {
           yield put({type: 'setTable', payload: []})
           yield put({type: 'setInfo', payload: {}})
         }
-      } else {
-        yield put(routerRedux.push(`/student/problem?contest_id=` + (tablePass[0].id || 'none')))
       }
     },
     * preview ({payload}, {put, call}) {
