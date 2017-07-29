@@ -222,8 +222,8 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
             <Select.Option key={'joined-result-' + 1} value='未审核'>
               未审核
             </Select.Option>
-            <Select.Option key={'joined-result-' + 2} value='已审核'>
-              已审核
+            <Select.Option key={'joined-result-' + 2} value='已通过'>
+              已通过
             </Select.Option>
           </Select>
         </div>

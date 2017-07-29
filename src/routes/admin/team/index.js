@@ -89,7 +89,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
   const allChecked = () => {
     confirm({
       title: '审核确认',
-      content: `您确定要将选中的队伍的审核状态更改为已审核吗？`,
+      content: `您确定要将选中的队伍的审核状态更改为已通过吗？`,
       onOk () {
         dispatch({type: 'teamManage/auditAll', payload: query})
       },
@@ -123,8 +123,8 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       color: color.red
     },
     {
-      value: '已审核',
-      label: '已审核',
+      value: '已通过',
+      label: '已通过',
       color: color.blue
     }
   ]

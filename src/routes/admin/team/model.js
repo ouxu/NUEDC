@@ -40,7 +40,7 @@ export default {
       const {selected} = yield select(({teamManage}) => teamManage)
       const updates = selected.map((item) => ({
         record_id: item,
-        status: '已审核'
+        status: '已通过'
       }))
       const data = yield call(auditAll, {updates})
       if (data.code === 0) {

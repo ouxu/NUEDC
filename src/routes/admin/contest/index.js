@@ -190,15 +190,16 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
     <div className='contest'>
 
       <div className='contest-header'>
-        <Select
-          showSearch
-          style={{width: 100}}
-          placeholder='选择年份'
-          defaultValue='all'
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          <Select.Option value='all'>ALL</Select.Option>
-        </Select>
+        {/*<Select*/}
+          {/*showSearch*/}
+          {/*style={{width: 150}}*/}
+          {/*placeholder='选择年份'*/}
+          {/*defaultValue='all'*/}
+          {/*filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}*/}
+        {/*>*/}
+          {/*<Select.Option value='all'>所有竞赛列表</Select.Option>*/}
+        {/*</Select>*/}
+        <span>所有竞赛列表</span>
         <Button type='primary' onClick={onCreateClick}>创建比赛</Button>
       </div>
       {alert && (

@@ -34,7 +34,7 @@ export default modelExtend(modalModel, tableModel, {
             mobile: '18332518016',
             note: '电子设计竞赛专家推荐',
             status: '未开始',
-            result: '已通过'
+            result: '已审核'
           })
         }
         yield put({type: 'setTable', payload: data})

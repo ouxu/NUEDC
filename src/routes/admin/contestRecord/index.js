@@ -73,7 +73,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     },
     {title: '报名状态', dataIndex: 'status', key: 'status', width: 100},
     {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100},
-    {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100},
+    // {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100},
     {title: '现场赛附加信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 200},
     {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 170},
     {title: '评奖时间', dataIndex: 'result_at', key: 'result_at', width: 170},
@@ -120,8 +120,8 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
       color: color.red
     },
     {
-      value: '已审核',
-      label: '已审核',
+      value: '已通过',
+      label: '已通过',
       color: color.blue
     }
   ]

@@ -69,7 +69,7 @@ const ContestManage = ({studentContest, dispatch}) => {
             {tableSignUp.map(item => {
               let extra
               if (item.signUpStatus === '未审核') {
-                extra = (<Tag color={color.red}>审核暂未通过</Tag>)
+                extra = (<Tag color={color.red}>等待学校管理员审核中</Tag>)
               }
               else if (item.can_select_problem === 1) {
                 extra = (<Tag color={color.blue} onClick={() => selectProblem(item)}>点击进行选题</Tag>)

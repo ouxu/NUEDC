@@ -104,8 +104,8 @@ const editConfig = [
         value: '未审核',
         label: '未审核'
       }, {
-        value: '已审核',
-        label: '已审核'
+        value: '已通过',
+        label: '已通过'
       }
     ]
   }, {
