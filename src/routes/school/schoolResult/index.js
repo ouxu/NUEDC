@@ -85,8 +85,8 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
             />
           ) : (
             <Alert
-              message={(<span>比赛结果尚未公布</span>)}
-              description={' '}
+              message={(<span>比赛进行中</span>)}
+              description='竞赛成绩还未发布，请耐心等待'
               showIcon
             />
           )

@@ -15,10 +15,16 @@ const fetchTablePass = async (data) => request({
   token: true
 })
 
+const fetchTableSchoolAdmins = async (data) => request({
+  url: API.getSchoolAdmins,
+  method: 'get',
+  token: true
+})
+
 const fetchTableSignUp = async (data) => request({
   url: API.signedUpContests,
   method: 'get',
   token: true
 })
 
-export { fetchTable, fetchTablePass, fetchTableSignUp }
+export { fetchTable, fetchTablePass, fetchTableSignUp, fetchTableSchoolAdmins }

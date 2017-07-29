@@ -130,9 +130,6 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
           ))}
         </Select>
         <div>
-          <span style={{marginRight: 10}}>
-            选题情况： {problemSelectInfo.title}
-          </span>
           {problemSelectInfo.problemId === -1 ? (
             <Button type='primary' disabled={table.length === 0}
               onClick={onAddClick}>确认选题</Button>
@@ -148,7 +145,9 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
           table.length > 0 ? (
             <div>
               <Alert
-                message={(<span>请在规定时间内完成选题</span>)}
+                message={(<span>请在规定时间内完成选题 <span style={{marginLeft: 10}}>
+            当前选题情况： {problemSelectInfo.title}
+          </span></span>)}
                 description='规定时间内未完成选题的队伍视为放弃比赛'
                 showIcon
               />

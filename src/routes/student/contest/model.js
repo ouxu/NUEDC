@@ -1,12 +1,13 @@
 import modelExtend from 'dva-model-extend'
-import { fetchTable, fetchTablePass, fetchTableSignUp } from './service'
+import { fetchTable, fetchTablePass, fetchTableSchoolAdmins, fetchTableSignUp } from './service'
 import pathToRegexp from 'path-to-regexp'
 import { alertModel, inputModel, modalModel, tableModel } from '../../../models/modelExtend'
 export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   namespace: 'studentContest',
   state: {
     tablePass: [],
-    tableSignUp: []
+    tableSignUp: [],
+    tableSchoolAdmins: []
   },
   subscriptions: {
     studentContestSubscriber ({dispatch, history}) {
@@ -20,7 +21,7 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   },
   effects: {
     * init ({payload: pathname}, {call, select, put}) {
-      let {tablePass = [], tableSignUp = [], table = []} = yield select(({studentContest}) => studentContest)
+      let {tablePass = [], tableSignUp = [], table = [], tableSchoolAdmins = []} = yield select(({studentContest}) => studentContest)
       if (pathname === '/student' && table.length === 0) {
         let {data: contestTable = []} = yield call(fetchTable)
         contestTable = Array.from(contestTable)
@@ -32,6 +33,9 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       if (tableSignUp.length === 0) {
         yield put({type: 'fetchTableSignUp'})
       }
+      if (tableSchoolAdmins.length === 0) {
+        yield put({type: 'fetchTableSchoolAdmins'})
+      }
     },
     * fetchTablePass ({}, {call, put}) {
       const {data: {contestList = []}} = yield call(fetchTablePass)
@@ -41,6 +45,16 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       let {data = []} = yield call(fetchTableSignUp)
       data = Array.from(data)
       yield put({type: 'setTableSignUp', payload: data.reverse()})
+    },
+    * fetchTableSchoolAdmins ({}, {call, put}) {
+      let {data: {school_admins = []}} = yield call(fetchTableSchoolAdmins)
+      school_admins = school_admins.map((item, i) => {
+        return {
+          ...item,
+          fakeId: i + 1
+        }
+      })
+      yield put({type: 'setTableSchoolAdmins', payload: school_admins})
     }
   },
   reducers: {
@@ -54,6 +68,12 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       return {
         ...state,
         tableSignUp
+      }
+    },
+    setTableSchoolAdmins (state, {payload: tableSchoolAdmins}) {
+      return {
+        ...state,
+        tableSchoolAdmins
       }
     }
   }

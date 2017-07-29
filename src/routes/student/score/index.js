@@ -70,8 +70,8 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
             />
           ) : (
             <Alert
-              message={(<span>竞赛成绩还未发布，请耐心等待</span>)}
-              description={' '}
+              message={(<span>比赛进行中</span>)}
+              description='竞赛成绩还未发布，请耐心等待'
               showIcon
             />
           )

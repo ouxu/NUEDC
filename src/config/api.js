@@ -17,6 +17,7 @@ export default {
   preRegister: apiMaker('user/preRegister'),
   deleteCompetition: apiMaker(''),
   signUpContest: apiMaker('user/signUpContest'),
+  getSchoolAdmins: apiMaker('user/getSchoolAdmins'),
   getAllContest: apiMaker('user/getAllContest'),
   getContestProblemList: apiMaker('user/:id/getContestProblemList'),
   getContestProblemDetail: apiMaker('user/getContestProblemDetail'),
