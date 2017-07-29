@@ -1,7 +1,7 @@
 /**
  * Created by out_xu on 17/6/28.
  */
-
+import {verify} from '../../../utils'
 const commonConfig = [
   {
     value: 'title',
@@ -88,5 +88,37 @@ const statusConfig = [
     }]
   },
 ]
+const resultCheckConfig = [
+  {
+    value: 'result_check',
+    label: '成绩公布状态',
+    formType: 1,
+    contentType: 'string',
+    extra: '成绩未公布时，赛事成绩将无法查询',
+    rules: {
+      required: true,
+      requiredMessage: '请选择成绩公布状态'
+    },
+    options: [{
+      value: '未公布',
+      label: '未公布'
+    }, {
+      value: '已公布',
+      label: '已公布'
+    }]
+  }, {
+    value: 'password',
+    label: '登录密码',
+    formType: 0,
+    contentType: 'string',
+    type: 'password',
+    rules: {
+      required: true,
+      requiredMessage: '请输入您的密码',
+      pattern: verify.password,
+      patternMessage: '6-18位数字、英文字母或者下划线'
+    }
+  }
+]
 
-export { commonConfig, statusConfig }
+export { commonConfig, statusConfig, resultCheckConfig }

@@ -35,7 +35,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
         confirm({
           title: '删除确认',
           content: `您确定要删除 ${record.name} 管理员账号？`,
-          onOk () { dispatch({type: 'adminSchoolAdmin/delete', payload: record}) },
+          onOk () { dispatch({type: 'adminSchoolAdmin/delete', payload: {query, record}}) },
           onCancel () {}
         })
         break
@@ -49,7 +49,17 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
         return
       }
       values.status = 1
-      dispatch({type: `adminSchoolAdmin/${modal === 'edit' ? 'update' : 'create'}`, payload: values})
+      if (modal === 'create') {
+        let {password} = values
+        if (!password) {
+          password = 'NUEDC2017'
+        }
+        values = {
+          ...values,
+          password
+        }
+      }
+      dispatch({type: `adminSchoolAdmin/${modal === 'edit' ? 'update' : 'create'}`, payload: {query, values}})
     })
   }
   const columns = [
@@ -65,7 +75,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
         <Tag color={record.status === 0 ? color.red : color.blue}>{record.status === 0 ? '未激活' : '已激活'}</Tag>),
       key: 'status',
       width: 50
-    }, // TODO 状态解释
+    },
     {title: '创建于', dataIndex: 'created_at', key: 'created_at', width: 170},
     {
       title: '操作',

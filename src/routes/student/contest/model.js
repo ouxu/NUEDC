@@ -22,7 +22,8 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
     * init ({payload: pathname}, {call, select, put}) {
       let {tablePass = [], tableSignUp = [], table = []} = yield select(({studentContest}) => studentContest)
       if (pathname === '/student' && table.length === 0) {
-        const {data: contestTable = []} = yield call(fetchTable)
+        let {data: contestTable = []} = yield call(fetchTable)
+        contestTable = Array.from(contestTable)
         yield put({type: 'setTable', payload: contestTable.reverse()})
       }
       if (tablePass.length === 0) {
@@ -37,7 +38,8 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       yield put({type: 'setTablePass', payload: contestList.reverse()})
     },
     * fetchTableSignUp ({}, {call, put}) {
-      const {data = []} = yield call(fetchTableSignUp)
+      let {data = []} = yield call(fetchTableSignUp)
+      data = Array.from(data)
       yield put({type: 'setTableSignUp', payload: data.reverse()})
     }
   },

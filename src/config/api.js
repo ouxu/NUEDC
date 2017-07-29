@@ -49,6 +49,7 @@ export default {
   adminContestCreate: apiMaker('sysadmin/contest/create'),
   adminContestUpdate: apiMaker('sysadmin/contest/:id/update'),
   adminContestDelete: apiMaker('sysadmin/contest/:id/delete'),
+  adminContestResultCheck: apiMaker('sysadmin/contest/:id/result/check'),
 
   adminSchools: apiMaker('sysadmin/schools'),
   adminSchoolCreate: apiMaker('sysadmin/school/create'),

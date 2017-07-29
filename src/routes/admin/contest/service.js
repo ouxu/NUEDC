@@ -30,4 +30,11 @@ const create = async (data) => request({
   data
 })
 
-export { remove, update, create, fetchTable }
+const resultCheck = async (data, id) => request({
+  url: API.adminContestResultCheck.replace(':id', id),
+  method: 'post',
+  token: true,
+  data
+})
+
+export { remove, update, create, fetchTable, resultCheck }

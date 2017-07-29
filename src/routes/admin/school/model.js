@@ -84,6 +84,6 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         ...state,
         content: payload
       }
-    },
+    }
   }
 })

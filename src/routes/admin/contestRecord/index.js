@@ -22,14 +22,19 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     switch (key) {
       case 'edit':
         record.status = '' + record.status
-        dispatch({type: 'adminContestRecord/updateModalContent', payload: record})
+        let {problem_selected} = record
+        const payload = {
+          ...record,
+          problem_selected: problem_selected + ''
+        }
+        dispatch({type: 'adminContestRecord/updateModalContent', payload: payload})
         dispatch({type: 'adminContestRecord/showModal', payload: 'edit'})
         break
       case 'delete':
         confirm({
           title: '删除确认',
           content: `您确定要删除 ${record.team_name} 队伍记录？`,
-          onOk () { dispatch({type: 'adminContestRecord/delete', payload: {query, record}})},
+          onOk () { dispatch({type: 'adminContestRecord/delete', payload: {query, record}}) },
           onCancel () {}
         })
         break
@@ -59,18 +64,12 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     {
       title: (
         <Tooltip title='-1 代表未选题'>
-          <span> 选题情况 <Icon type="question-circle-o" /></span>
+          <span> 选题情况 <Icon type='question-circle-o' /></span>
         </Tooltip>
       ),
-      render: (record) => {
-        if (record.problem_selected === -1) {
-          return '未选题'
-        } else {
-          return problem_selected
-        }
-      },
+      dataIndex: 'title',
       key: 'problem_selected',
-      width: 200
+      width: 250
     },
     {title: '报名状态', dataIndex: 'status', key: 'status', width: 100},
     {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100},
@@ -135,11 +134,12 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             showSearch
             style={{width: 260}}
             placeholder='选择竞赛'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
               dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
-                  ...query,
-                  contest_id: value || tableContest[tableContest.length - 1].contest_id
-                })))
+                ...query,
+                contest_id: value || tableContest[tableContest.length - 1].contest_id
+              })))
             }}
             value={query.contest_id || undefined}
           >
@@ -182,24 +182,38 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
           </Select>
         </div>
         <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/contestRecord?' + urlEncode({
-            ...query,
-            contest_id: undefined,
-            status: undefined,
-            result: undefined,
-            school_id: undefined
-          })))}>
+          ...query,
+          contest_id: undefined,
+          status: undefined,
+          result: undefined,
+          school_id: undefined
+        })))}>
           重置筛选</Button>
       </div>
       {
-        JSON.stringify(query.contest_id) ? <Table
-          columns={columns} bordered
-          dataSource={table} scroll={{x: 2800}}
-          pagination={pagination} rowKey={record => record.id}
-        /> : <Alert
-          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-          description={(<span>请先在下拉选单里选择竞赛</span>)}
-          showIcon
-        />
+        query.contest_id !== 'none' ? (
+          table.length > 0 ? (
+            <div>
+              <Table
+                columns={columns} bordered
+                dataSource={table} scroll={{x: 2800}}
+                pagination={pagination} rowKey={record => record.id}
+              />
+            </div>
+          ) : (
+            <Alert
+              message={(<span>暂无记录</span>)}
+              description='该赛事暂无记录'
+              showIcon
+            />
+          )
+        ) : (
+          <Alert
+            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+            description={(<span>请先在下拉选单里选择竞赛</span>)}
+            showIcon
+          />
+        )
       }
       <Modal
         title='修改队伍信息'

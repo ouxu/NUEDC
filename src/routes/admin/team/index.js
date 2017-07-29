@@ -91,7 +91,6 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       title: '审核确认',
       content: `您确定要将选中的队伍的审核状态更改为已审核吗？`,
       onOk () {
-
         dispatch({type: 'teamManage/auditAll', payload: query})
       },
       onCancel () {}
@@ -206,12 +205,20 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
         </Button>
       </div>
       {dataFlag ? (
-        <Table
-          columns={columns} bordered
-          rowSelection={rowSelection}
-          dataSource={table} scroll={{x: 1800}}
-          pagination={pagination} rowKey={record => record.id}
-        />
+        table.length > 0 ? (
+          <Table
+            columns={columns} bordered
+            rowSelection={rowSelection}
+            dataSource={table} scroll={{x: 1800}}
+            pagination={pagination} rowKey={record => record.id}
+          />
+        ) : (
+          <Alert
+            message={(<span>暂无记录</span>)}
+            description='该赛事暂无记录'
+            showIcon
+          />
+        )
       ) : (
         <Alert
           message={(<span>暂未选择竞赛，请先选择竞赛</span>)}

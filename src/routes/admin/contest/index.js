@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import { Alert, Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
-import { commonConfig, statusConfig } from './formConfig'
+import { commonConfig, resultCheckConfig, statusConfig } from './formConfig'
 import './index.less'
 import { Link, routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption/'
@@ -68,6 +68,14 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         dispatch({type: 'contest/updateModalContent', payload: payload})
         dispatch({type: 'contest/showModal', payload: 'status'})
         break
+      case 'resultCheck':
+        payload = {
+          ...record,
+          modalTitle: '发布成绩-' + record.title
+        }
+        dispatch({type: 'contest/updateModalContent', payload: payload})
+        dispatch({type: 'contest/showModal', payload: 'resultCheck'})
+        break
       default:
         break
     }
@@ -94,6 +102,8 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           can_register: +can_register,
           can_select_problem: +can_select_problem
         }
+      } else if (modal === 'resultCheck') {
+        payload = values
       } else {
         payload = {
           title,
@@ -137,6 +147,13 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       ),
       key: 'can_select_problem',
       width: 50
+    }, {
+      title: '成绩',
+      render: ({result_check}) => (
+        <Tag color={result_check === '未公布' ? color.red : color.blue}>{result_check}</Tag>
+      ),
+      key: 'result_check',
+      width: 50
     },
     {title: '报名开始时间', dataIndex: 'register_start_time', key: 'register_start_time', width: 170},
     {title: '报名结束时间', dataIndex: 'register_end_time', key: 'register_end_time', width: 170},
@@ -153,6 +170,8 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
               key: 'status', name: '修改状态'
             }, {
               key: 'gotoProblem', name: '查看题目'
+            }, {
+              key: 'resultCheck', name: '发布成绩'
             }, {
               key: 'delete', name: '删除竞赛'
             }]}
@@ -176,6 +195,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           style={{width: 100}}
           placeholder='选择年份'
           defaultValue='all'
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           <Select.Option value='all'>ALL</Select.Option>
         </Select>
@@ -212,6 +232,10 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           {modal === 'status' && statusConfig.map(config => FormItemRender(config, getFieldDecorator, {
             initialValue: '' + modalContent[config.value]
           }))}
+          {modal === 'resultCheck' && resultCheckConfig.map(config => FormItemRender(config, getFieldDecorator, {
+            initialValue: modalContent[config.value] || ''
+          }))}
+
         </Form>
       </Modal>
     </div>

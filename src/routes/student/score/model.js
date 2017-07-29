@@ -28,9 +28,11 @@ export default modelExtend(modalModel, tableModel, {
       const {contest_id: contestId} = payload
       if (contestId) {
         if (contestId === 'none') return
-        const data = yield call(getResult, contestId)
-        if (data.code === 0) {
-          yield put({type: 'setTable', payload: data.data})
+        let {data, code} = yield call(getResult, contestId)
+        if (code === 0) {
+          yield put({type: 'setTable', payload: data})
+        } else {
+          yield put({type: 'setTable', payload: []})
         }
       } else {
         yield put(routerRedux.push(`/student/score?contest_id=` + (contest[0].id || 'none')))

@@ -20,7 +20,7 @@ export default modelExtend(tableModel, modalModel, {
     * fetchTable({payload}, {call, put, select}) {
       const {contest_id} = payload
       if (!contest_id) {
-        let {table: contest = [{id}]} = yield select(({contest}) => contest)
+        let {table: contest = [{}]} = yield select(({contest}) => contest)
         if (contest.length === 0) {
           yield call(sleep, 1000)
           let {table: contestNow} = yield select(({contest}) => contest)

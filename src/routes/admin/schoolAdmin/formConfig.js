@@ -90,8 +90,8 @@ const createConfig = [
     value: 'password',
     label: '密码',
     formType: 0,
-    type: 'password',
-    extra: '输入表示重置密码，不重置或使用默认忽略此项',
+    placeholder: 'NUEDC2017',
+    extra: '默认密码 NUEDC2017，不使用默认密码请输入',
     contentType: 'string',
     rules: {
       required: false,
@@ -102,4 +102,4 @@ const createConfig = [
   }
 ]
 
-export { editConfig,createConfig }
+export { editConfig, createConfig }

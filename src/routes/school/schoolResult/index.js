@@ -41,24 +41,15 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
     {
       title: (
-        <Tooltip title='-1 代表未选题'>
-          <span> 选题情况 <Icon type="question-circle-o" /></span>
+        <Tooltip title='空白代表未选题'>
+          <span> 所选题目 <Icon type="question-circle-o" /></span>
         </Tooltip>
       ),
-      render: (record) => {
-        if (record.problem_selected === -1) {
-          return '未选题'
-        } else {
-          return record.problem_selected
-        }
-      },
+      dataIndex: 'problemTitle',
       key: 'problem_selected',
-      width: 100
+      width: 250
     },
-    {title: '选题时间', dataIndex: 'problem_selected_at', key: 'problem_selected_at', width: 200},
-    {title: '奖项确定时间', dataIndex: 'result_at', key: 'result_at', width: 200},
-    {title: '现场赛相关信息', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
-    {title: '审核状态', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'},
+    {title: '备注', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
     {title: '获得奖项', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'}
   ]
   return (
@@ -89,7 +80,7 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
           table.length > 0 ? (
             <Table
               columns={columns} bordered
-              dataSource={table} scroll={{x: 2000}}
+              dataSource={table} scroll={{x: 1800}}
               pagination={pagination} rowKey={record => record.id}
             />
           ) : (

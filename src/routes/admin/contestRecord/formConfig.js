@@ -23,9 +23,7 @@ const editConfig = [
     contentType: 'string',
     rules: {
       required: false,
-      requiredMessage: '请输入成员1姓名',
-      pattern: verify.chinese,
-      patternMessage: '请勿输入非中文字符'
+      requiredMessage: '请输入成员1姓名'
     },
     hasFeedback: false
   }, {
@@ -35,9 +33,7 @@ const editConfig = [
     contentType: 'string',
     rules: {
       required: false,
-      requiredMessage: '请输入成员2姓名',
-      pattern: verify.chinese,
-      patternMessage: '请勿输入非中文字符'
+      requiredMessage: '请输入成员2姓名'
     },
     hasFeedback: false
   }, {
@@ -47,9 +43,7 @@ const editConfig = [
     contentType: 'string',
     rules: {
       required: false,
-      requiredMessage: '请输入成员3姓名',
-      pattern: verify.chinese,
-      patternMessage: '请勿输入非中文字符'
+      requiredMessage: '请输入成员3姓名'
     },
     hasFeedback: false
   }, {
@@ -59,9 +53,7 @@ const editConfig = [
     contentType: 'string',
     rules: {
       required: false,
-      requiredMessage: '请输入指导老师姓名',
-      pattern: verify.chinese,
-      patternMessage: '请勿输入非中文字符'
+      requiredMessage: '请输入指导老师姓名'
     },
     hasFeedback: false
   }, {

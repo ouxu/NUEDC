@@ -1,7 +1,9 @@
 import { audit, auditAll } from './service'
 import { message } from 'antd'
+import { sleep } from '../../../utils'
+import { routerRedux } from 'dva/router'
 
-export default  {
+export default {
   namespace: 'teamManage',
   state: {
     selected: []
@@ -9,13 +11,30 @@ export default  {
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
-        if (pathname === '/admin/teamManage') {
-          dispatch({type: 'adminContestRecord/fetchTable', payload: query})
+        if (pathname === '/admin/team') {
+          dispatch({type: 'fetchTable', payload: query})
         }
       })
     }
   },
   effects: {
+    * fetchTable ({payload = {}}, {call, select, put}) {
+      const {contest_id,} = payload
+      if (!contest_id) {
+        let {table: contest = [{}]} = yield select(({contest}) => contest)
+        if (contest.length === 0) {
+          yield call(sleep, 1000)
+          let {table: contestNow} = yield select(({contest}) => contest)
+          contest = contestNow
+        }
+        const preId = contest[0] || {id: 'none'}
+        yield call(sleep, 10)
+        yield put(routerRedux.push(`/admin/team?contest_id=` + preId.id))
+      } else {
+        if (contest_id === 'none') return
+        yield put({type: 'adminContestRecord/fetchTable', payload: payload})
+      }
+    },
     * auditAll ({payload}, {call, put, select}) {
       const query = payload
       const {selected} = yield select(({teamManage}) => teamManage)
@@ -32,7 +51,7 @@ export default  {
     }
   },
   reducers: {
-    selectChange(state, {payload: selected}) {
+    selectChange (state, {payload: selected}) {
       return {
         ...state,
         selected

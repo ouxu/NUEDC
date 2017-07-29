@@ -46,9 +46,11 @@ const ContestManage = ({studentContest, dispatch}) => {
                 extra = (<Tag disabled>报名已关闭</Tag>)
               }
               return (
-                <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={item.id} className='contest-item'>
+                <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={'can-register-' + item.id}
+                  className='contest-item'>
                   <Card
-                    title={<div className='contest-card-title'>{item.title}</div>} extra={item.register_start_time.substring(0, 10)}
+                    title={<div className='contest-card-title'>{item.title}</div>}
+                    extra={item.register_start_time.substring(0, 10)}
                     bodyStyle={{padding: '20px 0 20px 20px'}}>
                     <div className='contest-item-content'>
                       <p>{item.description}</p>
@@ -66,7 +68,7 @@ const ContestManage = ({studentContest, dispatch}) => {
           <Row type='flex' gutter={12}>
             {tableSignUp.map(item => {
               let extra
-              if (item.signUpStatus === '待审核') {
+              if (item.signUpStatus === '未审核') {
                 extra = (<Tag color={color.red}>审核暂未通过</Tag>)
               }
               else if (item.can_select_problem === 1) {
@@ -83,7 +85,7 @@ const ContestManage = ({studentContest, dispatch}) => {
                 extra = (<Tag disabled>选题已关闭</Tag>)
               }
               return (
-                <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={item.id} className='contest-item'>
+                <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={'sign-up-' + item.id} className='contest-item'>
                   <Card
                     title={<div className='contest-card-title'>{item.title}</div>}
                     extra={item.register_start_time.substring(0, 10)}

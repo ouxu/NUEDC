@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Alert, Form, Select, Table } from 'antd'
+import { Alert, Form, Icon, Select, Table, Tooltip } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import { Link, routerRedux } from 'dva/router'
@@ -13,14 +13,24 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
   const columns = [
     {title: '竞赛名称', dataIndex: 'contestTitle', key: 'contestTitle', width: 250},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 250},
-    {title: '竞赛结果', dataIndex: 'result', key: 'result', width: 100},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
     {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 200},
     {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
     {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
     {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
-    {title: '审核状态', dataIndex: 'status', key: 'status', width: 100, fixed: 'right'}
+    {
+      title: (
+        <Tooltip title='空白代表未选题'>
+          <span> 所选题目 <Icon type="question-circle-o" /></span>
+        </Tooltip>
+      ),
+      dataIndex: 'problemTitle',
+      key: 'problem_selected',
+      width: 250
+    },
+    {title: '备注', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
+    {title: '获得奖项', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'}
   ]
   return (
     <div className='student-score'>
@@ -55,7 +65,7 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
           table.length > 0 ? (
             <Table
               columns={columns} bordered
-              dataSource={table} scroll={{x: 1600}}
+              dataSource={table} scroll={{x: 2000}}
               rowKey={record => record.id}
             />
           ) : (

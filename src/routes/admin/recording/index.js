@@ -5,16 +5,18 @@ import './index.less'
 import { routerRedux } from 'dva/router'
 import FormItemRender from '../../../components/FormItemRender/'
 import recordConfig from './formConfig'
+import { resultCheckConfig } from '../contest/formConfig'
 import { API, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 
 const RecordingManage = ({location, recording, contest, adminContestRecord, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableCount} = adminContestRecord
-
   const {table: tableContest = []} = contest
+  const {contestInfo, alert, content = []} = recording
   const {query} = location
   const {table: schools = []} = login
-
+  const {contest_id} = query
+  const dataFlag = contest_id && contest_id !== 'none'
   const props = {
     name: 'data',
     action: API.adminContestRecordExcelImport,
@@ -27,11 +29,12 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
       if (code === 0) {
         const {fail = []} = data
         if (fail.length) {
+          dispatch({type: 'recording/saveExcelFail', payload: fail})
         } else {
-          dispatch({type: 'adminContestRecord/fetchTable', payload: query})
+          dispatch({type: 'recording/saveExcelFail', payload: []})
           message.success(`文件上传成功`)
-          message.success('成绩已更新')
         }
+        dispatch({type: 'recording/showAlert'})
         dispatch({type: 'adminContestRecord/fetchTable', payload: query})
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
@@ -41,6 +44,15 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
       console.log('uploadProps data', file)
     }
   }
+  const onClickCheck = () => {
+    console.log(1)
+    const payload = {
+      ...contestInfo,
+      modalTitle: '发布成绩-' + contestInfo.title
+    }
+    dispatch({type: 'adminContestRecord/updateModalContent', payload: payload})
+    dispatch({type: 'adminContestRecord/showModal', payload: 'resultCheck'})
+  }
   const getExcel = () => {
     dispatch({type: 'recording/downloadExcel', payload: query})
   }
@@ -48,6 +60,7 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     switch (key) {
       case 'edit':
         record.id = '' + record.id
+        record.modalTitle = `修改队伍 ${record.team_name} 的比赛结果`
         dispatch({type: 'adminContestRecord/updateModalContent', payload: record})
         dispatch({type: 'adminContestRecord/showModal', payload: 'edit'})
         break
@@ -58,18 +71,28 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (!errors) {
-        const {result, result_info} = values
-        const body = {
-          results: [
-            {
-              record_id: modalContent.id,
-              result,
-              result_info
-            }
-          ]
+        if (modal === 'edit') {
+          const {result, result_info} = values
+          const body = {
+            results: [
+              {
+                record_id: modalContent.id,
+                result,
+                result_info
+              }
+            ]
+          }
+          dispatch({type: 'recording/checkRecording', payload: {body, query}})
+        } else {
+          dispatch({type: `contest/updateModalContent`, payload: contestInfo})
+          dispatch({type: `contest/resultCheck`, payload: values})
+          dispatch({type: 'adminContestRecord/hideModal'})
+          let infoNow = {
+            ...contestInfo,
+            result_check: values.result_check
+          }
+          dispatch({type: 'saveContestInfo', payload: infoNow})
         }
-        dispatch({type: 'recording/checkRecording', payload: {body, query}})
-        dispatch({type: 'recording/hideModal'})
       }
     })
   }
@@ -82,22 +105,15 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
     {
       title: (
-        <Tooltip title='-1 代表未选题'>
-          <span> 选题情况 <Icon type="question-circle-o" /></span>
+        <Tooltip title='空白代表未选题'>
+          <span> 所选题目 <Icon type='question-circle-o' /></span>
         </Tooltip>
       ),
-      render: (record) => {
-        if (record.problem_selected === -1) {
-          return '未选题'
-        } else {
-          return problem_selected
-        }
-      },
+      dataIndex: 'title',
       key: 'problem_selected',
-      width: 200
+      width: 250
     },
     {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
-    {title: '成绩审核', dataIndex: 'result_info', key: 'result_info', width: 100, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -114,6 +130,15 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
       key: '9'
     }
   ]
+  const alertRender = (contestInfo) => {
+    return (
+      <Alert
+        message={(<span>当前竞赛成绩公布情况：{contestInfo.result_check}</span>)}
+        description={(<span><a onClick={onClickCheck}>点击修改</a>竞赛公布情况，成绩未公布时，赛事成绩将无法查询</span>)}
+        showIcon
+      />
+    )
+  }
   const pagination = {
     pageSize: +query.size || 50,
     current: +query.page || 1,
@@ -128,7 +153,6 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     }
   }
 
-  const dataFlag = !!JSON.stringify(query.contest_id)
   return (
     <div className='contest-record'>
       <div className='contest-record-header'>
@@ -137,6 +161,7 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
             showSearch
             style={{width: 260}}
             placeholder='选择竞赛'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
               dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
                   ...query,
@@ -175,34 +200,59 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
             重置筛选</Button>
         </div>
         <div>
-          <Button type='primary' onClick={getExcel} disabled={!dataFlag}>获取导入模板</Button>
+          <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
           <Upload {...props}>
-            <Button>
+            <Button disabled={!dataFlag}>
               <Icon type='upload' /> 导入Excel
             </Button>
           </Upload>
         </div>
       </div>
       {
-        dataFlag ? <Table
-          columns={columns} bordered
-          dataSource={table} scroll={{x: 1200}}
-          pagination={pagination} rowKey={record => record.id}
-        /> : <Alert
-          message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
-          description={(<span>请先在下拉选单里选择竞赛</span>)}
-          showIcon
-        />
+        contest_id !== 'none' ? (
+          table.length > 0 ? (
+            <div>
+              {(alert && content.length > 0) && (
+                <Alert
+                  message={(<span>以下队伍成绩导入失败,请修改后再导入以下学校</span>)}
+                  description={(content.map((item, index) => <div key={index}><span>队伍名称:{item[0]}</span>
+                  </div>))}
+                  type='error'
+                  showIcon
+                />
+              )}
+              {!alert && alertRender(contestInfo)}
+              <Table
+                columns={columns} bordered
+                dataSource={table} scroll={{x: 1200}}
+                pagination={pagination} rowKey={record => record.id}
+              />
+            </div>
+          ) : (
+            <Alert
+              message={(<span>暂无记录</span>)}
+              description='该赛事暂无记录'
+              showIcon
+            />
+          )
+        ) : (
+          <Alert
+            message={(<span>暂未选择竞赛，请先选择竞赛</span>)}
+            description={(<span>请先在下拉选单里选择竞赛</span>)}
+            showIcon
+          />
+        )
       }
       <Modal
-        title='录入成绩'
-        visible={modal === 'edit'}
-        onCancel={() => dispatch({type: 'recording/hideModal'})}
+        title={modalContent.modalTitle}
+        visible={!!modal}
+        onCancel={() => dispatch({type: 'adminContestRecord/hideModal'})}
         onOk={onModalOk}
         key={'' + modal}
       >
         <Form className='form-content'>
           {modal === 'edit' && recordConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {modal === 'resultCheck' && resultCheckConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
         </Form>
       </Modal>
     </div>

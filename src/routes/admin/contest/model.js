@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { create, fetchTable, remove, update } from './service'
+import { create, fetchTable, remove, resultCheck, update } from './service'
 import { alertModel, inputModel, modalModel, tableModel } from '../../../models/modelExtend'
 import pathToRegexp from 'path-to-regexp'
 
@@ -33,6 +33,8 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
             fakeId: i + 1
           }))
           yield put({type: 'setTable', payload: table.reverse()})
+        } else {
+          yield put({type: 'setTable', payload: []})
         }
       }
     },
@@ -57,6 +59,15 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
     },
     * status ({payload}, {put}) {
       yield put({type: 'update', payload: payload})
+    },
+    * resultCheck ({payload}, {call, put, select}) {
+      const {id} = yield select(({contest}) => contest.modalContent)
+      const {code} = yield call(resultCheck, payload, id)
+      if (code === 0) {
+        yield put({type: 'fetchTable', payload: true})
+        yield put({type: 'hideModal'})
+        message.success('成绩公布状态修改成功')
+      }
     },
     * create ({payload}, {put, call}) {
       const data = yield call(create, payload)

@@ -41,25 +41,28 @@ export default modelExtend(modalModel, tableModel, {
     },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({adminSchoolAdmin}) => adminSchoolAdmin.modalContent)
-      const data = yield call(update, payload, id)
+      const {query, value} = payload
+      const data = yield call(update, value, id)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('修改成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: query})
       }
     },
     * delete ({payload}, {put, call}) {
-      const {id} = payload
+      const {record: {id}, query} = payload
       const data = yield call(remove, id)
       if (data.code === 0) {
         message.success('删除成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: query})
       }
     },
     * create ({payload}, {put, call}) {
-      const data = yield call(create, payload)
+      const {query, values} = payload
+      const data = yield call(create, values)
+
       if (data.code === 0) {
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: query})
         message.success('添加成功')
         yield put({type: 'hideModal'})
       }
