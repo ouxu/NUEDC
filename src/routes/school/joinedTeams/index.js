@@ -171,13 +171,13 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
-    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
-    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
-    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 80},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 80},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 80},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
     {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 200},
-    {title: '报名状态', dataIndex: 'status', key: 'status', width: 100, fixed: 'right'},
+    {title: '报名状态', dataIndex: 'status', key: 'status', width: 80, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -189,7 +189,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
           />
         )
       },
-      width: 100,
+      width: 80,
       fixed: 'right',
       key: 'edit'
     }
@@ -200,7 +200,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
         <div>
           <Select
             showSearch
-            style={{width: 300, marginRight: 10}}
+            style={{width: 250, marginRight: 10}}
             placeholder='选择竞赛'
             value={query.contest_id || undefined}
             onChange={(value) => dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({
@@ -212,12 +212,13 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
           </Select>
           <Select
             showSearch
-            style={{width: 150, marginRight: 10}}
+            style={{width: 100, marginRight: 10}}
             placeholder='审核状态'
             value={query.status || undefined}
             onChange={(value) => {
               dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, status: value || undefined})))
             }}
+            allowClear
           >
             <Select.Option key={'joined-result-' + 1} value='未审核'>
               未审核
@@ -227,15 +228,15 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
             </Select.Option>
           </Select>
         </div>
-        <div>
+        <div className="joined-teams-header-right">
           <Button type='primary' onClick={onAddClick} disabled={!dataFlag} style={{marginRight: 10}}>+ 增加队伍</Button>
-          <Button type='primary' onClick={excelOut} disabled={!dataFlag} style={{marginRight: 10}}>导出excel</Button>
+          <Button type='primary' onClick={excelOut} disabled={!dataFlag} style={{marginRight: 10}}>导出 Excel</Button>
           <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
 
 
           <Upload {...props}>
             <Button disabled={!dataFlag}>
-              <Icon type='upload' /> 导入Excel
+              <Icon type='upload' /> 导入 Excel
             </Button>
           </Upload>
         </div>

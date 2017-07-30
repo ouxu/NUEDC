@@ -93,7 +93,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
         )
       },
       fixed: 'right',
-      width: 100,
+      width: 80,
       key: 'edit'
     }
   ]

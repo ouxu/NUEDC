@@ -34,20 +34,20 @@ export default {
         user
       }
     },
-    logout(state) {
+    logout (state) {
       return {
         ...state,
         user: {}
       }
     },
-    setInfo(state, {payload: {token, role}}) {
+    setInfo (state, {payload: {token, role}}) {
       return {
         ...state,
         token,
         role
       }
     },
-    setUser(state, {payload: user}) {
+    setUser (state, {payload: user}) {
       return {
         ...state,
         user

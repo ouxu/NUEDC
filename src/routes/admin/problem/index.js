@@ -100,7 +100,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
           />
         )
       },
-      width: 100,
+      width: 80,
       key: 'edit'
     }
   ]

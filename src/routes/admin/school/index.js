@@ -108,8 +108,8 @@ const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator
     {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '学校名称', dataIndex: 'name', key: 'name', width: 200},
     {title: '学校等级', dataIndex: 'level', key: 'level', width: 80},
-    {title: '学校负责人', dataIndex: 'principal', key: 'principal', width: 130},
-    {title: '负责人联系方式', dataIndex: 'principal_mobile', key: 'principal_mobile', width: 170},
+    {title: '学校负责人', dataIndex: 'principal', key: 'principal', width: 110},
+    {title: '负责人联系方式', dataIndex: 'principal_mobile', key: 'principal_mobile', width: 150},
     {title: '学校通信地址', dataIndex: 'address', key: 'address'},
     {
       title: '操作',
@@ -129,7 +129,7 @@ const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator
         )
       },
       fixed: 'right',
-      width: 100,
+      width: 80,
       key: 'edit'
     }
   ]

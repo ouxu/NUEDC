@@ -33,11 +33,11 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
-    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 100},
-    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 100},
-    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 100},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
+    {title: '队员1', dataIndex: 'member1', key: 'member1', width: 80},
+    {title: '队员2', dataIndex: 'member2', key: 'member2', width: 80},
+    {title: '队员3', dataIndex: 'member3', key: 'member3', width: 80},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
     {
       title: (
@@ -47,10 +47,10 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
       ),
       dataIndex: 'problemTitle',
       key: 'problem_selected',
-      width: 250
+      width: 200
     },
     {title: '备注', dataIndex: 'onsite_info', key: 'onsite_info', width: 300},
-    {title: '获得奖项', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'}
+    {title: '获得奖项', dataIndex: 'result', key: 'result', width: 80, fixed: 'right'}
   ]
   return (
     <div className='school-result'>
@@ -78,11 +78,18 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
           />
         ) : (
           table.length > 0 ? (
-            <Table
-              columns={columns} bordered
-              dataSource={table} scroll={{x: 1800}}
-              pagination={pagination} rowKey={record => record.id}
-            />
+            <div>
+              <Alert
+                message={(<span>当前所选竞赛结果如下</span>)}
+                showIcon
+              />
+              <Table
+                columns={columns} bordered
+                dataSource={table} scroll={{x: 1600}}
+                pagination={pagination} rowKey={record => record.id}
+              />
+            </div>
+
           ) : (
             <Alert
               message={(<span>比赛进行中</span>)}

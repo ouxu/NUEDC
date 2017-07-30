@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Card, Col, Collapse, Dropdown, Form, Icon, Menu, Modal, Row, Table, Tag } from 'antd'
+import { Card, Col, Collapse, Dropdown, Form, Icon, Menu, Modal, Row, Table, Tag, Tooltip } from 'antd'
 import { routerRedux } from 'dva/router'
 import './index.less'
 import { connect } from 'dva'
@@ -28,7 +28,7 @@ const ContestManage = ({app, studentContest, dispatch}) => {
   const onMenuClick = (key, record) => {
     const status = [{
       color: color.blue,
-      value: '开启'
+      value: '自动'
     }, {
       color: color.red,
       value: '关闭'
@@ -45,6 +45,13 @@ const ContestManage = ({app, studentContest, dispatch}) => {
               <span>
             报名状态：
             <Tag color={status[record.can_register + 1].color}>{status[record.can_register + 1].value}</Tag>
+                {record.can_register === -1 && (
+                  <Tooltip
+                    placement='right'
+                    title='自动表示按时间开启关闭'>
+                    <Icon type='question-circle-o' />
+                  </Tooltip>
+                )}
                 <p> 开始时间：{record.register_start_time} </p>
                 <p> 结束时间：{record.register_end_time}</p>
               </span>
@@ -52,6 +59,13 @@ const ContestManage = ({app, studentContest, dispatch}) => {
 
               <span>选题状态：<Tag
                 color={status[record.can_select_problem + 1].color}>{status[record.can_select_problem + 1].value}</Tag>
+                {record.can_select_problem === -1 && (
+                  <Tooltip
+                    placement='right'
+                    title='自动表示按时间开启关闭'>
+                    <Icon type='question-circle-o' />
+                  </Tooltip>
+                )}
                 <p> 开始时间：{record.problem_start_time} </p>
                 <p> 结束时间：{record.problem_end_time}</p>
               </span>
@@ -113,8 +127,10 @@ const ContestManage = ({app, studentContest, dispatch}) => {
                 extra = (<Tag disabled>报名已关闭</Tag>)
               }
               return (
-                <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={'can-register-' + item.id}
-                  className='contest-item'>
+                <Col
+                  xs={{span: 24}} sm={{span: 8}} xl={{span: 6}}
+                  key={'can-register-' + item.id} className='contest-item'
+                >
                   <Card
                     title={<div className='contest-card-title'>{item.title}</div>}
                     extra={(

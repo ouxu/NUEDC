@@ -58,8 +58,8 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
     {title: '队员1姓名', dataIndex: 'member1', key: 'member1', width: 100},
     {title: '队员2姓名', dataIndex: 'member2', key: 'member2', width: 100},
     {title: '队员3姓名', dataIndex: 'member3', key: 'member3', width: 100},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 90},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 170},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 250},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
     {title: '邮箱', dataIndex: 'email', key: 'email', width: 200},
     {title: '报名时间', dataIndex: 'created_at', key: 'created_at', width: 170},
     {title: '上次编辑时间', dataIndex: 'updated_at', key: 'updated_at', width: 170},
@@ -82,7 +82,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
         )
       },
       fixed: 'right',
-      width: 100,
+      width: 80,
       key: 'edit'
     }
   ]
@@ -209,7 +209,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
           <Table
             columns={columns} bordered
             rowSelection={rowSelection}
-            dataSource={table} scroll={{x: 1800}}
+            dataSource={table} scroll={{x: 1900}}
             pagination={pagination} rowKey={record => record.id}
           />
         ) : (

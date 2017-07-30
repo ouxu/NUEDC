@@ -56,7 +56,7 @@ const StudentSignUpManage = ({location, app, login, studentSignUp, dispatch, for
       <Form className='form-content'>
         <Row className='sign-up-header'>
           <Col offset={6}>
-            <h2>报名{query.title}</h2>
+            <h2>报名：{query.title}</h2>
           </Col>
         </Row>
 

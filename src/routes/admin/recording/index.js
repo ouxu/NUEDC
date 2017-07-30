@@ -45,7 +45,6 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     }
   }
   const onClickCheck = () => {
-    console.log(1)
     const payload = {
       ...contestInfo,
       modalTitle: '发布成绩-' + contestInfo.title
@@ -72,13 +71,13 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     validateFieldsAndScroll((errors, values) => {
       if (!errors) {
         if (modal === 'edit') {
-          const {result, result_info} = values
+          const {result} = values
           const body = {
             results: [
               {
                 record_id: modalContent.id,
                 result,
-                result_info
+                result_info: '已通过'
               }
             ]
           }
@@ -91,18 +90,18 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
             ...contestInfo,
             result_check: values.result_check
           }
-          dispatch({type: 'saveContestInfo', payload: infoNow})
+          dispatch({type: 'recording/saveContestInfo', payload: infoNow})
         }
       }
     })
   }
   const columns = [
-    {title: '#', dataIndex: 'fakeId', key: 'id', width: 100},
+    {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 100},
-    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 200},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 250},
+    {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
     {
       title: (
         <Tooltip title='空白代表未选题'>

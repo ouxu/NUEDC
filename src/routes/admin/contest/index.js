@@ -181,7 +181,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         )
       },
       fixed: 'right',
-      width: 100,
+      width: 80,
       key: 'edit'
     }
   ]
@@ -213,7 +213,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       )}
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1380}}
+        dataSource={table} scroll={{x: 1480}}
         pagination={false} rowKey={record => record.id}
         expandedRowRender={record => (
           <div className='expanded-row'>

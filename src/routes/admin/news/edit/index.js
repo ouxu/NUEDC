@@ -2,13 +2,13 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Icon, Input, message, Modal, Upload } from 'antd'
+import { Button, Form, Icon, Input, Modal, Upload } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import LzEditor from 'react-lz-editor'
-
+import { config } from '../../../../utils'
 const {confirm} = Modal
-class Test extends React.Component {
+class Edit extends React.Component {
   constructor (props) {
     super(props)
     this.receiveHtml = this.receiveHtml.bind(this)
@@ -20,14 +20,38 @@ class Test extends React.Component {
   }
 
   onChange (info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList)
+    let currFileList = info.fileList
+
+    currFileList = currFileList.filter((f) => (!f.length))
+    let url = config.baseURL
+    //读取远程路径并显示链接
+    currFileList = currFileList.map((file) => {
+      if (file.response) {
+        // 组件会将 file.url 作为链接进行展示
+        file.url = url + file.response.url
+      }
+      if (!file.length) {
+        return file
+      }
+    })
+    let _this = this
+    //按照服务器返回信息筛选成功上传的文件
+    currFileList = currFileList.filter((file) => {
+      //根据多选选项更新添加内容
+
+      if (!!_this.props.isMultiple == true) {
+        _this.state.responseList.push(file)
+      } else {
+        _this.state.responseList = [file]
+      }
+      return !!file.response || (!!file.url && file.status == 'done') || file.status == 'uploading'
+    })
+    currFileList = uniqBy(currFileList, 'name')
+    if (!!currFileList && currFileList.length != 0) {
+      // console.log("upload set files as fileList", currFileList);
+      this.setState({responseList: currFileList})
     }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`)
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`)
-    }
+    _this.forceUpdate()
   }
 
   render () {
@@ -96,4 +120,4 @@ export default connect(({app, loading, contest, login, adminNewsEdit}) => ({
   app,
   loading,
   adminNewsEdit
-}))(Form.create()(Test))
+}))(Form.create()(Edit))

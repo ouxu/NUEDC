@@ -52,8 +52,8 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '标题', dataIndex: 'title', key: 'team_name'},
-    {title: '创建于', dataIndex: 'created_at', key: 'school_name', width: 200},
-    {title: '更新于', dataIndex: 'updated_at', key: 'contest_id', width: 200},
+    {title: '创建于', dataIndex: 'created_at', key: 'school_name', width: 170},
+    {title: '更新于', dataIndex: 'updated_at', key: 'contest_id', width: 170},
     {
       title: '操作',
       render: (record) => {
@@ -72,7 +72,7 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
         )
       },
       fixed: 'right',
-      width: 100,
+      width: 80,
       key: 'edit'
     }
   ]
@@ -101,7 +101,7 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 900}}
+        dataSource={table}
         pagination={pagination} rowKey={record => record.id}
       />
       <Modal
