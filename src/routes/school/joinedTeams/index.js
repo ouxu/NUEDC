@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import { Alert, Button, Form, Icon, message, Modal, Select, Table, Upload } from 'antd'
-import formConfig from '../joinedTeams/formConfig'
+import { editConfig, passConfig } from '../joinedTeams/formConfig'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { API, urlEncode } from '../../../utils'
@@ -12,8 +12,7 @@ import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 const confirm = Modal.confirm
 const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, content, modalContent, contests = [], tableCount, alert} = joinedTeams
-  const {school_team_ids = []} = modalContent
+  const {modal = false, table, content, modalContent, contests = [], tableCount, alert, selects = []} = joinedTeams
   const {query} = location
   const dataFlag = query.contest_id > 0
   const props = {
@@ -69,16 +68,8 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
         })
         break
       case 'audit':
-        confirm({
-          title: '审核确认',
-          content: (
-            <p>确认审核队伍{record.team_name}吗？</p>
-          ),
-          onOk () {
-            dispatch({type: 'joinedTeams/audit', payload: {query, record}})
-          },
-          onCancel () {}
-        })
+        dispatch({type: 'joinedTeams/updateModalContent', payload: record})
+        dispatch({type: 'joinedTeams/showModal', payload: 'audit'})
         break
       default:
         break
@@ -117,7 +108,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
     },
     showTotal: () => (
       <div className='joined-teams-check'>
-        <span style={{marginRight: 10}}>已选中{school_team_ids.length}个</span>
+        <span style={{marginRight: 10}}>已选中 {selects.length} 支队伍</span>
         <Button type='primary' onClick={allChecked}>批量审核</Button>
       </div>
     )
@@ -127,16 +118,24 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
       if (errors) {
         return
       }
-      const {contest_id = query.contest_id, school_id, school_level, school_name} = modalContent
-      values = {
-        ...values,
-        contest_id,
-        school_id,
-        school_level,
-        school_name
+      let payload = {}
+      if (modal === 'audit') {
+        payload = {
+          body: values,
+          id: modalContent.id,
+          query
+        }
+      } else {
+        const {contest_id = query.contest_id, school_id, school_level, school_name} = modalContent
+        payload = {
+          ...values,
+          contest_id,
+          school_id,
+          school_level,
+          school_name
+        }
       }
-      dispatch({type: 'joinedTeams/onFormSubmit', payload: values})
-      dispatch({type: `joinedTeams/${modal === 'edit' ? 'edit' : 'add'}`, payload: {query, values}})
+      dispatch({type: `joinedTeams/${modal}`, payload: payload})
     })
   }
   const excelOut = () => {
@@ -144,11 +143,13 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
   }
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      let selectedId = []
-      selectedRows.forEach((item) => {
-        selectedId.push(item.id)
+      let checks = selectedRows.map((item) => {
+        return {
+          record_id: item.id,
+          record_check: '已通过'
+        }
       })
-      dispatch({type: 'joinedTeams/updateModalContent', payload: {school_team_ids: selectedId}})
+      dispatch({type: 'joinedTeams/updateSelects', payload: checks})
     }
   }
   const allChecked = () => {
@@ -162,7 +163,6 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
       },
       onCancel () {}
     })
-
   }
   const getExcel = () => {
     dispatch({type: 'joinedTeams/downloadExcel'})
@@ -228,11 +228,10 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
             </Select.Option>
           </Select>
         </div>
-        <div className="joined-teams-header-right">
+        <div className='joined-teams-header-right'>
           <Button type='primary' onClick={onAddClick} disabled={!dataFlag} style={{marginRight: 10}}>+ 增加队伍</Button>
           <Button type='primary' onClick={excelOut} disabled={!dataFlag} style={{marginRight: 10}}>导出 Excel</Button>
           <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
-
 
           <Upload {...props}>
             <Button disabled={!dataFlag}>
@@ -259,15 +258,16 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
         />
       </div>
       <Modal
-        title={`${modal === 'edit' ? '编辑队伍信息' : '增加比赛队伍'}`}
-        visible={joinedTeams.modal === 'edit' || joinedTeams.modal === 'add'}
+        title={`${modal === 'add' ? '增加比赛队伍' : '编辑队伍信息'}`}
+        visible={!!modal}
         onCancel={() => dispatch({type: 'joinedTeams/hideModal'})}
         onOk={onModalOk}
-        key={joinedTeams.modal}
+        key={modal}
       >
         <Form className='form-content'>
-          {modal === 'add' && formConfig.map(config => FormItemRender(config, getFieldDecorator))}
-          {modal === 'edit' && formConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {modal === 'add' && editConfig.map(config => FormItemRender(config, getFieldDecorator))}
+          {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {modal === 'audit' && passConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent['status']})) }
         </Form>
       </Modal>
     </div>

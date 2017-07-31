@@ -1,6 +1,7 @@
-import { getCode, login, register, schoolQuery } from '../services/login'
+import { findPassword, getCode, login, register, schoolQuery } from '../services/login'
 import { routerRedux } from 'dva/router'
 import { sleep } from '../utils'
+import { message } from 'antd'
 import modelExtend from 'dva-model-extend'
 import { counterModel, loadingModel, tableModel } from './modelExtend'
 export default modelExtend(counterModel, tableModel, loadingModel, {
@@ -67,6 +68,19 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
         const loginData = {
           identifier: payload.mobile,
           password: payload.password,
+          client: 1
+        }
+        yield put({type: 'login', payload: loginData})
+      }
+    },
+
+    * findPassword ({payload}, {put, call}) {
+      const {code} = yield call(findPassword, payload)
+      if (code === 0) {
+        message.success('修改成功')
+        const loginData = {
+          identifier: payload.mobile,
+          password: payload.newPassword,
           client: 1
         }
         yield put({type: 'login', payload: loginData})

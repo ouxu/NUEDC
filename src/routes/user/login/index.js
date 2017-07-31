@@ -1,16 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Form, Icon, Input, Tabs } from 'antd'
+import { Button, Form, Icon, Input } from 'antd'
 import { verify } from '../../../utils/'
 import { Link } from 'dva/router'
 import './index.less'
 
 const FormItem = Form.Item
-const TabPane = Tabs.TabPane
 const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {loading} = login
-
   const handleOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
@@ -21,7 +19,7 @@ const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScro
   }
 
   return (
-    <div className='login-wrapper'>
+    <div className='login-wrapper' style={{backgroundImage: `url("/assets/user/login/login-bg.png")`}}>
       <div className='form'>
         <div className='login-title'>
           <span className='login-title-main'>中国大学生电子设计竞赛</span>

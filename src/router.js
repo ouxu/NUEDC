@@ -4,7 +4,7 @@ import { message } from 'antd'
 import App from './routes/app'
 import NotFound from './routes/404'
 
-import { Login, Register } from './routes/user/routes'
+import { Forget, Login, Register } from './routes/user/routes'
 import {
   AdminNews,
   AdminNewsModel,
@@ -82,6 +82,7 @@ const Routers = ({history, app}) => (
       </Route>
       <Route path='login' component={Login} />
       <Route path='register' getComponent={Register} />
+      <Route path='forget' getComponent={Forget} />
       <Route path='admin' component={AdminPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
         registerModel(app, ContestModel)

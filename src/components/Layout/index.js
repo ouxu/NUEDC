@@ -16,7 +16,8 @@ const Layout = (props) => (
         className='anim'
         key={props.location.pathname}
       >
-        <div className={(props.location.pathname === '/' || props.location.pathname === '/home') ? 'no-bg' : ''}>
+        <div
+          className={(props.location.pathname === '/' || props.location.pathname === '/home' || props.location.pathname === '/login') ? 'no-bg' : ''}>
           <Header {...props} />
         </div>
         {props.children}

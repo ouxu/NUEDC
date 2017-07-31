@@ -18,7 +18,8 @@ export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'joinedTeams',
   state: {
     contests: [],
-    content: []
+    content: [],
+    selects: []
   },
   subscriptions: {
     joinedTeamsSubscriber ({dispatch, history}) {
@@ -103,8 +104,8 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       }
     },
     * audit ({payload}, {put, call}) {
-      const {query, record} = payload
-      const data = yield call(audit, record.id)
+      const {query, id, body} = payload
+      const data = yield call(audit, body, id)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('审核通过')
@@ -122,8 +123,8 @@ export default modelExtend(modalModel, tableModel, alertModel, {
     },
     * allChecked ({payload}, {call, select, put}) {
       const query = payload
-      const {school_team_ids} = yield select(({joinedTeams}) => joinedTeams.modalContent)
-      const data = yield call(allChecked, {school_team_ids: school_team_ids})
+      const {selects: checks = []} = yield select(({joinedTeams}) => joinedTeams)
+      const data = yield call(allChecked, {checks})
       if (data.code === 0) {
         message.success('批量审核成功')
         yield put({type: 'fetchJoinedTable', payload: query})
@@ -134,12 +135,6 @@ export default modelExtend(modalModel, tableModel, alertModel, {
     }
   },
   reducers: {
-    onFormSubmit (state, {payload}) {
-      return {
-        ...state,
-        form: payload
-      }
-    },
     saveSuccessExcel (state, {payload}) {
       return {
         ...state,
@@ -150,6 +145,12 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       return {
         ...state,
         contests: payload
+      }
+    },
+    updateSelects (state, {payload: selects}) {
+      return {
+        ...state,
+        selects
       }
     }
   }

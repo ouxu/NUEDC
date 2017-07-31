@@ -99,11 +99,11 @@ const passConfig = [{
   },
   options: [
     {
-     value: '未审核',
-     label: '未审核'
-    },{
-     value: '已通过',
-     label: '已通过'
+      value: '未审核',
+      label: '未审核'
+    }, {
+      value: '已通过',
+      label: '已通过'
     }
   ]
 }]

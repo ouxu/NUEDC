@@ -3,7 +3,7 @@
  */
 import { verify } from '../../../utils/index'
 
-export default [
+const editConfig = [
   {
     value: 'team_name',
     label: '队伍名称',
@@ -81,3 +81,25 @@ export default [
     }
   }
 ]
+
+const passConfig = [{
+  value: 'record_check',
+  label: '审核状态',
+  formType: 1,
+  contentType: 'string',
+  rules: {
+    required: true,
+    requiredMessage: '请选择审核状态'
+  },
+  options: [
+    {
+      value: '未审核',
+      label: '未审核'
+    }, {
+      value: '已通过',
+      label: '已通过'
+    }
+  ]
+}]
+
+export { editConfig, passConfig }

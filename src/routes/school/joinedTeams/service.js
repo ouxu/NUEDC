@@ -29,17 +29,18 @@ const remove = async (data) => request({
   token: true
 })
 
-const update = async (data,id) => request({
+const update = async (data, id) => request({
   url: API.schoolUpdateTeamInfo + id,
   method: 'put',
   token: true,
   data: data
 })
 
-const audit = async (data) => request({
-  url: API.schoolCheckTeam + data,
+const audit = async (data, id) => request({
+  url: API.schoolCheckTeam.replace(':id', id),
   method: 'put',
-  token: true
+  token: true,
+  data: data
 })
 
 const add = async (data) => request({

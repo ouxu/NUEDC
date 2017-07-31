@@ -11,6 +11,7 @@ export default {
   // student
   login: apiMaker('user/login'),
   logout: apiMaker('user/logout'),
+  findPassword: apiMaker('user/password/forget'),
   tokenVerify: apiMaker('verify-token'),
   register: apiMaker('user/register'),
   getResult: apiMaker('user/:contestId/getResult'),
@@ -35,7 +36,7 @@ export default {
   schoolResult: apiMaker('school/team/awards'),
   schoolUpdateTeamInfo: apiMaker('/school/team/update/'),
   schoolDeleteTeam: apiMaker('school/team/delete/'),
-  schoolCheckTeam: apiMaker('school/team/check/'),
+  schoolCheckTeam: apiMaker('school/team/check/:id'),
   schoolJoinedExcelOut: apiMaker('school/admin/team/export?'),
   schoolResultExcelOut: apiMaker('school/admin/result/export?'),
   schoolAcquireId: apiMaker('school/admin/contest'),

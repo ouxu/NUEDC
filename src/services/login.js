@@ -28,4 +28,11 @@ const schoolQuery = async () => request({
   url: API.userSchools,
   method: 'get'
 })
-export { login, register, getCode, schoolQuery }
+
+const findPassword = async (data) => request({
+  url: API.findPassword,
+  method: 'post',
+  data
+})
+
+export { login, register, getCode, schoolQuery, findPassword }
