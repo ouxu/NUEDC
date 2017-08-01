@@ -43,6 +43,9 @@ export default {
   schoolChecked: apiMaker('school/team/mult-check'),
   schoolImportTeamsExcel: apiMaker('school/admin/team/getImportTemplate'),
   schoolUploadExcel: apiMaker('school/admin/team/import/:id'),
+  schoolProblem: apiMaker('school/team/problems'),
+  schoolProblemUpdate: apiMaker('school/admin/team/problem/select'),
+  schoolProblemCheck: apiMaker('school/admin/team/problem/check'),
 
   // admin
   adminLogin: apiMaker('sysadmin/login'),

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { message } from 'antd'
-import { codeHelper } from './'
+import { API, codeHelper } from './'
 
 const fetch = options => {
   let {
@@ -11,7 +11,7 @@ const fetch = options => {
   } = options
   const header = token ? {'token': window.localStorage.getItem('nuedcToken')} : {}
   const myAxios = axios.create({
-    timeout: 10000,
+    timeout: 15000,
     headers: header
   })
   switch (method.toLowerCase()) {
@@ -62,7 +62,9 @@ export default async options => {
     return data
 
   } catch (e) {
-    message.error('网络错误，请刷新页面重试')
+    if (options.url === API.tokenVerify) {
+      message.error('网络错误，请刷新页面重试')
+    }
     return {
       code: -1,
       data: {}

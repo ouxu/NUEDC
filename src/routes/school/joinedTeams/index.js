@@ -135,6 +135,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
           school_name
         }
       }
+      dispatch({type: 'joinedTeams/onFormSubmit', payload: payload})
       dispatch({type: `joinedTeams/${modal}`, payload: payload})
     })
   }

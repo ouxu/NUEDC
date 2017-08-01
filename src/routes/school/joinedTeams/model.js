@@ -19,7 +19,8 @@ export default modelExtend(modalModel, tableModel, alertModel, {
   state: {
     contests: [],
     content: [],
-    selects: []
+    selects: [],
+    form: []
   },
   subscriptions: {
     joinedTeamsSubscriber ({dispatch, history}) {
@@ -135,6 +136,12 @@ export default modelExtend(modalModel, tableModel, alertModel, {
     }
   },
   reducers: {
+    onFormSubmit (state, {payload}) {
+      return {
+        ...state,
+        form: payload
+      }
+    },
     saveSuccessExcel (state, {payload}) {
       return {
         ...state,

@@ -13,8 +13,6 @@ import {
   ContestModel,
   ContestRecord,
   ContestRecordModel,
-  MessageManage,
-  MessageModel,
   NewsEdit,
   NewsEditModel,
   PrivilegeManage,
@@ -36,6 +34,8 @@ import {
   SchoolInfoManage,
   SchoolInfoModel,
   SchoolPage,
+  SchoolProblem,
+  SchoolProblemModel,
   SchoolResultManage,
   SchoolResultModel
 } from './routes/school/routes'
@@ -134,10 +134,6 @@ const Routers = ({history, app}) => (
           onEnter={() => registerModel(app, PrivilegeModel)}
         />
         <Route
-          path='message' getComponent={MessageManage}
-          onEnter={() => registerModel(app, MessageModel)}
-        />
-        <Route
           path='news' getComponent={AdminNews}
           onEnter={() => registerModel(app, AdminNewsModel)}
         />
@@ -195,6 +191,12 @@ const Routers = ({history, app}) => (
         <Route
           path='schoolResult' getComponent={SchoolResultManage}
           onEnter={() => registerModel(app, SchoolResultModel)}
+        />
+        <Route
+          path='problem' getComponent={SchoolProblem}
+          onEnter={() => {
+            registerModel(app, SchoolProblemModel)
+          }}
         />
       </Route>
     </Route>

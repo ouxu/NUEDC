@@ -13,6 +13,10 @@
       "key": "/school/joinedTeams",
       "value": "管理本校参赛队伍",
       "icon": "team"
+    },{
+      "key": "/school/problem",
+      "value": "管理参赛队伍选题",
+      "icon": "team"
     },
     {
       "key": "/school/schoolResult",

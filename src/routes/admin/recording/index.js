@@ -7,7 +7,6 @@ import FormItemRender from '../../../components/FormItemRender/'
 import recordConfig from './formConfig'
 import { resultCheckConfig } from '../contest/formConfig'
 import { API, urlEncode } from '../../../utils'
-import DropOption from '../../../components/DropOption'
 
 const RecordingManage = ({location, recording, contest, adminContestRecord, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableCount} = adminContestRecord
@@ -55,17 +54,12 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
   const getExcel = () => {
     dispatch({type: 'recording/downloadExcel', payload: query})
   }
-  const onMenuClick = (key, record) => {
-    switch (key) {
-      case 'edit':
-        record.id = '' + record.id
-        record.modalTitle = `修改队伍 ${record.team_name} 的比赛结果`
-        dispatch({type: 'adminContestRecord/updateModalContent', payload: record})
-        dispatch({type: 'adminContestRecord/showModal', payload: 'edit'})
-        break
-      default:
-        break
-    }
+  const onMenuClick = (record) => {
+    record.id = '' + record.id
+    record.modalTitle = `修改队伍 ${record.team_name} 的比赛结果`
+    dispatch({type: 'adminContestRecord/updateModalContent', payload: record})
+    dispatch({type: 'adminContestRecord/showModal', payload: 'edit'})
+
   }
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
@@ -117,11 +111,9 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
       title: '操作',
       render: (record) => {
         return (
-          <DropOption
-            menuOptions={[{key: 'edit', name: '成绩录入'}]}
-            buttonStyle={{border: 'solid 1px #eee', width: 60}}
-            onMenuClick={({key}) => onMenuClick(key, record)}
-          />
+          <a onClick={() => onMenuClick(record)}>
+            编辑
+          </a>
         )
       },
       width: 100,
