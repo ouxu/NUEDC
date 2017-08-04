@@ -49,7 +49,8 @@ import {
   StudentScoreManage,
   StudentScoreModel,
   StudentSignUpManage,
-  StudentSignUpModel
+  StudentSignUpModel,
+  StudentInfo, StudentInfoModel
 } from './routes/student/routes'
 
 import Home from './routes/home/route'
@@ -184,6 +185,10 @@ const Routers = ({history, app}) => (
             registerModel(app, SchoolContestModel)
             registerModel(app, StudentProblemModel)
           }}
+        />
+        <Route
+          path='studentInfo' getComponent={StudentInfo}
+          onEnter={() => registerModel(app, StudentInfoModel)}
         />
         <Route path='score' getComponent={StudentScoreManage}
                onEnter={() => {

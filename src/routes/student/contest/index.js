@@ -106,6 +106,7 @@ const ContestManage = ({app, studentContest, dispatch}) => {
         break
     }
   }
+
   return (
     <div className='contest'>
       <Collapse bordered={false} defaultActiveKey={['signUp', 'canRegister']}>
@@ -128,7 +129,7 @@ const ContestManage = ({app, studentContest, dispatch}) => {
               }
               return (
                 <Col
-                  xs={{span: 24}} sm={{span: 8}} xl={{span: 6}}
+                  xs={{span: 24}} sm={{span: 12}} xl={{span: 8}}
                   key={'can-register-' + item.id} className='contest-item'
                 >
                   <Card
@@ -170,8 +171,9 @@ const ContestManage = ({app, studentContest, dispatch}) => {
               } else {
                 extra = (<Tag disabled>选题已关闭</Tag>)
               }
+              const {team_code = false} = item
               return (
-                <Col xs={{span: 24}} sm={{span: 8}} xl={{span: 6}} key={'sign-up-' + item.id} className='contest-item'>
+                <Col xs={{span: 24}} sm={{span: 12}} xl={{span: 8}} key={'sign-up-' + item.id} className='contest-item'>
                   <Card
                     title={<div className='contest-card-title'>{item.title}</div>}
                     extra={
@@ -192,6 +194,11 @@ const ContestManage = ({app, studentContest, dispatch}) => {
                     </div>
                     <div className='contest-item-footer'>
                       {extra}
+                      {!item.team_code ? '' : (
+                        <Tooltip placement='top' title='提交作品时需要填写的编号'>
+                          <Tag color={color.red}>队伍编号：{item.team_code}</Tag>
+                        </Tooltip>
+                      )}
                     </div>
                   </Card>
                 </Col>

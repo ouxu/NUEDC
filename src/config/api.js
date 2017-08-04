@@ -8,6 +8,7 @@ export default {
 
   host: apiMaker(''),
   changePassword: apiMaker('user/updatePassword'),
+  updateUserInfo: apiMaker('user/update/info'),
   // student
   login: apiMaker('user/login'),
   logout: apiMaker('user/logout'),

@@ -5,6 +5,11 @@
   ],
   "menus": [
     {
+      "key": "/student/studentInfo",
+      "value": "账号信息",
+      "icon": "user"
+    },
+    {
       "key": "/student",
       "value": "报名参赛",
       "icon": "edit"
@@ -12,10 +17,12 @@
     {
       "key": "/student/problem",
       "value": "查看选题",
+      "route": "problem",
       "icon": "file-text"
     },
     {
       "key": "/student/score",
+      "route": "score",
       "value": "查看成绩",
       "icon": "smile-o"
     }

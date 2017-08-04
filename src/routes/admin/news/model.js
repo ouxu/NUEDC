@@ -40,15 +40,6 @@ export default modelExtend(modalModel, tableModel, {
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
-    * update ({payload}, {call, put, select}) {
-      const {id} = yield select(({adminNews}) => adminNews.modalContent)
-      const data = yield call(update, payload, id)
-      if (data.code === 0) {
-        yield put({type: 'hideModal'})
-        message.success('修改成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
-      }
-    },
     * preview ({payload}, {call, put, select}) {
       console.log(payload)
       const {query, record} = payload
@@ -70,7 +61,7 @@ export default modelExtend(modalModel, tableModel, {
       const data = yield call(remove, {type}, id)
       if (data.code === 0) {
         message.success('删除成功')
-        yield put({type: 'fetchTable', payload: {force: true}})
+        yield put({type: 'fetchTable', payload: {type}})
       }
     }
   },

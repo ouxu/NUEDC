@@ -117,24 +117,6 @@ const editConfig = [
       required: false,
       requiredMessage: '请输入获奖情况'
     }
-  }, {
-    value: 'result_info',
-    label: '获奖审核',
-    formType: 1,
-    contentType: 'string',
-    rules: {
-      required: false,
-      requiredMessage: '请选择审核状态'
-    },
-    options: [
-      {
-        value: '未通过',
-        label: '未通过'
-      }, {
-        value: '已通过',
-        label: '已通过'
-      }
-    ]
   }
 ]
 

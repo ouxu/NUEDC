@@ -9,7 +9,8 @@ export default modelExtend(tableModel, modalModel, {
   namespace: 'studentProblems',
   state: {
     problemSelectInfo: {},
-    tablePass: []
+    tablePass: [],
+    contestSelectInfo: {}
   },
   subscriptions: {
     problemSubscriber ({dispatch, history}) {
@@ -23,8 +24,8 @@ export default modelExtend(tableModel, modalModel, {
   effects: {
     * fetchTable ({payload}, {call, put, select}) {
       const {contest_id = ''} = payload
+      let {tablePass: contest} = yield select(({studentContest}) => studentContest)
       if (!contest_id) {
-        let {tablePass: contest} = yield select(({studentContest}) => studentContest)
         if (contest.length === 0) {
           yield call(sleep, 1000)
           let {tablePass: contestNow} = yield select(({studentContest}) => studentContest)
@@ -37,9 +38,9 @@ export default modelExtend(tableModel, modalModel, {
         if (contest_id === 'none') return
         const {code = '', data: {problemList = [], problemSelectInfo = {}}} = yield call(fetchTable, contest_id)
         if (code === 0) {
-          const table = problemList.map((item, i) => ({
+          const table = problemList.reverse().map((item, i) => ({
             ...item,
-            fakeId: String.fromCharCode((problemList.length - 1) + ( 65 - i))
+            fakeId: i + 1
           }))
           let info = problemSelectInfo
           if (problemSelectInfo.problemId === -1) {
@@ -48,15 +49,25 @@ export default modelExtend(tableModel, modalModel, {
               title: '未选题'
             }
           } else {
-            table.forEach((item, i) => {
-              if (item.id === problemSelectInfo.problemId) {
-                info = {
-                  ...info,
-                  ...item,
-                  title: `${String.fromCharCode(parseInt(problemList.length - i - 1) + 65)} ${item.title}`
-                }
-              }
-            })
+            if (contest.length === 0) {
+              yield call(sleep, 1000)
+              let {tablePass: contestNow} = yield select(({studentContest}) => studentContest)
+              contest = contestNow
+            }
+            let indexArr = contest.map((item) => item.id)
+            let index = indexArr.indexOf(+contest_id)
+
+            info = {
+              ...info,
+              ...contest[index]
+            }
+
+            indexArr = table.map(item => item.id)
+            index = indexArr.indexOf(+contest_id)
+            info = {
+              ...info,
+              ...table[index]
+            }
           }
           yield put({type: 'setTable', payload: table})
           yield put({type: 'setInfo', payload: info})
@@ -94,6 +105,7 @@ export default modelExtend(tableModel, modalModel, {
         yield put({type: 'fetchTable', payload: query})
         message.success('选题成功')
         yield put({type: 'hideModal'})
+        yield put({type: 'studentContest/fetchTablePass'})
       }
     }
   },
@@ -102,6 +114,12 @@ export default modelExtend(tableModel, modalModel, {
       return {
         ...state,
         problemSelectInfo
+      }
+    },
+    setContestSelectInfo (state, {payload: contestSelectInfo}) {
+      return {
+        ...state,
+        contestSelectInfo
       }
     },
     setTablePass(state, {payload: tablePass}) {

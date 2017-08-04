@@ -1,6 +1,7 @@
 import React from 'react'
 import menuConfig from './config/menu.json'
 import Sider from '../../components/Layout/Sider'
+import '../admin/index.less'
 
 import { connect } from 'dva'
 const SchoolPage = ({location, app, children, school}) => (

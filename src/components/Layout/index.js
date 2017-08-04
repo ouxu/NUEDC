@@ -9,7 +9,7 @@ import TweenOne from 'rc-tween-one'
 const Layout = (props) => {
   const {app, routes = []} = props
   const {nobg = []} = app
-  const routePath = routes.map((item) => {
+  let routePath = routes.map((item) => {
     return item.path === '/' ? '' : item.path
   })
   return (

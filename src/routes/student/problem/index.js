@@ -2,17 +2,18 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Alert, Button, Form, Modal, Select, Table } from 'antd'
+import { Alert, Button, Form, Modal, Select, Table, Tag } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import { Link, routerRedux } from 'dva/router'
 import DropOption from '../../../components/DropOption/index'
+import { color } from '../../../utils'
 const {confirm} = Modal
 
 const ProblemManage = ({dispatch, location, studentContest, studentProblems, form: {validateFieldsAndScroll, getFieldDecorator}}) => {
   const {query} = location
   const {contest_id = ''} = query
-  const {tablePass: contestTable = []} = studentContest
+  const {tablePass: contestTable = [], query: initQuery} = studentContest
   const {modal, modalContent, problemSelectInfo, table = []} = studentProblems
   const onMenuClick = (key, record) => {
     switch (key) {
@@ -43,7 +44,7 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
   const columns = [
     {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
-    {title: '附加信息', dataIndex: 'add_on', key: 'status'},
+    {title: '题目描述', dataIndex: 'content', key: 'status'},
     {
       title: '操作',
       render: (record) => {
@@ -114,6 +115,7 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
       sm: {span: 16}
     }
   }
+
   return (
     <div className='problem'>
       <div className='problem-header'>
@@ -123,6 +125,11 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
           placeholder='选择竞赛'
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           onChange={(value) => {
+            let newQuery = {
+              ...initQuery,
+              problem: {...query, contest_id: value}
+            }
+            dispatch({type: 'studentContest/saveQuery', payload: newQuery})
             dispatch(routerRedux.push(`/student/problem?contest_id=` + value))
           }}
           value={query.contest_id || undefined}
@@ -146,10 +153,22 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
           table.length > 0 ? (
             <div>
               <Alert
-                message={(<span>请在规定时间内完成选题 <span style={{marginLeft: 10}}>
-            当前选题情况： {problemSelectInfo.title}
-                </span></span>)}
-                description='规定时间内未完成选题的队伍视为放弃比赛'
+                message={(
+                  <span>{problemSelectInfo.team_code ? (
+                    <span>当前选题情况： {problemSelectInfo.title}</span>
+                  ) : '请在规定时间内完成选题'}
+                  </span>)}
+                description={(
+                  <span>
+                    {problemSelectInfo.team_code ? (
+                      <span>
+                        <Tag color={color.red}> 队伍编号：{problemSelectInfo.team_code}</Tag>
+                        <Tag color={color.blue}> 成绩：{problemSelectInfo.result_check}</Tag>
+
+                      </span>
+                    ) : '规定时间内未完成选题的队伍视为放弃比赛'}
+                  </span>
+                )}
                 showIcon
               />
               <Table
@@ -158,7 +177,7 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
                 pagination={false} rowKey={record => record.id}
                 expandedRowRender={record => (
                   <div className='expanded-row'>
-                    <span>{record.content}</span>
+                    <span>{record.add_on || '无附加说明'}</span>
                   </div>
                 )}
               />
@@ -198,7 +217,7 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
               <Select>
                 {table.map((option, i) => (
                   <Select.Option value={option.id + ''} key={option.id}>
-                    {`${String.fromCharCode(parseInt(table.length - i - 1) + 65)} ${option.title}`}
+                    {option.title}
                   </Select.Option>
                 ))}
               </Select>

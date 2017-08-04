@@ -5,7 +5,7 @@ import React from 'react'
 import menuConfig from './config/menu.json'
 import { connect } from 'dva'
 import Sider from '../../components/Layout/Sider'
-
+import './index.less'
 const AdminPage = ({children, location, contest}) => (
   <div className='main-wrapper'>
     <sider className='sider light'>

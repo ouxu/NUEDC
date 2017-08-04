@@ -2,7 +2,7 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Alert, Form, Icon, Select, Table, Tooltip } from 'antd'
+import { Alert, Col, Form, Icon, Row, Select, Tooltip } from 'antd'
 import './index.less'
 import { connect } from 'dva'
 import { Link, routerRedux } from 'dva/router'
@@ -22,7 +22,7 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
     {
       title: (
         <Tooltip title='空白代表未选题'>
-          <span> 所选题目 <Icon type="question-circle-o" /></span>
+          <span> 所选题目 <Icon type='question-circle-o' /></span>
         </Tooltip>
       ),
       dataIndex: 'problemTitle',
@@ -63,11 +63,35 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
           />
         ) : (
           table.length > 0 ? (
-            <Table
-              columns={columns} bordered
-              dataSource={table} scroll={{x: 2000}}
-              rowKey={record => record.id}
-            />
+            <div>
+              <Alert
+                message={(
+                  <span>
+                    <p> “<strong>{table[0].contestTitle}</strong>” 竞赛获奖情况为：<strong>{table[0].result ? table[0].result : '未获奖'}</strong></p>
+                  </span>
+                )}
+                description={(
+                  <Row className='student-score-description' type={'flex'}>
+                    <Col  span={12}> 队伍名称：{table[0].team_name}</Col>
+
+                    <Col span={12}> 队长电话：{table[0].contact_mobile}</Col>
+
+                    <Col span={12}> 队长姓名：{table[0].member1}</Col>
+
+                    <Col span={12}> 队员姓名：{table[0].member2}</Col>
+
+                    <Col span={12}> 队员姓名：{table[0].member3}</Col>
+
+                    <Col span={12}> 指导老师：{table[0].teacher}</Col>
+
+                    <Col span={24}>所选题目： {table[0].problemTitle || '未选题'}</Col>
+
+                    <Col span={24}>备注说明： {table[0].onsite_info || '无'}</Col>
+                  </Row>
+                )}
+                showIcon
+              />
+            </div>
           ) : (
             <Alert
               message={(<span>比赛进行中</span>)}

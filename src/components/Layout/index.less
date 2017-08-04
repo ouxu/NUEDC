@@ -7,9 +7,15 @@
   background: #FDF6FA;
   min-height: 100%;
   display: flex;
+  display: -webkit-box;   /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;  /* OLD - Firefox 19- H5不用考虑 */
+  display: -mz-flexbox; /* TWEENER IE 10 */
   flex-direction: column;
   .layout-content {
-    flex: 1;
+    -webkit-box-flex: 1.0;
+    -moz-flex-grow: 1;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
   }
   .main-wrapper {
     margin: 20px;

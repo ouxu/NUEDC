@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon, Menu } from 'antd'
 import { Link } from 'dva/router'
-import { urlEncode } from '../../../utils'
+import { urlEncode, windowScroll } from '../../../utils'
 const {SubMenu} = Menu
 const Sider = ({menuConfig, location, query = {}}) => {
   const {menus = [], openKeys = [], defaultSelectedKeys} = menuConfig
@@ -32,6 +32,7 @@ const Sider = ({menuConfig, location, query = {}}) => {
         defaultOpenKeys={openKeys}
         selectedKeys={[location.pathname]}
         style={{height: '100%', borderRight: 0}}
+        onClick={() => windowScroll('nav-header')}
       >
         {renderMenus(menus)}
       </Menu>

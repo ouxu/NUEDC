@@ -25,10 +25,7 @@ export default {
     * query ({}, {call, put, select}) {
       const data = yield call(query)
       if (data.code === 0) {
-        const {user} = yield select(({app}) => app)
-        if (!user.id) {
-          yield put({type: 'setUser', payload: data.user})
-        }
+        yield put({type: 'setUser', payload: data.user})
       } else {
         yield call(sleep, 1000)
         yield put({type: 'login/logout'})

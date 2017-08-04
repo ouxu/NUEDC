@@ -14,7 +14,6 @@ const App = (props) => {
   const {logoSrc = '', name = '', iconFontJS, iconFontCSS} = config
   const {app: {role = 'student'}, location: {pathname = ''}} = props
   const match = pathToRegexp(`/${role}/:params`).exec(pathname) || pathname === '/' + role
-  console.log(match)
   return (
     <div>
       <Helmet>

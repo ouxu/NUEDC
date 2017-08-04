@@ -7,7 +7,8 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   state: {
     tablePass: [],
     tableSignUp: [],
-    tableSchoolAdmins: []
+    tableSchoolAdmins: [],
+    query: {}
   },
   subscriptions: {
     studentContestSubscriber ({dispatch, history}) {
@@ -21,14 +22,16 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   },
   effects: {
     * init ({payload: pathname}, {call, select, put}) {
-      let {tablePass = [], tableSignUp = [], table = [], tableSchoolAdmins = []} = yield select(({studentContest}) => studentContest)
+      let {tablePass = [], tableSignUp = [], table = [], tableSchoolAdmins = [], query} = yield select(({studentContest}) => studentContest)
       if (pathname === '/student' && table.length === 0) {
         let {data: contestTable = []} = yield call(fetchTable)
         contestTable = Array.from(contestTable)
         yield put({type: 'setTable', payload: contestTable.reverse()})
       }
       if (tablePass.length === 0) {
-        yield put({type: 'fetchTablePass'})
+        const {data: {contestList = []}} = yield call(fetchTablePass)
+        yield put({type: 'setTablePass', payload: contestList})
+        tablePass = contestList
       }
       if (tableSignUp.length === 0) {
         yield put({type: 'fetchTableSignUp'})
@@ -36,10 +39,18 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       if (tableSchoolAdmins.length === 0) {
         yield put({type: 'fetchTableSchoolAdmins'})
       }
+      if (JSON.stringify(query).length <= 2) {
+        const defaultValue = tablePass[0] || {id: 'none'}
+        const problem = {
+          contest_id: defaultValue.id
+        }
+        const query = {problem, score: problem}
+        yield put({type: 'saveQuery', payload: query})
+      }
     },
     * fetchTablePass ({}, {call, put}) {
       const {data: {contestList = []}} = yield call(fetchTablePass)
-      yield put({type: 'setTablePass', payload: contestList.reverse()})
+      yield put({type: 'setTablePass', payload: contestList})
     },
     * fetchTableSignUp ({}, {call, put}) {
       let {data = []} = yield call(fetchTableSignUp)
@@ -74,6 +85,12 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       return {
         ...state,
         tableSchoolAdmins
+      }
+    },
+    saveQuery (state, {payload: query}) {
+      return {
+        ...state,
+        query
       }
     }
   }
