@@ -6,7 +6,7 @@ import { Button, Form, Icon, Input, Modal, Upload } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import LzEditor from 'react-lz-editor'
-import { config } from '../../../../utils'
+import { config,API } from '../../../../utils'
 const {confirm} = Modal
 class Edit extends React.Component {
   constructor (props) {
@@ -60,7 +60,7 @@ class Edit extends React.Component {
     const {pathname, query} = location
     const {content, input} = this.props.adminNewsEdit
     const uploadProps = {
-      action: 'http://nuedc.hrsoft.net/file/public/upload',
+      action: API.filePublic,
       name: 'upload',
       headers: {
         'token': window.localStorage.getItem('nuedcToken')

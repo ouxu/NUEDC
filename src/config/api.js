@@ -14,6 +14,7 @@ export default {
   findPassword: apiMaker('user/password/forget'),
   tokenVerify: apiMaker('verify-token'),
   register: apiMaker('user/register'),
+  getVerifyCode: apiMaker('user/verifyCode'),
   getResult: apiMaker('user/:contestId/getResult'),
   preRegister: apiMaker('user/preRegister'),
   deleteCompetition: apiMaker(''),
@@ -34,7 +35,7 @@ export default {
   schoolJoinedTeams: apiMaker('school/team/info'),
   schoolAddTeam: apiMaker('school/team/add'),
   schoolResult: apiMaker('school/team/awards'),
-  schoolUpdateTeamInfo: apiMaker('/school/team/update/'),
+  schoolUpdateTeamInfo: apiMaker('school/team/update/'),
   schoolDeleteTeam: apiMaker('school/team/delete/'),
   schoolCheckTeam: apiMaker('school/team/check/:id'),
   schoolJoinedExcelOut: apiMaker('school/admin/team/export?'),
@@ -88,5 +89,7 @@ export default {
   newsMessageAll: apiMaker('sysadmin/message/all'),
   newsPassage: apiMaker('sysadmin/message/info'),
   newsUpdate: apiMaker('sysadmin/message/update/:id'),
-  newsCreate: apiMaker('sysadmin/message/add')
+  newsCreate: apiMaker('sysadmin/message/add'),
+  newsDelete: apiMaker('sysadmin/message/delete/:id'),
+  filePublic: apiMaker('file/public/upload')
 }

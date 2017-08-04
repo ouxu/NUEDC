@@ -209,7 +209,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
           <Table
             columns={columns} bordered
             rowSelection={rowSelection}
-            dataSource={table} scroll={{x: 1900}}
+            dataSource={table} scroll={{x: 1900, y: window.screen.availHeight - 350}}
             pagination={pagination} rowKey={record => record.id}
           />
         ) : (

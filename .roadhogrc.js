@@ -12,6 +12,11 @@ export default {
         'transform-decorators-legacy',
         ['import', {'libraryName': 'antd', 'style': true}]
       ],
+      'autoprefixer': {
+        'browsers': [
+          'iOS >= 8', 'Android >= 4'
+        ]
+      }
     },
     'production': {
       'extraBabelPlugins': [

@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Alert, Button, Form, Input, Modal, Select, Table, Tag } from 'antd'
+import { Alert, Button, Form, Input, Modal, Table, Tag } from 'antd'
 import { commonConfig, resultCheckConfig, statusConfig } from './formConfig'
 import './index.less'
 import { Link, routerRedux } from 'dva/router'
@@ -132,7 +132,6 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
   const columns = [
     {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '赛事名称', dataIndex: 'title', key: 'title'},
-    {title: '赛事状态', dataIndex: 'status', key: 'status', width: 100},
     {
       title: '报名',
       render: record => (
@@ -191,13 +190,13 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
 
       <div className='contest-header'>
         {/*<Select*/}
-          {/*showSearch*/}
-          {/*style={{width: 150}}*/}
-          {/*placeholder='选择年份'*/}
-          {/*defaultValue='all'*/}
-          {/*filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}*/}
+        {/*showSearch*/}
+        {/*style={{width: 150}}*/}
+        {/*placeholder='选择年份'*/}
+        {/*defaultValue='all'*/}
+        {/*filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}*/}
         {/*>*/}
-          {/*<Select.Option value='all'>所有竞赛列表</Select.Option>*/}
+        {/*<Select.Option value='all'>所有竞赛列表</Select.Option>*/}
         {/*</Select>*/}
         <span>所有竞赛列表</span>
         <Button type='primary' onClick={onCreateClick}>创建比赛</Button>
@@ -213,7 +212,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       )}
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1480}}
+        dataSource={table} scroll={{x: 1300}}
         pagination={false} rowKey={record => record.id}
         expandedRowRender={record => (
           <div className='expanded-row'>

@@ -42,7 +42,7 @@ const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator
         dispatch({type: 'adminSchool/showAlert'})
         dispatch({type: 'adminSchool/fetchTable', payload: query})
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 文件上传失败，稍后再试。`)
+        message.error(`${info.file.name}文件上传失败，稍后再试。`)
       }
     },
     data: (file) => { // 支持自定义保存文件名、扩展名支持
@@ -152,7 +152,7 @@ const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator
       <div className='school-header'>
         <Button type='primary' onClick={onCreateClick}>添加单个学校</Button>
         <div>
-          <Button type='primary' onClick={getExcel}>获取导入模板</Button>
+          <Button type='primary' onClick={getExcel} style={{marginRight: 10}}>获取导入模板</Button>
           <Upload {...props}>
             <Button>
               <Icon type='upload' /> 导入Excel
@@ -185,7 +185,7 @@ const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator
       )}
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1000}}
+        dataSource={table} scroll={{x: 1000, y: window.screen.availHeight - 350}}
         pagination={pagination} rowKey={record => record.id}
       />
       <Modal

@@ -82,11 +82,13 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
     dispatch({type: 'studentProblems/updateModalContent', payload: {modalTitle: '选定题目'}})
     dispatch({type: 'studentProblems/showModal', payload: 'add'})
   }
+
   const onEditClick = (e) => {
     e.preventDefault()
     dispatch({type: 'studentProblems/updateModalContent', payload: {modalTitle: '修改选题'}})
     dispatch({type: 'studentProblems/showModal', payload: 'edit'})
   }
+
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
@@ -131,10 +133,9 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
         </Select>
         <div>
           {problemSelectInfo.problemId === -1 ? (
-            <Button type='primary' disabled={table.length === 0}
-              onClick={onAddClick}>确认选题</Button>
+            <Button type='primary' disabled={table.length === 0} onClick={onAddClick}>确认选题</Button>
           ) : (
-            <Button type='primary' disabled={contest_id === 'none' || table.length === 0 }
+            <Button type='primary' disabled={contest_id === 'none' || table.length === 0}
               onClick={onEditClick}>修改选题</Button>
           )}
         </div>
@@ -147,7 +148,7 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
               <Alert
                 message={(<span>请在规定时间内完成选题 <span style={{marginLeft: 10}}>
             当前选题情况： {problemSelectInfo.title}
-          </span></span>)}
+                </span></span>)}
                 description='规定时间内未完成选题的队伍视为放弃比赛'
                 showIcon
               />

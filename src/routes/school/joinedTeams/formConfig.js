@@ -59,7 +59,7 @@ const editConfig = [
     }
   }, {
     value: 'contact_mobile',
-    label: '联系电话',
+    label: '队长手机号',
     formType: 0,
     contentType: 'string',
     rules: {
@@ -93,8 +93,8 @@ const passConfig = [{
   },
   options: [
     {
-      value: '未审核',
-      label: '未审核'
+      value: '未通过',
+      label: '未通过'
     }, {
       value: '已通过',
       label: '已通过'

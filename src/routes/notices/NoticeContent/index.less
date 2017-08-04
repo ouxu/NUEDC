@@ -30,6 +30,12 @@
       display: flex;
       margin-top: 20px;
       justify-content: space-between;
+      & .passage-btn {
+        width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
   &-sub-title {
@@ -37,11 +43,14 @@
   }
 
   @media (max-width: 768px) {
+    &-header {
+      height: 60vh;
+    }
+
     &-markdown {
       margin: 30px auto;
       width: 90%;
     }
   }
-
 }
 

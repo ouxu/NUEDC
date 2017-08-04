@@ -101,7 +101,7 @@ class Header extends React.Component {
             <Link to='/' key='logo' onClick={(e) => { this.phoneClick(e, this.state.phoneOpen, '/', true) }}>
               <span style={{fontSize: 20, color: '#fff'}}>
                 {this.state.isMode ? (
-                  '中国大学生电子设计竞赛'
+                  '全国大学生电子设计竞赛'
                 ) : config.name}
              </span>
             </Link>

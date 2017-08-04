@@ -19,11 +19,11 @@ const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScro
   }
 
   return (
-    <div className='login-wrapper' style={{backgroundImage: `url("/assets/user/login/login-bg.png")`}}>
+    <div className='login-wrapper' style={{backgroundImage: `url("/assets/user/login/login-bg.jpg")`}}>
       <div className='form'>
         <div className='login-title'>
-          <span className='login-title-main'>中国大学生电子设计竞赛</span>
-          <span className='login-title-sub'>河比赛区</span>
+          <span className='login-title-main'>全国大学生电子设计竞赛</span>
+          <span className='login-title-sub'>河北赛区</span>
         </div>
         <Form>
           <FormItem hasFeedback>

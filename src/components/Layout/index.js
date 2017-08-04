@@ -6,25 +6,32 @@ import './index.less'
 import Header from './Header'
 import Footer from './Footer'
 import TweenOne from 'rc-tween-one'
-const Layout = (props) => (
-  <div
-    className='layout'>
-    <div className='layout-content'>
-      <TweenOne
-        animation={[{blur: '3px', type: 'from'}]}
-        reverseDelay={10}
-        className='anim'
-        key={props.location.pathname}
-      >
-        <div
-          className={(props.location.pathname === '/' || props.location.pathname === '/home' || props.location.pathname === '/login') ? 'no-bg' : ''}>
-          <Header {...props} />
-        </div>
-        {props.children}
-      </TweenOne>
+const Layout = (props) => {
+  const {app, routes = []} = props
+  const {nobg = []} = app
+  const routePath = routes.map((item) => {
+    return item.path === '/' ? '' : item.path
+  })
+  return (
+    <div
+      className='layout'>
+      <div className='layout-content'>
+        <TweenOne
+          animation={[{y: -10, type: 'from'}]}
+          reverseDelay={10}
+          className='anim'
+          key={props.location.pathname}
+        >
+          <div
+            className={nobg.includes(routePath.join('/')) ? 'no-bg' : ''}>
+            <Header {...props} />
+          </div>
+          {props.children}
+        </TweenOne>
+      </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
-)
+  )
+}
 
 export default Layout

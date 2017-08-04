@@ -1,10 +1,10 @@
 {
-  "name": "中国大学生电子设计竞赛 · 河北赛区",
-  "footerText": "中国大学生电子设计竞赛",
+  "name": "全国大学生电子设计竞赛 · 河北赛区",
+  "footerText": "全国大学生电子设计竞赛",
   "iconFontCSS": "/app/iconfont.css",
   "iconFontJS": "/app/iconfont.js",
   "logoSrc": "/app/favicon.ico",
-  "baseURL": "http://nuedc.hrsoft.net",
+  "baseURL": "http://nuedc.hrsoft.net/api",
   "api": {
     "userLogin": "/user/login",
     "user": "/user/:id",

@@ -33,9 +33,9 @@ export default modelExtend(tableModel, modalModel, {
         if (contest_id === 'none') return
         const {code, data: {problems}} = yield call(fetchTable, payload)
         if (code === 0) {
-          const table = problems.map((item, i) => ({
+          const table = problems.reverse().map((item, i) => ({
             ...item,
-            fakeId: String.fromCharCode(parseInt(problems.length - i - 1) + 65)
+            fakeId: i + 1
           }))
           yield put({type: 'setTable', payload: table})
         } else {

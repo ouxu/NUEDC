@@ -5,6 +5,7 @@ import modelExtend from 'dva-model-extend'
 import { fetchPassagesAll } from './service'
 import { message } from 'antd'
 import { modalModel, tableModel } from '../../models/modelExtend'
+import { windowScroll } from '../../utils'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'news',
   state: {},
@@ -13,6 +14,7 @@ export default modelExtend(modalModel, tableModel, {
       return history.listen(({pathname}) => {
         const match = pathname === `/news`
         if (match) {
+          windowScroll('nav-header')
           dispatch({type: 'fetchPassages'})
         }
       })

@@ -7,13 +7,15 @@ import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   namespace: 'contest',
   state: {
-    contestId: ''
+    contestId: '',
+    query: {}
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
         const match = pathToRegexp('/admin/:params').exec(pathname)
         if (match || pathname === '/admin') {
+          dispatch({type: 'initQuery'})
           dispatch({type: 'fetchTable'})
           dispatch({type: 'hideAlert'})
         }
@@ -22,6 +24,23 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   },
 
   effects: {
+    * initQuery ({payload}, {call, select, put}){
+      const {table, query} = yield select(({contest}) => contest)
+      if (JSON.stringify(query).length <= 2) {
+        if (table.length === 0) {
+          const data = yield call(fetchTable)
+          if (data.code === 0) {
+            const {contests = [{id: 'none'}]} = data.data
+            const defaultValue = contests[contests.length - 1] || {id: 'none'}
+            const problem = {
+              contest_id: defaultValue.id
+            }
+            const query = {problem, team: problem, recording: problem, contestRecord: problem}
+            yield put({type: 'saveQuery', payload: query})
+          }
+        }
+      }
+    },
     * fetchTable ({payload = false}, {call, select, put}) {
       const table = yield select(({contest}) => contest.table)
       if (table.length === 0 || payload) {
@@ -77,7 +96,6 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
         yield put({type: 'changeContestId', payload: data.data.contest_id})
         yield put({type: 'fetchTable', payload: true})
         yield put({type: 'showAlert'})
-
       }
     }
   },
@@ -86,6 +104,12 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
       return {
         ...state,
         contestId
+      }
+    },
+    saveQuery (state, {payload: query}) {
+      return {
+        ...state,
+        query
       }
     }
   }

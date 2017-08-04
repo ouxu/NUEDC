@@ -41,8 +41,8 @@ export default modelExtend(modalModel, tableModel, {
     },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({adminSchoolAdmin}) => adminSchoolAdmin.modalContent)
-      const {query, value} = payload
-      const data = yield call(update, value, id)
+      const {query, values} = payload
+      const data = yield call(update, values, id)
       if (data.code === 0) {
         yield put({type: 'hideModal'})
         message.success('修改成功')

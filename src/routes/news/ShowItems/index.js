@@ -9,7 +9,7 @@ const ShowItems = ({news, dispatch}) => {
   const {modalContent} = news
   const {messages = []} = modalContent
   const demoToChildren = messages.map((item, i) => {
-    const {img = '/assets/home/showItem/1.png', id, title, created_at} = item
+    const {img = '/assets/home/showItem/1.jpg', id, title, created_at} = item
     return (
       <li key={i}>
         <Link to={'/news/' + id}>
@@ -42,8 +42,7 @@ const ShowItems = ({news, dispatch}) => {
           新闻中心为您提供最新最全的电子设计竞赛赛况
         </p>
       </QueueAnim>
-      <TweenOne
-        animation={{y: '+=30', opacity: 0, type: 'from'}}
+      <div
         key='img'
         className='home-anim-demo'
       >
@@ -59,7 +58,7 @@ const ShowItems = ({news, dispatch}) => {
             <Link onClick={fetchMore}>查看更多</Link>
           </TweenOne>
         </div>
-      </TweenOne>
+      </div>
     </div>
   )
 }

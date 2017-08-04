@@ -101,8 +101,8 @@ const editConfig = [
     },
     options: [
       {
-        value: '未审核',
-        label: '未审核'
+        value: '未通过',
+        label: '未通过'
       }, {
         value: '已通过',
         label: '已通过'
@@ -119,7 +119,7 @@ const editConfig = [
     }
   }, {
     value: 'result_info',
-    label: '审核状态',
+    label: '获奖审核',
     formType: 1,
     contentType: 'string',
     rules: {
@@ -128,11 +128,11 @@ const editConfig = [
     },
     options: [
       {
-        value: '未审核',
-        label: '未审核'
+        value: '未通过',
+        label: '未通过'
       }, {
-        value: '已审核',
-        label: '已审核'
+        value: '已通过',
+        label: '已通过'
       }
     ]
   }

@@ -3,15 +3,15 @@ import menuConfig from './config/menu.json'
 import Sider from '../../components/Layout/Sider'
 
 import { connect } from 'dva'
-const SchoolPage = (props) => (
+const SchoolPage = ({location, app, children, school}) => (
   <div className='main-wrapper'>
     <sider className='sider light'>
-      <Sider menuConfig={menuConfig} location={location} />
+      <Sider menuConfig={menuConfig} location={location} app={app} query={school.query} />
     </sider>
     <div className='main-container'>
-      {props.children}
+      {children}
     </div>
   </div>
 )
 
-export default connect(({app}) => ({app}))(SchoolPage)
+export default connect(({app, school}) => ({app, school}))(SchoolPage)

@@ -11,19 +11,17 @@ import { connect } from 'dva'
 
 const NoticePage = ({noticeContent}) => {
   const img = '/assets/home/banner/1.jpg'
-  const {modalContent = []} = noticeContent
+  const {modalContent = {}} = noticeContent
   const {current, pre = [], next = []} = modalContent
-  const {title, created_at, content} = current
-  const prePassage = pre[0] || {}
-  const nextPassage = next[0] || {}
+  const {title = '', created_at = '', content = ''} = current
+  const prePassage = pre[0] || {id: ''}
+  const nextPassage = next[0] || {id: ''}
   const prePassageId = prePassage.id || ''
   const nextPassageId = nextPassage.id || ''
-  const prePassageTitle = prePassage.title || ''
-  const nextPassageTitle = nextPassage.title || ''
   return (
     <div>
       <div className='news-content-header' style={{
-        backgroundImage: `url(${img})`
+        background: '#24BABC'
       }}>
         <TweenOne
           animation={{y: '+=30', opacity: 0, type: 'from'}}
@@ -50,13 +48,13 @@ const NoticePage = ({noticeContent}) => {
           {
             pre.length > 0 &&
             <Link to={'/notices/' + prePassageId}>
-              <Button className='pre-passage-btn'><Icon type="arrow-left" />{prePassageTitle}</Button>
+              <Button className='pre-passage-btn'><Icon type="arrow-left" />上一篇</Button>
             </Link>
           }
           {
             next.length > 0 &&
             <Link to={'/notices/' + nextPassageId}>
-              <Button className='next-passage-btn'>{nextPassageTitle}<Icon type="arrow-right" /></Button>
+              <Button className='next-passage-btn'>下一篇<Icon type="arrow-right" /></Button>
             </Link>
           }
         </div>

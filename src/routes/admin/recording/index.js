@@ -10,7 +10,7 @@ import { API, urlEncode } from '../../../utils'
 
 const RecordingManage = ({location, recording, contest, adminContestRecord, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableCount} = adminContestRecord
-  const {table: tableContest = []} = contest
+  const {table: tableContest = [], query: initQuery} = contest
   const {contestInfo, alert, content = []} = recording
   const {query} = location
   const {table: schools = []} = login
@@ -92,7 +92,7 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
-    {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
+    {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name'},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 250},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
@@ -137,9 +137,19 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
+      let newQuery = {
+        ...initQuery,
+        recording: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
+      let newQuery = {
+        ...initQuery,
+        recording: {...query, page: current}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, page: current})))
     }
   }
@@ -154,6 +164,14 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
             placeholder='选择竞赛'
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
+              let newQuery = {
+                ...initQuery,
+                recording: {
+                  ...query,
+                  contest_id: value || undefined
+                }
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
               dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
                   ...query,
                   contest_id: value || undefined
@@ -215,7 +233,7 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
               {!alert && alertRender(contestInfo)}
               <Table
                 columns={columns} bordered
-                dataSource={table} scroll={{x: 1200}}
+                dataSource={table} scroll={{x: 1200, y: window.screen.availHeight - 350}}
                 pagination={pagination} rowKey={record => record.id}
               />
             </div>

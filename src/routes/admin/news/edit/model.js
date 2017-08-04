@@ -1,8 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { inputModel, modalModel } from '../../../../models/modelExtend'
-import { fetchMessage, remove, update,create } from './service'
+import { create, fetchMessage, remove, update } from './service'
 import { message } from 'antd'
-
+import { routerRedux } from 'dva/router'
 export default modelExtend(modalModel, inputModel, {
   namespace: 'adminNewsEdit',
   state: {
@@ -49,11 +49,13 @@ export default modelExtend(modalModel, inputModel, {
         const data = yield call(update, body, id)
         if (data.code === 0) {
           message.success('修改成功')
+          yield put(routerRedux.push(`/admin/${type === 0 ? 'news' : 'notices'}`))
         }
       } else {
         const data = yield call(create, body)
         if (data.code === 0) {
           message.success('发布成功')
+          yield put(routerRedux.push(`/admin/${type === 0 ? 'news' : 'notices'}`))
         }
       }
 

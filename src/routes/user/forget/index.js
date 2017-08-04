@@ -32,9 +32,10 @@ const Forget = ({login, dispatch, form: {getFieldDecorator, getFieldValue, valid
   const counterStart = (e) => {
     e.preventDefault()
     const data = {
+      type: 2,
       mobile: getFieldValue('mobile')
     }
-    dispatch({type: 'login/getCode', payload: data})
+    dispatch({type: 'login/getVerifyCode', payload: data})
     dispatch({type: 'login/counterStart'})
     setTimeout(() => {
       dispatch({type: 'login/counterReset'})

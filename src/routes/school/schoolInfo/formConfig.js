@@ -1,11 +1,7 @@
 export default [
   {
-    value: 'login_name',
-    label: '登录名',
-    disabled: true
-  }, {
     value: 'name',
-    label: '用户昵称',
+    label: '用户名',
     disabled: true
   }, {
     value: 'email',

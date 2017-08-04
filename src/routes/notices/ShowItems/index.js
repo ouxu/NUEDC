@@ -9,7 +9,7 @@ const ShowItems = ({notice, dispatch}) => {
   const {modalContent} = notice
   const {messages = []} = modalContent
   const demoToChildren = messages.map((item, i) => {
-    const {img = '/assets/home/showItem/1.png', id, title, created_at} = item
+    const {img = '/assets/home/showItem/2.jpg', id, title, created_at} = item
     return (
       <li key={i}>
         <Link to={'/notices/' + id}>
@@ -43,7 +43,7 @@ const ShowItems = ({notice, dispatch}) => {
         </p>
       </QueueAnim>
       <TweenOne
-        animation={{y: '+=30', opacity: 0, type: 'from'}}
+
         key='img'
         className='home-anim-demo'
       >

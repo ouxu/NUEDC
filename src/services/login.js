@@ -24,6 +24,12 @@ const getCode = async data => request({
   data
 })
 
+const getVerifyCode = async data => request({
+  url: API.getVerifyCode,
+  method: 'get',
+  data
+})
+
 const schoolQuery = async () => request({
   url: API.userSchools,
   method: 'get'
@@ -35,4 +41,4 @@ const findPassword = async (data) => request({
   data
 })
 
-export { login, register, getCode, schoolQuery, findPassword }
+export { login, register, getCode, schoolQuery, findPassword, getVerifyCode }

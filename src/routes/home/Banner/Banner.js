@@ -9,7 +9,7 @@ class Banner extends React.Component {
     const props = {...this.props}
     delete props.isMode
     return (
-      <div className='banner' style={{backgroundImage: `url("/assets/home/banner/1.jpg")`}}>
+      <div className='banner' style={{backgroundImage: `url("/assets/home/banner/3.jpg")`}}>
         <QueueAnim
           type={['bottom', 'top']}
           delay={200}
@@ -21,7 +21,7 @@ class Banner extends React.Component {
             key='title'
           >
             <br />
-            <span className='title-number'>中国大学生电子设计竞赛</span>
+            <span className='title-number'>全国大学生电子设计竞赛</span>
 
             <br />
             <span className='title-number'>河北赛区</span>

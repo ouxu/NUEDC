@@ -40,14 +40,16 @@ class Footer extends React.Component {
     delete props.isMode
     const dataSource = config.footerItem
     const liChildrenToRender = dataSource.map(this.getLiChildren)
-    return (<OverPack
-      {...props}
-      playScale={isMode ? 0.5 : 0.2}
-    >
-      <QueueAnim type='bottom' component='ul' key='ul' leaveReverse id={`${props.id}-ul`}>
-        {liChildrenToRender}
-      </QueueAnim>
-    </OverPack>)
+    return (
+      <OverPack
+        {...props}
+        playScale={isMode ? 0.5 : 0.2}
+      >
+        <QueueAnim type='bottom' component='ul' key='ul' leaveReverse id={`${props.id}-ul`}>
+          {liChildrenToRender}
+        </QueueAnim>
+      </OverPack>
+    )
   }
 }
 

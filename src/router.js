@@ -34,6 +34,7 @@ import {
   SchoolInfoManage,
   SchoolInfoModel,
   SchoolPage,
+  SchoolPageModel,
   SchoolProblem,
   SchoolProblemModel,
   SchoolResultManage,
@@ -50,21 +51,32 @@ import {
   StudentSignUpManage,
   StudentSignUpModel
 } from './routes/student/routes'
+
 import Home from './routes/home/route'
 import { News, NewsContent, NewsContentModel, NewsModel } from './routes/news/route'
 import { Notice, NoticeContent, NoticeContentModel, NoticeModel } from './routes/notices/route'
 import Download from './routes/download'
+
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
     app.model(model)
   }
 }
+
 const checkAuth = (nextState, replace) => {
   const userRole = window.localStorage.getItem('nuedcRole')
   const {routes = []} = nextState
   if (userRole !== routes[1].path) {
     message.error('权限不足')
     replace({pathname: '/'})
+  }
+}
+
+const checkLogin = (nextState, replace) => {
+  const token = window.localStorage.getItem('nuedcToken') || ''
+  const userRole = window.localStorage.getItem('nuedcRole')
+  if (token.length > 3) {
+    replace({pathname: '/' + userRole})
   }
 }
 
@@ -80,9 +92,15 @@ const Routers = ({history, app}) => (
       <Route path='notices' getComponent={Notice} onEnter={() => registerModel(app, NoticeModel)}>
         <Route path=':id' getComponent={NoticeContent} onEnter={() => registerModel(app, NoticeContentModel)} />
       </Route>
-      <Route path='login' component={Login} />
-      <Route path='register' getComponent={Register} />
-      <Route path='forget' getComponent={Forget} />
+      <Route path='login' component={Login} onEnter={(nextState, replace) => {
+        checkLogin(nextState, replace)
+      }} />
+      <Route path='register' getComponent={Register} onEnter={(nextState, replace) => {
+        checkLogin(nextState, replace)
+      }} />
+      <Route path='forget' getComponent={Forget} onEnter={(nextState, replace) => {
+        checkLogin(nextState, replace)
+      }} />
       <Route path='admin' component={AdminPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
         registerModel(app, ContestModel)
@@ -178,6 +196,7 @@ const Routers = ({history, app}) => (
       </Route>
       <Route path='school' component={SchoolPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
+        registerModel(app, SchoolPageModel)
       }}>
         <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)} />
         <Route

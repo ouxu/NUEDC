@@ -1,7 +1,5 @@
 import { audit, auditAll } from './service'
 import { message } from 'antd'
-import { sleep } from '../../../utils'
-import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'teamManage',
@@ -18,22 +16,10 @@ export default {
     }
   },
   effects: {
-    * fetchTable ({payload = {}}, {call, select, put}) {
+    * fetchTable ({payload = {}}, {put}) {
       const {contest_id,} = payload
-      if (!contest_id) {
-        let {table: contest = [{}]} = yield select(({contest}) => contest)
-        if (contest.length === 0) {
-          yield call(sleep, 1000)
-          let {table: contestNow} = yield select(({contest}) => contest)
-          contest = contestNow
-        }
-        const preId = contest[0] || {id: 'none'}
-        yield call(sleep, 10)
-        yield put(routerRedux.push(`/admin/team?contest_id=` + preId.id))
-      } else {
-        if (contest_id === 'none') return
-        yield put({type: 'adminContestRecord/fetchTable', payload: payload})
-      }
+      if (contest_id === 'none') return
+      yield put({type: 'adminContestRecord/fetchTable', payload: payload})
     },
     * auditAll ({payload}, {call, put, select}) {
       const query = payload

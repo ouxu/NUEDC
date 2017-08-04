@@ -4,15 +4,17 @@
 import modelExtend from 'dva-model-extend'
 import { fetchPassage } from './service'
 import { modalModel, tableModel } from '../../../models/modelExtend'
+import pathToRegexp from 'path-to-regexp'
+import { routerRedux } from 'dva/router'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'newsContent',
   state: {},
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname}) => {
-        const id = pathname.substr(6, 2)
-        const match = pathname === `/news/${id}`
+        const match = pathToRegexp(`/news/:id`).exec(pathname)
         if (match) {
+          const id = match[1]
           dispatch({type: 'fetchPassage', payload: id})
         }
       })
@@ -27,6 +29,8 @@ export default modelExtend(modalModel, tableModel, {
       const data = yield call(fetchPassage, query)
       if (data.code === 0) {
         yield put({type: 'updateModalContent', payload: data.data})
+      } else {
+        yield put(routerRedux.push('/news'))
       }
     }
   }

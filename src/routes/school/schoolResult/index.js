@@ -8,9 +8,10 @@ import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
 import { connect } from 'dva'
 
-const SchoolResultManage = ({location, schoolResult, dispatch}) => {
-  const {table, contests = {}, tableCount} = schoolResult
+const SchoolResultManage = ({school, location, schoolResult, dispatch}) => {
+  const {table, tableCount} = schoolResult
   const {query} = location
+  const {initQuery, contests} = school
   const pagination = {
     pageSize: +query.size || 50,
     current: +query.page || 1,
@@ -18,16 +19,36 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
+      let newQuery = {
+        ...initQuery,
+        schoolResult: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'school/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
+      let newQuery = {
+        ...initQuery,
+        schoolResult: {...query, page: current}
+      }
+      dispatch({type: 'school/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, page: current})))
     }
   }
   const onOptionChange = (value) => {
+    let newQuery = {
+      ...initQuery,
+      schoolResult: {...query, contest_id: value || undefined}
+    }
+    dispatch({type: 'school/saveQuery', payload: newQuery})
     dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, contest_id: value || undefined})))
   }
   const excelOut = () => {
+    let newQuery = {
+      ...initQuery,
+      schoolResult: {...query, page: undefined, size: undefined}
+    }
+    dispatch({type: 'school/saveQuery', payload: newQuery})
     dispatch({type: 'schoolResult/ResultOut', payload: {...query, page: undefined, size: undefined}})
   }
   const columns = [
@@ -103,4 +124,4 @@ const SchoolResultManage = ({location, schoolResult, dispatch}) => {
   )
 }
 
-export default connect(({app, schoolResult}) => ({app, schoolResult}))(SchoolResultManage)
+export default connect(({schoolResult, school}) => ({schoolResult, school}))(SchoolResultManage)

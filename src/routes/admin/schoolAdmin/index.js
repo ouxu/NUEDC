@@ -59,6 +59,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
           password
         }
       }
+      console.log(values)
       dispatch({type: `adminSchoolAdmin/${modal === 'edit' ? 'update' : 'create'}`, payload: {query, values}})
     })
   }
@@ -152,7 +153,7 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
       </div>
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1100}}
+        dataSource={table} scroll={{x: 1100, y: window.screen.availHeight - 350}}
         pagination={pagination} rowKey={record => record.id}
       />
       <Modal

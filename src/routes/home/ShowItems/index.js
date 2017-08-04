@@ -28,33 +28,35 @@ class ShowItems extends React.Component {
     })
 
     return (
-      <OverPack
-        className='home-content show-items'
-        playScale={0.8}
-        id='page2'
-      >
-        <QueueAnim
-          className='page-text'
-          key='text'
-          type='bottom'
-          leaveReverse
-          delay={[0, 100]}
+      <div className='home-show-item'>
+        <OverPack
+          className='home-content show-items'
+          playScale={0.8}
+          id='page2'
         >
-          <h1 key='h1'>{title}</h1>
-          <p key='p'>
-            {subTitle}
-          </p>
-        </QueueAnim>
-        <TweenOne
-          animation={{y: '+=30', opacity: 0, type: 'from'}}
-          key='img'
-          className='home-anim-demo'
-        >
-          <ul>
-            {demoToChildren}
-          </ul>
-        </TweenOne>
-      </OverPack>
+          <QueueAnim
+            className='page-text'
+            key='text'
+            type='bottom'
+            leaveReverse
+            delay={[0, 100]}
+          >
+            <h1 key='h1'>{title}</h1>
+            <p key='p'>
+              {subTitle}
+            </p>
+          </QueueAnim>
+          <TweenOne
+            animation={{y: '+=30', opacity: 0, type: 'from'}}
+            key='img'
+            className='home-anim-demo'
+          >
+            <ul>
+              {demoToChildren}
+            </ul>
+          </TweenOne>
+        </OverPack>
+      </div>
     )
   }
 }

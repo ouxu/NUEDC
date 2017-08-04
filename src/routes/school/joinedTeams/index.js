@@ -11,9 +11,10 @@ import DropOption from '../../../components/DropOption/'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 const confirm = Modal.confirm
-const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, content, modalContent, contests = [], tableCount, alert, selects = []} = joinedTeams
+const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  const {modal = false, table, content, modalContent, tableCount, alert, selects = []} = joinedTeams
   const {query} = location
+  const {contests, initQuery} = school
   const dataFlag = query.contest_id > 0
   const props = {
     name: 'file',
@@ -59,7 +60,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
         confirm({
           title: '删除确认',
           content: (
-            <p>确认删除队伍{record.team_name}吗？</p>
+            <p>确认删除队伍 {record.team_name} 吗？</p>
           ),
           onOk () {
             dispatch({type: 'joinedTeams/delete', payload: {record, query}})
@@ -101,9 +102,19 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
+      let newQuery = {
+        ...initQuery,
+        joinedTeams: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'school/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
+      let newQuery = {
+        ...initQuery,
+        joinedTeams: {...query, page: current}
+      }
+      dispatch({type: 'school/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, page: current})))
     },
     showTotal: () => (
@@ -126,16 +137,20 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
           query
         }
       } else {
-        const {contest_id = query.contest_id, school_id, school_level, school_name} = modalContent
-        payload = {
+        const {contest_id = query.contest_id, school_id, school_level, school_name, id} = modalContent
+        values = {
           ...values,
           contest_id,
           school_id,
           school_level,
-          school_name
+          school_name,
+        }
+        payload = {
+          body: values,
+          query,
+          id
         }
       }
-      dispatch({type: 'joinedTeams/onFormSubmit', payload: payload})
       dispatch({type: `joinedTeams/${modal}`, payload: payload})
     })
   }
@@ -171,7 +186,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
 
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
-    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
+    {title: '队伍名称', dataIndex: 'team_name', key: 'team_name'},
     {title: '队员1', dataIndex: 'member1', key: 'member1', width: 80},
     {title: '队员2', dataIndex: 'member2', key: 'member2', width: 80},
     {title: '队员3', dataIndex: 'member3', key: 'member3', width: 80},
@@ -204,9 +219,14 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
             style={{width: 250, marginRight: 10}}
             placeholder='选择竞赛'
             value={query.contest_id || undefined}
-            onChange={(value) => dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({
-                ...query, contest_id: value
-              })))}
+            onChange={(value) => {
+              let newQuery = {
+                ...initQuery,
+                joinedTeams: {...query, contest_id: value}
+              }
+              dispatch({type: 'school/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, contest_id: value})))
+            }}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
@@ -217,6 +237,11 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
             placeholder='审核状态'
             value={query.status || undefined}
             onChange={(value) => {
+              let newQuery = {
+                ...initQuery,
+                joinedTeams: {...query, status: value || undefined}
+              }
+              dispatch({type: 'school/saveQuery', payload: newQuery})
               dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, status: value || undefined})))
             }}
             allowClear
@@ -224,7 +249,10 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
             <Select.Option key={'joined-result-' + 1} value='未审核'>
               未审核
             </Select.Option>
-            <Select.Option key={'joined-result-' + 2} value='已通过'>
+            <Select.Option key={'joined-result-' + 2} value='未通过'>
+              未通过
+            </Select.Option>
+            <Select.Option key={'joined-result-' + 3} value='已通过'>
               已通过
             </Select.Option>
           </Select>
@@ -275,4 +303,9 @@ const JoinedTeamsManage = ({location, app, joinedTeams, login, dispatch, form: {
   )
 }
 
-export default connect(({app, joinedTeams, login}) => ({app, joinedTeams, login}))(Form.create()(JoinedTeamsManage))
+export default connect(({app, joinedTeams, login, school}) => ({
+  school,
+  app,
+  joinedTeams,
+  login
+}))(Form.create()(JoinedTeamsManage))

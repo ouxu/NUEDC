@@ -1,11 +1,11 @@
 import SchoolPage from './index'
-
+import SchoolPageModel from './model'
 import { JoinedTeamsManage, JoinedTeamsModel } from './joinedTeams/route'
 import { SchoolResultManage, SchoolResultModel } from './schoolResult/route'
 import { SchoolInfoManage, SchoolInfoModel } from './schoolInfo/route'
 import { SchoolProblem, SchoolProblemModel } from './problem/route'
 export {
-  SchoolPage,
+  SchoolPage, SchoolPageModel,
   SchoolInfoManage, SchoolInfoModel,
   JoinedTeamsManage, JoinedTeamsModel,
   SchoolResultManage, SchoolResultModel,

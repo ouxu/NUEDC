@@ -12,15 +12,18 @@
     {
       "key": "/school/joinedTeams",
       "value": "管理本校参赛队伍",
+      "route": "joinedTeams",
       "icon": "team"
     },{
       "key": "/school/problem",
       "value": "管理参赛队伍选题",
+      "route": "problem",
       "icon": "team"
     },
     {
       "key": "/school/schoolResult",
       "value": "查看本校队伍赛果",
+      "route": "schoolResult",
       "icon": "bulb"
     }
   ]

@@ -69,7 +69,7 @@ const Register = ({login, dispatch, form: {getFieldDecorator, getFieldValue, val
     <div className='register-wrapper'>
       <div className='form'>
         <div className='login-title'>
-          <span>{config.name} · 注册账户</span>
+          <span>{config.name} · 参赛队伍注册</span>
         </div>
         <Form>
           {

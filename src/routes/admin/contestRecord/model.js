@@ -2,8 +2,6 @@ import modelExtend from 'dva-model-extend'
 import { modalModel, tableModel } from '../../../models/modelExtend'
 import { fetchTable, remove, update } from './service'
 import { message } from 'antd'
-import { routerRedux } from 'dva/router'
-import {sleep} from '../../../utils'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'adminContestRecord',
   state: {},
@@ -19,41 +17,30 @@ export default modelExtend(modalModel, tableModel, {
   effects: {
     * fetchTable ({payload = {}}, {call, select, put}) {
       const {contest_id, status, result, school_id, page = 1, size = 50} = payload
-      if (!contest_id) {
-        let {table: contest = [{}]} = yield select(({contest}) => contest)
-        if (contest.length === 0) {
-          yield call(sleep, 1000)
-          let {table: contestNow} = yield select(({contest}) => contest)
-          contest = contestNow
+
+      if (contest_id === 'none') return
+      const query = {
+        page: page,
+        size: size,
+        contest_id: contest_id || undefined,
+        status: status || undefined,
+        result: result || undefined,
+        school_id: school_id || undefined
+      }
+      const data = yield call(fetchTable, query)
+      if (data.code === 0) {
+        const {data: {count, records}} = data
+        const tableConfig = {
+          tablePage: page,
+          tableSize: size,
+          tableCount: count
         }
-        const preId = contest[0] || {id: 'none'}
-        yield call(sleep, 10)
-        yield put(routerRedux.push(`/admin/contestRecord?contest_id=` + preId.id))
-      } else {
-        if (contest_id === 'none') return
-        const query = {
-          page: page,
-          size: size,
-          contest_id: contest_id || undefined,
-          status: status || undefined,
-          result: result || undefined,
-          school_id: school_id || undefined
-        }
-        const data = yield call(fetchTable, query)
-        if (data.code === 0) {
-          const {data: {count, records}} = data
-          const tableConfig = {
-            tablePage: page,
-            tableSize: size,
-            tableCount: count
-          }
-          const table = records.map((t, i) => ({
-            ...t,
-            fakeId: i + 1 + (page - 1) * size
-          }))
-          yield put({type: 'setTable', payload: table})
-          yield put({type: 'setTableConfig', payload: tableConfig})
-        }
+        const table = records.map((t, i) => ({
+          ...t,
+          fakeId: i + 1 + (page - 1) * size
+        }))
+        yield put({type: 'setTable', payload: table})
+        yield put({type: 'setTableConfig', payload: tableConfig})
       }
     },
     * update ({payload}, {call, put, select}) {

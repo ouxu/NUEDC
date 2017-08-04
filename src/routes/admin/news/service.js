@@ -10,10 +10,11 @@ const fetchTable = async (data) => request({
   data
 })
 
-const remove = async (id) => request({
-  url: API.adminContestRecordDelete.replace(':id', id),
-  method: 'get',
-  token: true
+const remove = async (data,id) => request({
+  url: API.newsDelete.replace(':id', id),
+  method: 'delete',
+  token: true,
+  data: data
 })
 
 const update = async (data, id) => request({

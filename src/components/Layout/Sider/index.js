@@ -1,9 +1,9 @@
 import React from 'react'
 import { Icon, Menu } from 'antd'
 import { Link } from 'dva/router'
-
+import { urlEncode } from '../../../utils'
 const {SubMenu} = Menu
-const Sider = ({menuConfig, location}) => {
+const Sider = ({menuConfig, location, query = {}}) => {
   const {menus = [], openKeys = [], defaultSelectedKeys} = menuConfig
   const renderMenus = menus => (
     menus.map(item => {
@@ -15,9 +15,11 @@ const Sider = ({menuConfig, location}) => {
           </SubMenu>
         )
       }
+      const queryString = item.route ? '?' + urlEncode(query[item.route] || {}) : ''
       return (
         <Menu.Item key={item.key}>
-          <Link to={item.key}><Icon type={item.icon} /> {item.value}</Link>
+          <Link to={item.key + queryString}><Icon type={item.icon} /> {item.value}
+          </Link>
         </Menu.Item>
       )
     })

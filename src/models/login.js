@@ -1,4 +1,4 @@
-import { findPassword, getCode, login, register, schoolQuery } from '../services/login'
+import { findPassword, getCode, getVerifyCode, login, register, schoolQuery } from '../services/login'
 import { routerRedux } from 'dva/router'
 import { sleep } from '../utils'
 import { message } from 'antd'
@@ -35,6 +35,7 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
           user.role = 'school'
         }
         window.localStorage.setItem('nuedcToken', token)
+        window.localStorage.setItem('nuedcUser', JSON.stringify(user))
         window.localStorage.setItem('nuedcRole', user.role)
         yield put({type: 'app/setUser', payload: user})
         yield put({type: 'app/setInfo', payload: {token: token, role: user.role}})
@@ -43,6 +44,7 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
       } else {
         window.localStorage.removeItem('nuedcToken')
         window.localStorage.removeItem('nuedcRole')
+        window.localStorage.removeItem('nuedcUser')
         yield put({type: 'app/setUser', payload: {}})
         yield put({type: 'app/setInfo', payload: {}})
       }
@@ -51,12 +53,20 @@ export default modelExtend(counterModel, tableModel, loadingModel, {
     * logout ({}, {put}) {
       window.localStorage.removeItem('nuedcToken')
       window.localStorage.removeItem('nuedcRole')
+      window.localStorage.removeItem('nuedcUser')
       yield put({type: 'app/logout'})
       yield put(routerRedux.push('/'))
     },
 
     * getCode ({payload}, {call, put}) {
       const data = yield call(getCode, payload)
+      if (data.code !== 0) {
+        yield put({type: 'login/counterReset'})
+      }
+    },
+
+    * getVerifyCode ({payload}, {call, put}) {
+      const data = yield call(getVerifyCode, payload)
       if (data.code !== 0) {
         yield put({type: 'login/counterReset'})
       }

@@ -1,8 +1,7 @@
 {
   "title": "电子设计大赛",
   "openKeys": [],
-  "defaultSelectedKeys": [
-  ],
+  "defaultSelectedKeys": [],
   "menus": [
     {
       "key": "/admin",
@@ -11,6 +10,7 @@
     },
     {
       "key": "/admin/problem",
+      "route": "problem",
       "value": "竞赛题目管理",
       "icon": "file-unknown"
     },
@@ -26,16 +26,19 @@
     },
     {
       "key": "/admin/team",
+      "route": "team",
       "value": "队伍报名审核",
       "icon": "team"
     },
     {
       "key": "/admin/recording",
+      "route": "recording",
       "value": "赛事成绩录入",
       "icon": "book"
     },
     {
       "key": "/admin/contestRecord",
+      "route": "contestRecord",
       "value": "所有参赛记录",
       "icon": "hdd"
     },
@@ -43,7 +46,8 @@
       "key": "/admin/news",
       "value": "新闻管理",
       "icon": "calendar"
-    },  {
+    },
+    {
       "key": "/admin/notices",
       "value": "通知管理",
       "icon": "info-circle-o"

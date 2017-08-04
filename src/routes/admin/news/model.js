@@ -65,8 +65,9 @@ export default modelExtend(modalModel, tableModel, {
       a.click()
     },
     * delete ({payload}, {put, call}) {
-      const {id} = payload
-      const data = yield call(remove, id)
+      const {type, id} = payload
+
+      const data = yield call(remove, {type}, id)
       if (data.code === 0) {
         message.success('删除成功')
         yield put({type: 'fetchTable', payload: {force: true}})
@@ -74,7 +75,8 @@ export default modelExtend(modalModel, tableModel, {
     }
   },
   reducers: {
-    queryChange(state, {payload}) {
+    queryChange(state, {payload})
+    {
       return {
         ...state,
         ...payload

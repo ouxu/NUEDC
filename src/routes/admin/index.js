@@ -4,12 +4,12 @@
 import React from 'react'
 import menuConfig from './config/menu.json'
 import { connect } from 'dva'
-
 import Sider from '../../components/Layout/Sider'
-const AdminPage = ({children, location}) => (
+
+const AdminPage = ({children, location, contest}) => (
   <div className='main-wrapper'>
     <sider className='sider light'>
-      <Sider menuConfig={menuConfig} location={location} />
+      <Sider menuConfig={menuConfig} location={location} query={contest.query} />
     </sider>
     <div className='main-container'>
       {children}
@@ -17,4 +17,4 @@ const AdminPage = ({children, location}) => (
   </div>
 )
 
-export default connect(({app}) => ({app}))(AdminPage)
+export default connect(({app, contest}) => ({app, contest}))(AdminPage)

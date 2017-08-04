@@ -1,15 +1,23 @@
 import { query } from '../services/app'
+import { sleep } from '../utils'
+import pathToRegexp from 'path-to-regexp'
 export default {
   namespace: 'app',
   state: {
-    user: {},
+    user: JSON.parse(window.localStorage.getItem('nuedcUser') || '{}'),
     token: window.localStorage.getItem('nuedcToken') || '',
-    role: window.localStorage.getItem('nuedcRole') || 'student'
+    role: window.localStorage.getItem('nuedcRole') || 'student',
+    query: {},
+    nobg: ['/', '/home', '/login', '/news/:id', '/notices/:id']
   },
   subscriptions: {
     appSubscriber ({dispatch, history}) {
-      return history.listen(() => {
-        !!window.localStorage.getItem('nuedcToken') && dispatch({type: 'query'})
+      return history.listen(({pathname}) => {
+        const role = window.localStorage.getItem('nuedcRole')
+        const match = pathToRegexp(`/${role}/:params`).exec(pathname)
+        if (!!match || pathname === `/${role}`) {
+          !!window.localStorage.getItem('nuedcToken') && dispatch({type: 'query'})
+        }
       })
     }
   },
@@ -22,7 +30,8 @@ export default {
           yield put({type: 'setUser', payload: data.user})
         }
       } else {
-        yield put({type: 'login/logout', payload: {}})
+        yield call(sleep, 1000)
+        yield put({type: 'login/logout'})
         yield put({type: 'setInfo', payload: {token: '', role: 'student'}})
       }
     }
@@ -51,6 +60,16 @@ export default {
       return {
         ...state,
         user
+      }
+    },
+    saveQuery (state, {payload}) {
+      const query = {
+        ...state.query,
+        payload
+      }
+      return {
+        ...state,
+        query
       }
     }
   }

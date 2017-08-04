@@ -102,6 +102,7 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
       <Table
         columns={columns} bordered
         dataSource={table}
+        scroll={{x: 768, y: window.screen.availHeight - 350}}
         pagination={pagination} rowKey={record => record.id}
       />
       <Modal

@@ -166,6 +166,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
             <Table
               columns={columns} bordered
               dataSource={table}
+
               pagination={false} rowKey={record => record.id}
               expandedRowRender={record => (
                 <div className='expanded-row'>

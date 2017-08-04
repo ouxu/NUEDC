@@ -73,18 +73,12 @@ const createConfig = [
     },
     options: [
       {
-        value: '本科一本',
-        label: '本科一本'
+        value: '本科',
+        label: '本科'
       }, {
-        value: '本科二本',
-        label: '本科二本'
-      }, {
-        value: '本科三本',
-        label: '本科三本'
-      }, {
-        value: '专科',
-        label: '专科'
-      },
+        value: '高职',
+        label: '高职'
+      }
     ]
   }
 ]
