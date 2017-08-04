@@ -1,10 +1,10 @@
 import React from 'react'
-import { IndexRoute, Route, Router } from 'dva/router'
-import { message } from 'antd'
+import {IndexRoute, Route, Router} from 'dva/router'
+import {message} from 'antd'
 import App from './routes/app'
 import NotFound from './routes/404'
 
-import { Forget, Login, Register } from './routes/user/routes'
+import {Forget, Login, Register} from './routes/user/routes'
 import {
   AdminNews,
   AdminNewsModel,
@@ -53,9 +53,9 @@ import {
 } from './routes/student/routes'
 
 import Home from './routes/home/route'
-import { News, NewsContent, NewsContentModel, NewsModel } from './routes/news/route'
-import { Notice, NoticeContent, NoticeContentModel, NoticeModel } from './routes/notices/route'
-import Download from './routes/download'
+import {News, NewsContent, NewsContentModel, NewsModel} from './routes/news/route'
+import {Notice, NoticeContent, NoticeContentModel, NoticeModel} from './routes/notices/route'
+import {Download, DownloadModel} from './routes/download/route'
 
 const registerModel = (app, model) => {
   if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
@@ -83,30 +83,32 @@ const checkLogin = (nextState, replace) => {
 const Routers = ({history, app}) => (
   <Router history={history}>
     <Route path='/' component={App}>
-      <IndexRoute getComponent={Home} />
-      <Route path='home' getComponent={Home} />
-      <Route path='download' component={Download} />
+      <IndexRoute getComponent={Home}/>
+      <Route path='home' getComponent={Home}/>
+      <Route path='download' getComponent={Download} onEnter={() => registerModel(app, DownloadModel)}>
+        {/*<Route path=':id' getComponent={DownloadContent} onEnter={() => registerModel(app, DownloadContentModel)}/>*/}
+      </Route>
       <Route path='news' getComponent={News} onEnter={() => registerModel(app, NewsModel)}>
-        <Route path=':id' getComponent={NewsContent} onEnter={() => registerModel(app, NewsContentModel)} />
+        <Route path=':id' getComponent={NewsContent} onEnter={() => registerModel(app, NewsContentModel)}/>
       </Route>
       <Route path='notices' getComponent={Notice} onEnter={() => registerModel(app, NoticeModel)}>
-        <Route path=':id' getComponent={NoticeContent} onEnter={() => registerModel(app, NoticeContentModel)} />
+        <Route path=':id' getComponent={NoticeContent} onEnter={() => registerModel(app, NoticeContentModel)}/>
       </Route>
       <Route path='login' component={Login} onEnter={(nextState, replace) => {
         checkLogin(nextState, replace)
-      }} />
+      }}/>
       <Route path='register' getComponent={Register} onEnter={(nextState, replace) => {
         checkLogin(nextState, replace)
-      }} />
+      }}/>
       <Route path='forget' getComponent={Forget} onEnter={(nextState, replace) => {
         checkLogin(nextState, replace)
-      }} />
+      }}/>
       <Route path='admin' component={AdminPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
         registerModel(app, ContestModel)
       }}
       >
-        <IndexRoute getComponent={ContestManage} />
+        <IndexRoute getComponent={ContestManage}/>
         <Route
           path='contest' getComponent={ContestManage}
         />
@@ -174,7 +176,7 @@ const Routers = ({history, app}) => (
         registerModel(app, SchoolContestModel)
       }}
       >
-        <IndexRoute getComponent={SchoolContestManage} />
+        <IndexRoute getComponent={SchoolContestManage}/>
 
         <Route
           path='problem' getComponent={StudentProblemManage}
@@ -184,21 +186,21 @@ const Routers = ({history, app}) => (
           }}
         />
         <Route path='score' getComponent={StudentScoreManage}
-          onEnter={() => {
-            registerModel(app, StudentScoreModel)
-          }}
+               onEnter={() => {
+                 registerModel(app, StudentScoreModel)
+               }}
         />
         <Route path='signup' getComponent={StudentSignUpManage}
-          onEnter={() => {
-            registerModel(app, StudentSignUpModel)
-          }}
+               onEnter={() => {
+                 registerModel(app, StudentSignUpModel)
+               }}
         />
       </Route>
       <Route path='school' component={SchoolPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
         registerModel(app, SchoolPageModel)
       }}>
-        <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)} />
+        <IndexRoute getComponent={SchoolInfoManage} onEnter={() => registerModel(app, SchoolInfoModel)}/>
         <Route
           path='schoolInfo' getComponent={SchoolInfoManage}
           onEnter={() => registerModel(app, SchoolInfoModel)}
@@ -219,7 +221,7 @@ const Routers = ({history, app}) => (
         />
       </Route>
     </Route>
-    <Route path='*' component={NotFound} />
+    <Route path='*' component={NotFound}/>
   </Router>
 )
 

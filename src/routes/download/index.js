@@ -1,34 +1,24 @@
 /**
- * Created by out_xu on 17/7/19.
+ * Created by Pororo on 17/7/7.
  */
-import React, { Component } from 'react'
-import { Upload, message, Button, Icon } from 'antd';
-class Downlaod extends Component {
-  render () {
-    const props = {
-      name: 'upload',
-      action: 'http://nuedc.hrsoft.net/file/public/upload',
+import React from 'react'
+import './index.less'
+import ShowItems from './ShowItems'
+import { connect } from 'dva'
 
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-      },
-    };
-    return (
-      <div style={{margin: 20}}>
-        暂无内容
-      </div>
-    )
-  }
+const download = ({children}) => {
+  return (
+    <div className='news-wrapper'>
+      {
+        children ||
+        <div className='newsCard'>
+          <div className='news-content'>
+            <ShowItems />
+          </div>
+        </div>
+      }
+    </div>
+  )
 }
 
-Downlaod.propTypes = {}
-Downlaod.defaultProps = {}
-
-export default Downlaod
+export default connect(({app, download}) => ({app, download}))(download)
