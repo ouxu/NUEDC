@@ -5,12 +5,14 @@
 import modelExtend from 'dva-model-extend'
 import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
-import { fetchTable, getInfo, update } from './service'
+import { check, fetchProblems, fetchTable, update } from './service'
 export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'schoolProblem',
   state: {
-    contests: [],
-    status: '未审核'
+    failed: [],
+    status: '未审核',
+    problems: [],
+    selects: []
   },
   subscriptions: {
     schoolProblemSubscriber ({dispatch, history}) {
@@ -25,7 +27,6 @@ export default modelExtend(modalModel, tableModel, alertModel, {
   effects: {
     * fetchTable ({payload}, {call, put, select}) {
       const {contest_id, status, page = 1, size = 50} = payload
-
       if (contest_id === 'none') return
       const query = {
         page: page,
@@ -34,8 +35,7 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         status: status || undefined
       }
       const {data: {count = '', teams = []}, code} = yield call(fetchTable, query)
-      const {data: {status: statusNow = '未审核'}} = yield call(getInfo, {contest_id})
-      yield put({type: 'changeStatus', payload: statusNow})
+      const data = yield call(fetchProblems, contest_id)
       if (code === 0) {
         const tableConfig = {
           tablePage: page,
@@ -52,6 +52,13 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         yield put({type: 'setTable', payload: []})
         yield put({type: 'setTableConfig', payload: {}})
       }
+      if (data.code === 0) {
+        const table = data.problem_list.reverse().map((item, i) => ({
+          ...item,
+          fakeId: i + 1
+        }))
+        yield put({type: 'saveProblems', payload: table})
+      }
     },
     * edit ({payload}, {call, put}) {
       const {query, body} = payload
@@ -61,7 +68,40 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         message.success('修改成功')
         yield put({type: 'fetchTable', payload: query})
       }
-    }
+    },
+    * submit ({payload}, {call, select, put}) {
+      const {record, query} = payload
+      const body = {
+        data: [{
+          record_id: record.id,
+          problem_submit: '已提交'
+        }]
+      }
+      const data = yield call(check, body, query.contest_id)
+      if (data.code === 0) {
+        message.success('提交成功')
+        if (data.data.failed.length > 0) {
+          yield put({type: 'schoolProblem/saveFailed', payload: data.data.failed})
+          yield put({type: 'schoolProblem/showAlert'})
+        } else {
+          yield put({type: 'fetchTable', payload: query})
+
+        }
+      }
+    },
+    * submitAll ({payload}, {call, select, put}) {
+      const query = payload
+      const {selects = []} = yield select(({schoolProblem}) => schoolProblem)
+      const data = yield call(check, {data: selects}, query.contest_id)
+      if (data.code === 0) {
+        message.success('批量提交成功')
+        if (data.data.failed.length > 0) {
+          yield put({type: 'schoolProblem/saveFailed', payload: data.data.failed})
+          yield put({type: 'schoolProblem/showAlert'})
+        }
+        yield put({type: 'fetchTable', payload: query})
+      }
+    },
   },
   reducers: {
     saveContest (state, {payload}) {
@@ -75,6 +115,24 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         ...state,
         status
       }
-    }
+    },
+    saveProblems(state, {payload: problems}) {
+      return {
+        ...state,
+        problems
+      }
+    },
+    updateSelects (state, {payload: selects}) {
+      return {
+        ...state,
+        selects
+      }
+    },
+    saveFailed (state, {payload}) {
+      return {
+        ...state,
+        failed: payload
+      }
+    },
   }
 })

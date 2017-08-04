@@ -4,7 +4,7 @@
 import React from 'react'
 import { Alert, Button, Icon, Select, Table, Tooltip } from 'antd'
 import './index.less'
-import { routerRedux } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
 import { connect } from 'dva'
 
@@ -93,8 +93,7 @@ const SchoolResultManage = ({school, location, schoolResult, dispatch}) => {
       {
         query.contest_id === 'none' ? (
           <Alert
-            message={(<span>您尚未参加过任何比赛</span>)}
-            description={(<Link to='/student'> 点击报名参赛</Link>)}
+            message={(<span>该学校暂未参加任何比赛</span>)}
             showIcon
           />
         ) : (
@@ -106,11 +105,10 @@ const SchoolResultManage = ({school, location, schoolResult, dispatch}) => {
               />
               <Table
                 columns={columns} bordered
-                dataSource={table} scroll={{x: 1600}}
+                dataSource={table} scroll={{x: 1600, y: window.screen.availHeight - 350}}
                 pagination={pagination} rowKey={record => record.id}
               />
             </div>
-
           ) : (
             <Alert
               message={(<span>比赛进行中</span>)}

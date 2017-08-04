@@ -2,8 +2,8 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Alert, Button, Form, Icon, message, Modal, Select, Table, Upload } from 'antd'
-import { editConfig, passConfig } from '../joinedTeams/formConfig'
+import { Alert, Button, Form, Icon, message, Modal, Select, Table, Tooltip, Upload } from 'antd'
+import { editConfig, passConfig } from './formConfig'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { API, urlEncode } from '../../../utils'
@@ -143,7 +143,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
           contest_id,
           school_id,
           school_level,
-          school_name,
+          school_name
         }
         payload = {
           body: values,
@@ -186,6 +186,16 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
 
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {
+      title: (
+        <Tooltip placement='bottom' title='空白代表队伍尚未选题'>
+          <span> 队伍编号 <Icon type='question-circle-o' /></span>
+        </Tooltip>
+      ),
+      dataIndex: 'team_code',
+      key: 'team_code',
+      width: 100
+    },
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name'},
     {title: '队员1', dataIndex: 'member1', key: 'member1', width: 80},
     {title: '队员2', dataIndex: 'member2', key: 'member2', width: 80},
@@ -281,7 +291,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
       <div>
         <Table
           columns={columns} bordered
-          dataSource={table} scroll={{x: 1200}}
+          dataSource={table} scroll={{x: 1350, y: window.screen.availHeight - 350}}
           rowSelection={rowSelection}
           pagination={pagination} rowKey={record => record.id}
         />

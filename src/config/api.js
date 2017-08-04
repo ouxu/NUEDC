@@ -47,8 +47,8 @@ export default {
   schoolUploadExcel: apiMaker('school/admin/team/import/:id'),
   schoolProblem: apiMaker('school/team/problems'),
   schoolProblemUpdate: apiMaker('school/admin/team/problem/select'),
-  schoolProblemCheck: apiMaker('school/admin/team/problem/check'),
-
+  schoolProblemCheck: apiMaker('school/admin/contest/:id/submit/check'),
+  schoolProblemList: apiMaker('school/admin/problem-list/:id'),
   // admin
   adminLogin: apiMaker('sysadmin/login'),
 

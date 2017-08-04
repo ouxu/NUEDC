@@ -57,8 +57,8 @@ const StudentScoreManage = ({studentScore, dispatch, location}) => {
       {
         query.contest_id === 'none' ? (
           <Alert
-            message={(<span>您尚未参加过任何比赛</span>)}
-            description={(<Link to='/student'> 点击报名参赛</Link>)}
+            message={(<span>请在下拉选单中选择竞赛</span>)}
+            description={(<Link to='/student'> 如果您尚未参加过任何比赛</Link>)}
             showIcon
           />
         ) : (

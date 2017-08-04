@@ -16,7 +16,7 @@
       "icon": "team"
     },{
       "key": "/school/problem",
-      "value": "管理参赛队伍选题",
+      "value": "竞赛作品提交确认",
       "route": "problem",
       "icon": "team"
     },

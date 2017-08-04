@@ -121,6 +121,10 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
       value: '未审核',
       label: '未审核',
       color: color.red
+    }, {
+      value: '未通过',
+      label: '未通过',
+      color: color.red
     },
     {
       value: '已通过',
@@ -215,7 +219,7 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
         ) : (
           <Alert
             message={(<span>暂无记录</span>)}
-            description='该赛事暂无记录'
+            description='该赛事或该筛选条件下暂无记录'
             showIcon
           />
         )

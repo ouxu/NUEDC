@@ -29,11 +29,11 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
         const {fail = []} = data
         if (fail.length) {
           dispatch({type: 'recording/saveExcelFail', payload: fail})
+          dispatch({type: 'recording/showAlert'})
         } else {
           dispatch({type: 'recording/saveExcelFail', payload: []})
           message.success(`文件上传成功`)
         }
-        dispatch({type: 'recording/showAlert'})
         dispatch({type: 'adminContestRecord/fetchTable', payload: query})
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
@@ -91,6 +91,16 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
   }
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {
+      title: (
+        <Tooltip placement='bottom' title='空白代表队伍尚未选题'>
+          <span> 队伍编号 <Icon type='question-circle-o' /></span>
+        </Tooltip>
+      ),
+      dataIndex: 'team_code',
+      key: 'team_code',
+      width: 100
+    },
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name'},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
@@ -206,10 +216,13 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
               result: undefined,
               school_id: undefined
             })))}>
-            重置筛选</Button>
+            重置筛选
+          </Button>
         </div>
         <div>
-          <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
+          <Tooltip placement='bottom' title='导出模板中的队伍为已确认提交过作品的队伍'>
+            <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
+          </Tooltip>
           <Upload {...props}>
             <Button disabled={!dataFlag}>
               <Icon type='upload' /> 导入Excel
@@ -233,7 +246,7 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
               {!alert && alertRender(contestInfo)}
               <Table
                 columns={columns} bordered
-                dataSource={table} scroll={{x: 1200, y: window.screen.availHeight - 350}}
+                dataSource={table} scroll={{x: 1500, y: window.screen.availHeight - 350}}
                 pagination={pagination} rowKey={record => record.id}
               />
             </div>

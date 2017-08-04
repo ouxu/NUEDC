@@ -99,8 +99,8 @@ const SchoolManage = ({location, adminSchool, dispatch, form: {getFieldDecorator
       if (errors) {
         return
       }
-      const {post_code, principal, principal_mobile, address} = values
-      let payload = modal === 'create' ? values : {post_code, principal, principal_mobile, address}
+      const {post_code, principal, principal_mobile, address, name = '', level = ''} = values
+      let payload = modal === 'create' ? values : {post_code, principal, principal_mobile, address, name, level}
       dispatch({type: `adminSchool/${modal === 'edit' ? 'update' : 'create'}`, payload: payload})
     })
   }

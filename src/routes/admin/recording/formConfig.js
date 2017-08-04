@@ -15,6 +15,18 @@ export default [
       pattern: '',
       patternMessage: ''
     }
+  }, {
+    value: 'team_code',
+    label: '队伍编号',
+    formType: 0,
+    contentType: 'string',
+    disabled: true,
+    rules: {
+      required: true,
+      requiredMessage: '',
+      pattern: '',
+      patternMessage: ''
+    }
   },
   {
     value: 'result',

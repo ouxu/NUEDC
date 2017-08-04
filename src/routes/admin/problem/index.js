@@ -64,7 +64,7 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
   const columns = [
     {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
-    {title: '附加信息', dataIndex: 'add_on', key: 'status'},
+    {title: '题目内容', dataIndex: 'content', key: 'content'},
     {
       title: '操作',
       render: (record) => {
@@ -166,11 +166,10 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
             <Table
               columns={columns} bordered
               dataSource={table}
-
               pagination={false} rowKey={record => record.id}
               expandedRowRender={record => (
                 <div className='expanded-row'>
-                  <span>{record.content}</span>
+                  <span>{record.add_on}</span>
                 </div>
               )}
             />
@@ -182,8 +181,8 @@ const ProblemManage = ({app, dispatch, contest, location, adminProblems, form: {
             />
           )) : (
           <Alert
-            message={(<span>网络故障</span>)}
-            description={(<span>请在下拉选单中重新选择竞赛</span>)}
+            message={(<span>暂无记录</span>)}
+            description={(<span>请前往赛事管理中添加竞赛</span>)}
             showIcon
           />
         )

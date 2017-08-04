@@ -2,18 +2,55 @@
  * Created by Pororo on 17/7/14.
  */
 import React from 'react'
-import { Alert, Form, Modal, Select, Table } from 'antd'
+import { Alert, Button, Form, Icon, Modal, Select, Table, Tooltip } from 'antd'
 import './index.less'
 import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
 import { connect } from 'dva'
+
+const confirm = Modal.confirm
+
 const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, table, content, modalContent, tableCount, alert, status = '未审核'} = schoolProblem
+  const {modal = false, table, failed = [], modalContent, tableCount, alert, status = '未审核', selects, problems} = schoolProblem
   const {query} = location
   const {contests, initQuery} = school
-  const onMenuClick = (record) => {
-    dispatch({type: 'schoolProblem/updateModalContent', payload: record})
-    dispatch({type: 'schoolProblem/showModal', payload: 'edit'})
+  const onMenuClick = (key, record) => {
+    if (key === 'submit') {
+      dispatch({type: 'schoolProblem/updateModalContent', payload: record})
+      confirm({
+        title: '提交确认',
+        content: (
+          <span>
+          <p>当前提交状态为 {record.problem_submit} ，您确定要登记该参赛队伍作品提交状态为已提交吗？</p>
+          <p>提交后无法撤回！</p>
+        </span>
+        ),
+        onOk () {
+          dispatch({type: 'schoolProblem/submit', payload: {record, query}})
+        },
+        onCancel () {}
+      })
+    } else {
+      dispatch({type: 'schoolProblem/updateModalContent', payload: record})
+      dispatch({type: 'schoolProblem/showModal', payload: 'edit'})
+
+    }
+  }
+  const allChecked = () => {
+    confirm({
+      title: '提交确认',
+      content: (
+        <span>
+          <p>您确定要登记所选中的参赛队伍作品提交状态为已提交吗？</p>
+          <p>提交后无法撤回！</p>
+        </span>
+
+      ),
+      onOk () {
+        dispatch({type: 'schoolProblem/submitAll', payload: query})
+      },
+      onCancel () {}
+    })
   }
   const pagination = {
     pageSize: +query.size || 50,
@@ -36,52 +73,92 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
       }
       dispatch({type: 'school/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/school/problem?` + urlEncode({...query, page: current})))
-    }
+    },
+    showTotal: () => (
+      <div className='joined-teams-check'>
+        <span style={{marginRight: 10}}>已选中 {selects.length} 支队伍</span>
+        <Button type='primary' onClick={allChecked}>批量提交</Button>
+      </div>
+    )
   }
   const onModalOk = () => {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
         return
       }
+      const body = {
+        id: modalContent.id,
+        problemId: values.problemId
+      }
       let payload = {
-        ...values
+        body,
+        query
       }
       dispatch({type: `schoolProblem/${modal}`, payload: payload})
     })
-  }
-  const onClickCheck = () => {
-    const payload = {
-      ...status,
-      modalTitle: '修改本校选题审核状态'
-    }
-    dispatch({type: 'schoolProblem/updateModalContent', payload: payload})
-    dispatch({type: 'schoolProblem/showModal', payload: 'problemCheck'})
   }
 
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
+    {
+      title: (
+        <Tooltip title='空白代表未选题'>
+          <span> 所选题目 <Icon type='question-circle-o' /></span>
+        </Tooltip>
+      ),
+      dataIndex: 'title',
+      key: 'problem_selected',
+      width: 250
+    },
     {title: '队员1', dataIndex: 'member1', key: 'member1', width: 80},
     {title: '队员2', dataIndex: 'member2', key: 'member2', width: 80},
     {title: '队员3', dataIndex: 'member3', key: 'member3', width: 80},
     {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 200},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
     {title: '联系邮箱', dataIndex: 'email', key: 'email', width: 200},
-    {title: '报名状态', dataIndex: 'status', key: 'status', width: 80, fixed: 'right'},
+    {title: '提交状态', dataIndex: 'problem_submit', key: 'status', width: 80, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
         return (
-          <a onClick={() => onMenuClick(record)}>
-            编辑
-          </a>
+          <span>
+            <a onClick={() => onMenuClick('submit', record)}>
+            提交
+            </a>
+            <span className='ant-divider' />
+            <a onClick={() => onMenuClick('edit', record)}>
+            修改选题
+            </a>
+          </span>
         )
       },
-      width: 80,
+      width: 120,
       fixed: 'right',
       key: 'edit'
     }
   ]
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 6}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 16}
+    }
+  }
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      let checks = selectedRows.map((item) => {
+        return {
+          record_id: item.id,
+          problem_submit: '已提交'
+        }
+      })
+      dispatch({type: 'schoolProblem/updateSelects', payload: checks})
+    }
+  }
   return (
     <div className='joined-teams'>
       <div className='joined-teams-header'>
@@ -106,17 +183,32 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
         >
           {contests.map(item => <Select.Option key={'' + item.id} value={'' + item.id}>{item.title}</Select.Option>)}
         </Select>
-        <span> </span>
+        <span />
       </div>
       <div>
+
         <Alert
-          message={(<span>本校选题审核情况：{status}</span>)}
-          description={(<span><a onClick={onClickCheck}>点击修改</a> 本校选题审核情况，修改为审核通过后，本校学生将无法修改选题。也可不修改，保持系统默认</span>)}
+          message={(<span>登记参赛队伍作品提交状态</span>)}
+          description={(
+            <span>
+              <p>只有确认并登记过队伍作品提交状态的队伍才能被评定成绩，是否确认提交将影响后续的成绩评定及参赛相关问题，请校管理员慎重对待。</p>
+            </span>
+          )}
           showIcon
         />
+        {alert && (
+          <Alert
+            message={(<span>以下队伍提交失败（未选题）,请修改选题后再提交以下队伍</span>)}
+            description={(failed.map((item, index) => <div key={index}><span>队伍名称:{item}</span>
+            </div>))}
+            type='error'
+            showIcon
+          />
+        )}
         <Table
           columns={columns} bordered
-          dataSource={table} scroll={{x: 1200}}
+          dataSource={table} scroll={{x: 1400, y: window.screen.availHeight - 350}}
+          rowSelection={rowSelection}
           pagination={pagination} rowKey={record => record.id}
         />
       </div>
@@ -128,11 +220,24 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
         key={modal}
       >
         <Form className='form-content'>
-          {modal === 'edit' && (
-            <div>
-              当前选题为： {modalContent.title || '未选题'}
-            </div>
-          )}
+          <Form.Item
+            label='选择题目'
+            {...formItemLayout}
+            extra='在选题时间结束前可以修改选题'
+          >
+            {getFieldDecorator('problemId', {
+              rules: [{required: true, message: '请选择题目'}],
+              initialValue: (modalContent.problem_selected === -1 ? '' : modalContent.problem_selected) + ''
+            })(
+              <Select>
+                {problems.map((option, i) => (
+                  <Select.Option value={option.id + ''} key={option.id}>
+                    {option.title}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
         </Form>
       </Modal>
     </div>

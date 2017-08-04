@@ -170,7 +170,6 @@ const Routers = ({history, app}) => (
           path='notices/edit' getComponent={NewsEdit}
           onEnter={() => registerModel(app, NewsEditModel)}
         />
-
       </Route>
       <Route path='student' component={StudentPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)

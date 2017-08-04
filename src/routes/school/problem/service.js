@@ -20,14 +20,20 @@ const update = async (data) => request({
   url: API.schoolProblemUpdate,
   method: 'put',
   token: true,
-  data: data
+  data
 })
 
-const getInfo = async (data) => request({
-  url: API.schoolProblemCheck,
+const fetchProblems = async (id) => request({
+  url: API.schoolProblemList.replace(':id', id),
   method: 'get',
-  token: true,
-  data: data
+  token: true
 })
 
-export { fetchSelectOption, fetchTable, update, getInfo }
+const check = async (data, id) => request({
+  url: API.schoolProblemCheck.replace(':id', id),
+  method: 'post',
+  token: true,
+  data
+})
+
+export { check, fetchSelectOption, fetchTable, update, fetchProblems }

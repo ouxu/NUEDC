@@ -111,6 +111,7 @@ const ContestManage = ({app, studentContest, dispatch}) => {
     <div className='contest'>
       <Collapse bordered={false} defaultActiveKey={['signUp', 'canRegister']}>
         <Panel header='可报名竞赛' key='canRegister' style={customPanelStyle}>
+          {table.length===0&&(<span>暂无可报名的竞赛</span>)}
           <Row type='flex' gutter={12}>
             {table.map(item => {
               let extra
@@ -153,6 +154,7 @@ const ContestManage = ({app, studentContest, dispatch}) => {
           </Row>
         </Panel>
         <Panel header='已报名竞赛' key='signUp' style={customPanelStyle}>
+          {table.length===0&&(<span>暂未报名竞赛</span>)}
           <Row type='flex' gutter={12}>
             {tableSignUp.map(item => {
               let extra

@@ -69,7 +69,7 @@ const createConfig = [
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入学校等级'
+      requiredMessage: '请选择学校等级'
     },
     options: [
       {
@@ -88,22 +88,30 @@ const editConfig = [
     label: '学校名称',
     formType: 0,
     contentType: 'string',
-    disabled: true,
+    disabled: false,
     rules: {
       required: true,
       requiredMessage: '请输入学校名称'
     },
     hasFeedback: false
-  }, {
+  },  {
     value: 'level',
     label: '学校等级',
-    formType: 0,
+    formType: 2,
     contentType: 'string',
-    disabled: true,
     rules: {
       required: true,
-      requiredMessage: '请输入学校等级'
-    }
+      requiredMessage: '请选择学校等级'
+    },
+    options: [
+      {
+        value: '本科',
+        label: '本科'
+      }, {
+        value: '高职',
+        label: '高职'
+      }
+    ]
   }
 ]
 

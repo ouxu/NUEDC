@@ -52,6 +52,16 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
   }
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {
+      title: (
+        <Tooltip placement='bottom' title='空白代表队伍尚未选题'>
+          <span> 题目编号 <Icon type='question-circle-o' /></span>
+        </Tooltip>
+      ),
+      dataIndex: 'team_code',
+      key: 'team_code',
+      width: 100
+    },
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
     {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
     {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 90},
