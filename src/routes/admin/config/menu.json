@@ -51,6 +51,12 @@
       "key": "/admin/notices",
       "value": "通知管理",
       "icon": "info-circle-o"
+    },
+    {
+      "key": "/admin/guide",
+      "route": "guide",
+      "value": "用户手册",
+      "icon": "eye-o"
     }
   ]
 }

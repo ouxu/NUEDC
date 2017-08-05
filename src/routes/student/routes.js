@@ -7,11 +7,13 @@ import { StudentScoreManage, StudentScoreModel } from './score/route'
 import { StudentSignUpManage, StudentSignUpModel } from './signup/route'
 import { SchoolContestManage, SchoolContestModel } from './contest/route'
 import { StudentInfo, StudentInfoModel } from './userInfo/route'
+import { Guide } from './guide/route'
 export {
   StudentPage,
   SchoolContestModel, SchoolContestManage,
   StudentProblemManage, StudentProblemModel,
   StudentScoreManage, StudentScoreModel,
   StudentSignUpManage, StudentSignUpModel,
-  StudentInfo, StudentInfoModel
+  StudentInfo, StudentInfoModel,
+  Guide
 }

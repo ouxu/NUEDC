@@ -25,6 +25,12 @@
       "value": "查看本校队伍赛果",
       "route": "schoolResult",
       "icon": "bulb"
+    },
+    {
+      "key": "/school/guide",
+      "route": "guide",
+      "value": "用户手册",
+      "icon": "eye-o"
     }
   ]
 }

@@ -26,7 +26,8 @@ import {
   SchoolManage,
   SchoolModel,
   TeamAdminManage,
-  TeamAdminModel
+  TeamAdminModel,
+  GuideAdmin
 } from './routes/admin/routes'
 import {
   JoinedTeamsManage,
@@ -38,7 +39,8 @@ import {
   SchoolProblem,
   SchoolProblemModel,
   SchoolResultManage,
-  SchoolResultModel
+  SchoolResultModel,
+  GuideSchool
 } from './routes/school/routes'
 import {
   SchoolContestManage,
@@ -50,7 +52,8 @@ import {
   StudentScoreModel,
   StudentSignUpManage,
   StudentSignUpModel,
-  StudentInfo, StudentInfoModel
+  StudentInfo, StudentInfoModel,
+  Guide
 } from './routes/student/routes'
 
 import Home from './routes/home/route'
@@ -170,6 +173,9 @@ const Routers = ({history, app}) => (
           path='notices/edit' getComponent={NewsEdit}
           onEnter={() => registerModel(app, NewsEditModel)}
         />
+        <Route path='guide' getComponent={GuideAdmin}
+               onEnter={() => {}}
+        />
       </Route>
       <Route path='student' component={StudentPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
@@ -199,6 +205,9 @@ const Routers = ({history, app}) => (
                  registerModel(app, StudentSignUpModel)
                }}
         />
+        <Route path='guide' getComponent={Guide}
+               onEnter={() => {}}
+        />
       </Route>
       <Route path='school' component={SchoolPage} onEnter={(nextState, replace) => {
         checkAuth(nextState, replace)
@@ -222,6 +231,9 @@ const Routers = ({history, app}) => (
           onEnter={() => {
             registerModel(app, SchoolProblemModel)
           }}
+        />
+        <Route path='guide' getComponent={GuideSchool}
+               onEnter={() => {}}
         />
       </Route>
     </Route>
