@@ -27,8 +27,7 @@ export default [
       pattern: '',
       patternMessage: ''
     }
-  },
-  {
+  }, {
     value: 'result',
     label: '比赛结果',
     formType: 0,

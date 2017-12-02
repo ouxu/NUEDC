@@ -23,18 +23,33 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
   effects: {
     * init ({payload: pathname}, {call, select, put}) {
       let {tablePass = [], tableSignUp = [], table = [], tableSchoolAdmins = [], query} = yield select(({studentContest}) => studentContest)
-      if (pathname === '/student' && table.length === 0) {
-        let {data: contestTable = []} = yield call(fetchTable)
-        contestTable = Array.from(contestTable)
-        yield put({type: 'setTable', payload: contestTable.reverse()})
-      }
       if (tablePass.length === 0) {
         const {data: {contestList = []}} = yield call(fetchTablePass)
         yield put({type: 'setTablePass', payload: contestList})
         tablePass = contestList
       }
       if (tableSignUp.length === 0) {
+        let {data: tableSignUp = []} = yield call(fetchTableSignUp)
+        tableSignUp = Array.from(tableSignUp)
+        yield put({type: 'setTableSignUp', payload: tableSignUp.reverse()})
         yield put({type: 'fetchTableSignUp'})
+      }
+
+      if (pathname === '/student' && table.length === 0) {
+        let {data: SignUp = []} = yield call(fetchTableSignUp)
+        SignUp = Array.from(SignUp)
+        let {data: contestTable = []} = yield call(fetchTable)
+        contestTable = Array.from(contestTable)
+        let signUpIdArr = SignUp.map(item => item.id)
+        contestTable = contestTable.map(item => {
+          const flag = signUpIdArr.includes(item.id)
+          return {
+            ...item,
+            signed: flag
+          }
+        })
+        contestTable = Array.from(contestTable)
+        yield put({type: 'setTable', payload: contestTable.reverse()})
       }
       if (tableSchoolAdmins.length === 0) {
         yield put({type: 'fetchTableSchoolAdmins'})

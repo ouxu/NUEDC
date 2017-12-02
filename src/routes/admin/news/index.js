@@ -12,9 +12,10 @@ import { urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
-const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const NewsManage = ({location, adminNews, contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminNews
   const {query, pathname} = location
+  const {query: initQuery} = contest
   const isNews = pathname === '/admin/news'
   const onMenuClick = (key, record) => {
     switch (key) {
@@ -83,9 +84,25 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
+      let newQuery = pathname === '/admin/notices' ? {
+        ...initQuery,
+        notices: {...query, page: current, size: pageSize}
+      } : {
+        ...initQuery,
+        news: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(pathname + '?' + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
+      let newQuery = pathname === '/admin/notices' ? {
+        ...initQuery,
+        notices: {...query, page: current, size: pageSize}
+      } : {
+        ...initQuery,
+        news: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(pathname + '?' + urlEncode({...query, page: current})))
     }
   }
@@ -123,5 +140,6 @@ const NewsManage = ({location, adminNews, dispatch, form: {getFieldDecorator, va
 export default connect(({app, loading, contest, login, adminNews}) => ({
   app,
   loading,
-  adminNews
+  adminNews,
+  contest
 }))(Form.create()(NewsManage))

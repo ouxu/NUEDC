@@ -2,20 +2,26 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Button, Form, Icon, Input, Modal, Upload } from 'antd'
+import { Button, Form, Icon, Input, message, Modal, Upload } from 'antd'
 import { connect } from 'dva'
 import './index.less'
-import LzEditor from 'react-lz-editor'
-import { config,API } from '../../../../utils'
+import { API } from '../../../../utils'
+import Editor from 'react-pell/plugins/markdown'
+import '../../../../components/Markdown/index.less'
+import copy from 'copy-to-clipboard'
 const {confirm} = Modal
+
 class Edit extends React.Component {
   constructor (props) {
     super(props)
-    this.receiveHtml = this.receiveHtml.bind(this)
-    this.onChange = this.onChange.bind(this)
+    this.state = {
+      previewVisible: false,
+      previewImage: '',
+      fileList: []
+    }
   }
 
-  receiveHtml (content) {
+  receiveHtml = (content) => {
     this.props.dispatch({type: 'adminNewsEdit/contentChange', payload: content})
   }
 
@@ -23,42 +29,42 @@ class Edit extends React.Component {
     let currFileList = info.fileList
 
     currFileList = currFileList.filter((f) => (!f.length))
-    let url = config.baseURL
-    //读取远程路径并显示链接
+    // 读取远程路径并显示链接
     currFileList = currFileList.map((file) => {
       if (file.response) {
         // 组件会将 file.url 作为链接进行展示
-        file.url = url + file.response.url
+        file.url = file.response.url
       }
       if (!file.length) {
         return file
       }
     })
-    let _this = this
-    //按照服务器返回信息筛选成功上传的文件
-    currFileList = currFileList.filter((file) => {
-      //根据多选选项更新添加内容
+  }
 
-      if (!!_this.props.isMultiple == true) {
-        _this.state.responseList.push(file)
-      } else {
-        _this.state.responseList = [file]
-      }
-      return !!file.response || (!!file.url && file.status == 'done') || file.status == 'uploading'
+  showInfo = () => {
+    Modal.info({
+      title: `图片文件上传说明`,
+      content: (
+        <div>
+          先点击左上方的 上传文件 按钮，将附件或者图片上传到资源服务器，上传成功后将出现文件列表。
+          <br />
+          <br />
+          点击文件列表中的文件将会出现链接复制确认框，点击确认复制后内容将复制到系统剪切板。
+          <br />
+          <br />
+          图片上传：图片上传后点击编辑器图片按钮，在弹出框将链接粘贴后回车确认，图片将插入文章。
+          <br />
+          <br />
+          附件上传：附件能以链接形式附加在文本上，选中文本后，点击编辑器链接按钮，按说明填写好内容，链接将插入文章。
+        </div>
+      )
     })
-    currFileList = uniqBy(currFileList, 'name')
-    if (!!currFileList && currFileList.length != 0) {
-      // console.log("upload set files as fileList", currFileList);
-      this.setState({responseList: currFileList})
-    }
-    _this.forceUpdate()
   }
 
   render () {
-    const uploadConfig = {}
     const {location, dispatch} = this.props
     const {pathname, query} = location
-    const {content, input} = this.props.adminNewsEdit
+    const {content, input, modal} = this.props.adminNewsEdit
     const uploadProps = {
       action: API.filePublic,
       name: 'upload',
@@ -67,31 +73,66 @@ class Edit extends React.Component {
       },
       onChange: this.onChange,
       multiple: true,
-      data: (file) => { // 支持自定义保存文件名、扩展名支持
-        console.log('uploadProps data', file)
-      },
       onPreview: (file) => {
-        document.execCommand('Copy')
+        Modal.confirm({
+          title: `复制文件链接`,
+          content: (
+            <div style={{wordBreak: 'break-all'}}>
+              将文件在服务器的链接复制到剪切板，用于插入图片和附件，具体使用说明请点击查看上传说明
+              <br />
+              {file.url}
+            </div>
+          ),
+          okText: '复制',
+          onOk () {
+            copy(file.url)
+            message.success('复制成功')
+          },
+          onCancel () {}
+        })
       }
     }
-    // TODO 上传文件后复制
+    const ensureHTTP = (str) => {
+      return /^https?:\/\//.test(str) && str || `http://${str}`
+    }
+    const editorProps = {
+      containerClass: 'new-edit-container markdown-body',
+      defaultContent: content,
+      actions: [
+        'bold', 'italic', 'underline', 'strikethrough', 'heading1', 'heading2', 'olist', 'ulist', 'quote',
+        {
+          name: 'image',
+          result: (pell) => {
+            const url = window.prompt('请输入图片 URL')
+            if (url) pell.exec('insertImage', ensureHTTP(url))
+          }
+        },
+        {
+          name: 'link',
+          result: async (pell) => {
+            const url = window.prompt('请输入文件 URL')
+            if (url) pell.exec('createLink', ensureHTTP(url))
+          }
+        }
+      ],
+      onChange: this.receiveHtml
+    }
     return (
-      <div className='news-manage'>
+      <div className='news-manage' key={query.id + 'news'}>
         <div className='news-manage-header'>
-          <div>
-            <Upload {...uploadProps}>
-              <Button>
-                <Icon type='upload' /> 上传文件
-              </Button>
-            </Upload>
-          </div>
-          <div>
+          <Upload {...uploadProps}>
+            <Button>
+              <Icon type='upload' /> 上传文件
+            </Button>
+          </Upload>
+          <Button type='primary' onClick={this.showInfo}>
+            查看图片文件上传说明
+          </Button>
 
-            <Button type='primary' onClick={() => dispatch({
-              type: 'adminNewsEdit/update',
-              payload: {pathname: pathname, id: query.id}
-            })}>发布</Button>
-          </div>
+          <Button type='primary' onClick={() => dispatch({
+            type: 'adminNewsEdit/update',
+            payload: {pathname: pathname, id: query.id}
+          })}>发布</Button>
         </div>
         <Input
           placeholder='请输入标题'
@@ -99,19 +140,22 @@ class Edit extends React.Component {
           onChange={(e) => dispatch({type: 'adminNewsEdit/onInputChange', payload: e.target.value})}
           value={input}
         />
-
-        <LzEditor
-          active={false}
-          importContent={content}
-          cbReceiver={this.receiveHtml}
-          uploadProps={uploadProps}
-          fullScreen={false}
-          uploadConfig={uploadConfig}
-          color={false}
-          video={false}
-          audio={false}
-          convertFormat='html'
-        />
+        {(content.length > 0 || !query.id) && (
+          <Editor {...editorProps} />
+        )}
+        <Modal
+          title='修改队伍信息'
+          visible={!!modal}
+          onCancel={() => dispatch({type: 'adminNewsEdit/hideModal'})}
+          footer={null}
+          key={'' + modal}
+        >
+          <Upload {...uploadProps}>
+            <Button>
+              <Icon type='upload' /> 上传文件
+            </Button>
+          </Upload>
+        </Modal>
       </div>
     )
   }

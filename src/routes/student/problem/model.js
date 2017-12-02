@@ -24,11 +24,11 @@ export default modelExtend(tableModel, modalModel, {
   effects: {
     * fetchTable ({payload}, {call, put, select}) {
       const {contest_id = ''} = payload
-      let {tablePass: contest} = yield select(({studentContest}) => studentContest)
+      let {tableSignUp: contest} = yield select(({studentContest}) => studentContest)
       if (!contest_id) {
         if (contest.length === 0) {
           yield call(sleep, 1000)
-          let {tablePass: contestNow} = yield select(({studentContest}) => studentContest)
+          let {tableSignUp: contestNow} = yield select(({studentContest}) => studentContest)
           contest = contestNow
         }
         const preId = contest[0] || {id: 'none'}
@@ -38,7 +38,7 @@ export default modelExtend(tableModel, modalModel, {
         if (contest_id === 'none') return
         const {code = '', data: {problemList = [], problemSelectInfo = {}}} = yield call(fetchTable, contest_id)
         if (code === 0) {
-          const table = problemList.reverse().map((item, i) => ({
+          const table = problemList.map((item, i) => ({
             ...item,
             fakeId: i + 1
           }))
@@ -49,14 +49,11 @@ export default modelExtend(tableModel, modalModel, {
               title: '未选题'
             }
           } else {
-            if (contest.length === 0) {
-              yield call(sleep, 1000)
-              let {tablePass: contestNow} = yield select(({studentContest}) => studentContest)
-              contest = contestNow
-            }
+            yield call(sleep, 1000)
+            let {tableSignUp: contestNow} = yield select(({studentContest}) => studentContest)
+            contest = contestNow
             let indexArr = contest.map((item) => item.id)
             let index = indexArr.indexOf(+contest_id)
-
             info = {
               ...info,
               ...contest[index]
@@ -102,10 +99,12 @@ export default modelExtend(tableModel, modalModel, {
       const {body, query} = payload
       const data = yield call(update, body)
       if (data.code === 0) {
-        yield put({type: 'fetchTable', payload: query})
+        yield put({type: 'studentContest/fetchTableSignUp'})
+        yield put({type: 'studentContest/fetchTablePass'})
         message.success('选题成功')
         yield put({type: 'hideModal'})
-        yield put({type: 'studentContest/fetchTablePass'})
+        yield put({type: 'fetchTable', payload: query})
+
       }
     }
   },

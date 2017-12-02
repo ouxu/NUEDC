@@ -9,7 +9,7 @@ import { connect } from 'dva'
 const ShowItems = ({download, dispatch}) => {
   // const {modalContent} = download
   const demoToChildren = showItems.map((item, i) => {
-    const {img = '/assets/home/showItem/3.jpg',title,link,content="资料下载"} = item
+    const {img = '/assets/home/showItem/3.jpg', title, link, content = '资料下载'} = item
     return (
       <li key={i}>
         <a href={link}>
@@ -22,10 +22,7 @@ const ShowItems = ({download, dispatch}) => {
       </li>
     )
   })
-  const fetchMore = (e) => {
-    e.preventDefault()
-    dispatch({type: 'download/fetchMore'})
-  }
+
   return (
     <div
       className='home-content show-items'
@@ -56,7 +53,7 @@ const ShowItems = ({download, dispatch}) => {
             className='download-button'
             style={{marginBottom: '80px'}}
           >
-            {/*<Link onClick={fetchMore}>查看更多</Link>*/}
+            {/* <Link onClick={fetchMore}>查看更多</Link> */}
           </TweenOne>
         </div>
       </TweenOne>

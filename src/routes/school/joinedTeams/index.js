@@ -14,7 +14,8 @@ const confirm = Modal.confirm
 const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, table, content, modalContent, tableCount, alert, selects = []} = joinedTeams
   const {query} = location
-  const {contests, initQuery} = school
+  const {fail = [], success = [], update = []} = content
+  const {contests, query: initQuery} = school
   const dataFlag = query.contest_id > 0
   const props = {
     name: 'file',
@@ -27,14 +28,9 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
       const {response = {}} = info.file
       const {code = 1, data = []} = response
       if (code === 0) {
-        const {fail = []} = data
-        if (fail.length) {
-          dispatch({type: 'joinedTeams/saveSuccessExcel', payload: fail})
-          dispatch({type: 'joinedTeams/showAlert'})
-        } else {
-          dispatch({type: 'joinedTeams/hideAlert'})
-          message.success(`文件上传成功`)
-        }
+        dispatch({type: 'joinedTeams/saveSuccessExcel', payload: data})
+        dispatch({type: 'joinedTeams/showAlert'})
+        message.success(`文件上传成功`)
         dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query})))
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 文件上传失败，稍后再试。`)
@@ -189,7 +185,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
     {
       title: (
         <Tooltip placement='bottom' title='空白代表队伍尚未选题'>
-          <span> 队伍编号 <Icon type='question-circle-o' /></span>
+          <span> 参赛编号 <Icon type='question-circle-o' /></span>
         </Tooltip>
       ),
       dataIndex: 'team_code',
@@ -232,7 +228,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
             onChange={(value) => {
               let newQuery = {
                 ...initQuery,
-                joinedTeams: {...query, contest_id: value}
+                joinedTeams: {...query, page: undefined, size: undefined, contest_id: value}
               }
               dispatch({type: 'school/saveQuery', payload: newQuery})
               dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, contest_id: value})))
@@ -249,7 +245,7 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
             onChange={(value) => {
               let newQuery = {
                 ...initQuery,
-                joinedTeams: {...query, status: value || undefined}
+                joinedTeams: {...query, page: undefined, size: undefined, status: value || undefined}
               }
               dispatch({type: 'school/saveQuery', payload: newQuery})
               dispatch(routerRedux.push(`/school/joinedTeams?` + urlEncode({...query, status: value || undefined})))
@@ -270,22 +266,79 @@ const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch,
         <div className='joined-teams-header-right'>
           <Button type='primary' onClick={onAddClick} disabled={!dataFlag} style={{marginRight: 10}}>+ 增加队伍</Button>
           <Button type='primary' onClick={excelOut} disabled={!dataFlag} style={{marginRight: 10}}>导出 Excel</Button>
-          <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
+          <Tooltip placement='bottom' title='导入队伍账号为队长手机号，默认密码：NUEDC2017'>
+
+            <Button type='primary' onClick={getExcel} disabled={!dataFlag} style={{marginRight: 10}}>获取导入模板</Button>
+          </Tooltip>
 
           <Upload {...props}>
-            <Button disabled={!dataFlag}>
-              <Icon type='upload' /> 导入 Excel
-            </Button>
+            <Tooltip placement='bottom' title='导入队伍账号为队长手机号，默认密码：NUEDC2017'>
+              <Button disabled={!dataFlag}>
+                <Icon type='upload' /> 导入 Excel
+              </Button>
+            </Tooltip>
+
           </Upload>
+
         </div>
       </div>
       {alert && (
         <Alert
-          message={(<span>以下队伍导入失败（手机号和已存在队伍重复）,请修改手机号后再导入以下队伍</span>)}
-          description={(content.map((item, index) => <div key={index}><span>队伍名称:{item[0]} &nbsp; 手机号:{item[5]}</span>
-          </div>))}
-          type='error'
+          message={(<span>导入结果如下</span>)}
+          description={(
+            <div>
+              {fail.length > 0 && (
+                <div>
+                  <strong>导入失败队伍</strong>
+                  <br />
+                  {
+                    fail.map((item, index) => (
+                      <span key={index}>
+                    队伍名称 ： <span className='joined-teams-alert-fixed'>{item[0]}</span>
+                    队长手机号 ： <span className='joined-teams-alert-fixed'>{item[5]}</span>
+                        <br />
+                      </span>
+                    ))
+                  }
+                  <br />
+                </div>
+              )}
+              {update.length > 0 && (
+                <div>
+                  <strong>以下队伍已经自己报名，其报名信息已更新成最后导入的信息</strong>
+                  <br />
+                  {
+                    success.map((item, index) => (
+                      <span key={index}>
+                    队伍名称 ： <span className='joined-teams-alert-fixed'>{item[0]}</span>
+                    队长手机号 ： <span className='joined-teams-alert-fixed'>{item[5]}</span>
+                        <br />
+                      </span>
+                    ))
+                  }
+                  <br />
+                </div>
+              )}
+              {success.length > 0 && (
+                <div>
+                  <strong>导入成功队伍</strong>
+                  <br />
+                  {
+                    success.map((item, index) => (
+                      <span key={index}>
+                    队伍名称 ： <span className='joined-teams-alert-fixed'>{item[0]}</span>
+                    队长手机号 ： <span className='joined-teams-alert-fixed'>{item[5]}</span>
+                        <br />
+                      </span>
+                    ))
+                  }
+                </div>
+              )}
+            </div>
+          )}
+          type='info'
           showIcon
+          closable
         />
       )}
       <div>

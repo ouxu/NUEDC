@@ -44,7 +44,7 @@ const ProblemManage = ({dispatch, location, studentContest, studentProblems, for
   const columns = [
     {title: '序号', dataIndex: 'fakeId', key: 'id', width: 50},
     {title: '题目标题', dataIndex: 'title', key: 'title', width: 250},
-    {title: '题目描述', dataIndex: 'content', key: 'status'},
+    {title: '题目内容', dataIndex: 'content', key: 'status'},
     {
       title: '操作',
       render: (record) => {

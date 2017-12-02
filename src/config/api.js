@@ -75,6 +75,7 @@ export default {
   adminContestRecordsUpdate: apiMaker('sysadmin/contest-record/update'),
   adminContestRecordDelete: apiMaker('sysadmin/contest-record/delete'),
   adminContestRecordExcel: apiMaker('sysadmin/contest-record/export'),
+  adminContestRecordExcelAll: apiMaker('sysadmin/contest-record/export/all'),
   adminContestRecordExcelImport: apiMaker('sysadmin/contest-record/import'),
   adminResultsUpdate: apiMaker('sysadmin/results/update'),
 

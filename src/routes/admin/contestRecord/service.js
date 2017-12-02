@@ -24,4 +24,12 @@ const update = async (data) => request({
   data
 })
 
-export { remove, update, fetchTable }
+const downloadExcel = async ({filename}, data) => request({
+  url: API.adminContestRecordExcelAll,
+  method: 'export',
+  token: true,
+  data,
+  filename
+})
+
+export { remove, update, fetchTable, downloadExcel }

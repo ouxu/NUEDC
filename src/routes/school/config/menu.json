@@ -19,6 +19,11 @@
       "value": "竞赛作品提交确认",
       "route": "problem",
       "icon": "team"
+    },{
+      "key": "/school/problemList",
+      "value": "查看竞赛题目",
+      "route": "problem",
+      "icon": "file-text"
     },
     {
       "key": "/school/schoolResult",
@@ -28,7 +33,6 @@
     },
     {
       "key": "/school/guide",
-      "route": "guide",
       "value": "用户手册",
       "icon": "eye-o"
     }

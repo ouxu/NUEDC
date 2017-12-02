@@ -35,7 +35,7 @@ export default modelExtend(modalModel, tableModel, alertModel, inputModel, {
             const problem = {
               contest_id: defaultValue.id
             }
-            const query = {problem, team: problem, recording: problem, contestRecord: problem}
+            const query = {problem, team: problem, recording: problem, contestRecord: problem, schoolAdmin: {page: 1}}
             yield put({type: 'saveQuery', payload: query})
           }
         }

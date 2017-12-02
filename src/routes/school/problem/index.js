@@ -4,8 +4,8 @@
 import React from 'react'
 import { Alert, Button, Form, Icon, Modal, Select, Table, Tooltip } from 'antd'
 import './index.less'
-import { routerRedux } from 'dva/router'
-import { urlEncode } from '../../../utils'
+import { Link, routerRedux } from 'dva/router'
+import { newDate, urlEncode } from '../../../utils'
 import { connect } from 'dva'
 
 const confirm = Modal.confirm
@@ -13,7 +13,20 @@ const confirm = Modal.confirm
 const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, table, failed = [], modalContent, tableCount, alert, status = '未审核', selects, problems} = schoolProblem
   const {query} = location
-  const {contests, initQuery} = school
+  const {contests, query: initQuery} = school
+  let contest = {
+    can_select_problem: +'',
+    problem_start_time: +''
+  }
+  if (query.contest_id !== 'none') {
+    const contestArr = contests.map(item => item.id)
+    const index = contestArr.indexOf(+query.contest_id)
+    if (index !== -1) {
+      contest = contests[index]
+    }
+  }
+  const {can_select_problem = +'', problem_start_time = +''} = contest
+
   const onMenuClick = (key, record) => {
     if (key === 'submit') {
       dispatch({type: 'schoolProblem/updateModalContent', payload: record})
@@ -21,9 +34,9 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
         title: '提交确认',
         content: (
           <span>
-          <p>当前提交状态为 {record.problem_submit} ，您确定要登记该参赛队伍作品提交状态为已提交吗？</p>
-          <p>提交后无法撤回！</p>
-        </span>
+            <p>当前提交状态为 {record.problem_submit} ，您确定要登记该参赛队伍作品提交状态为已提交吗？</p>
+            <p>提交后无法撤回！</p>
+          </span>
         ),
         onOk () {
           dispatch({type: 'schoolProblem/submit', payload: {record, query}})
@@ -33,7 +46,6 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
     } else {
       dispatch({type: 'schoolProblem/updateModalContent', payload: record})
       dispatch({type: 'schoolProblem/showModal', payload: 'edit'})
-
     }
   }
   const allChecked = () => {
@@ -100,6 +112,7 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
 
   const columns = [
     {title: '#', dataIndex: 'fakeId', key: 'id', width: 50},
+    {title: '参赛编号', dataIndex: 'team_code', key: 'team_code', width: 100},
     {title: '队伍名称', dataIndex: 'team_name', key: 'team_name', width: 200},
     {
       title: (
@@ -123,11 +136,12 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
       render: (record) => {
         return (
           <span>
-            <a onClick={() => onMenuClick('submit', record)}>
+            <a onClick={() => onMenuClick('submit', record)}
+              disabled={record.problem_submit === '已提交' || !record.team_code }>
             提交
             </a>
             <span className='ant-divider' />
-            <a onClick={() => onMenuClick('edit', record)}>
+            <a onClick={() => onMenuClick('edit', record)} disabled={record.problem_submit === '已提交'}>
             修改选题
             </a>
           </span>
@@ -138,16 +152,7 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
       key: 'edit'
     }
   ]
-  const formItemLayout = {
-    labelCol: {
-      xs: {span: 24},
-      sm: {span: 6}
-    },
-    wrapperCol: {
-      xs: {span: 24},
-      sm: {span: 16}
-    }
-  }
+  const formItemLayout = {}
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       let checks = selectedRows.map((item) => {
@@ -170,6 +175,8 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
           onChange={(value) => {
             let newQuery = {
               ...initQuery,
+              page: undefined,
+              size: undefined,
               problem: {
                 ...query, contest_id: value
               }
@@ -186,16 +193,25 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
         <span />
       </div>
       <div>
+        {
+          ((can_select_problem && can_select_problem === 1) || newDate(problem_start_time) < Date.now()) ? (
+            <Alert
+              message={(
+                <span className='joined-teams-header'>
+                  <span>登记参赛队伍作品提交现场评审状态</span> 登记截止日期：{contest.submit_end_time || ''}
+                </span>)}
+              description={(<p>只有确认并登记过队伍作品提交状态的队伍才能被评定成绩，是否确认提交将影响后续的成绩评定及参赛相关问题，请校管理员慎重对待。</p>)}
+              showIcon
+            />
+          ) : (
+            <Alert
+              message={(<span>登记参赛队伍作品提交尚未开始</span>)}
+              description={(<p>只有确认并登记过队伍作品提交状态的队伍才能被评定成绩，是否确认提交将影响后续的成绩评定及参赛相关问题，请校管理员慎重对待。</p>)}
+              showIcon
+            />
+          )
+        }
 
-        <Alert
-          message={(<span>登记参赛队伍作品提交状态</span>)}
-          description={(
-            <span>
-              <p>只有确认并登记过队伍作品提交状态的队伍才能被评定成绩，是否确认提交将影响后续的成绩评定及参赛相关问题，请校管理员慎重对待。</p>
-            </span>
-          )}
-          showIcon
-        />
         {alert && (
           <Alert
             message={(<span>以下队伍提交失败（未选题）,请修改选题后再提交以下队伍</span>)}
@@ -207,7 +223,7 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
         )}
         <Table
           columns={columns} bordered
-          dataSource={table} scroll={{x: 1400, y: window.screen.availHeight - 350}}
+          dataSource={table} scroll={{x: 1400}}
           rowSelection={rowSelection}
           pagination={pagination} rowKey={record => record.id}
         />
@@ -237,6 +253,18 @@ const SchoolProblem = ({location, schoolProblem, dispatch, school, form: {getFie
                 ))}
               </Select>
             )}
+          </Form.Item>
+          <Form.Item
+          >
+            <Link onClick={() => confirm({
+              title: '跳转确认',
+              content: `您确定要跳转到竞赛 ${contest.title} 的题目列表吗？`,
+              onOk () {
+                dispatch({type: 'schoolProblem/hideModal'})
+                dispatch(routerRedux.push('/school/problemList?contest_id=' + query.contest_id))
+              },
+              onCancel () {}
+            })}> 点击查看竞赛 {contest.title} 的题目列表</Link>
           </Form.Item>
         </Form>
       </Modal>

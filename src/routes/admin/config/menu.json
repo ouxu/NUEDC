@@ -21,6 +21,7 @@
     },
     {
       "key": "/admin/schoolAdmin",
+      "route": "schoolAdmin",
       "value": "学校管理员管理",
       "icon": "solution"
     },
@@ -45,18 +46,24 @@
     {
       "key": "/admin/news",
       "value": "新闻管理",
+      "route": "news",
       "icon": "calendar"
     },
     {
       "key": "/admin/notices",
+      "route": "notices",
       "value": "通知管理",
       "icon": "info-circle-o"
     },
     {
       "key": "/admin/guide",
-      "route": "guide",
       "value": "用户手册",
       "icon": "eye-o"
+    },
+    {
+      "key": "/admin/password",
+      "value": "修改密码",
+      "icon": "lock"
     }
   ]
 }

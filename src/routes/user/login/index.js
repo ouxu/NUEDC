@@ -17,9 +17,10 @@ const Login = ({login, dispatch, form: {getFieldDecorator, validateFieldsAndScro
       dispatch({type: 'login/login', payload: values})
     })
   }
-
+  // const bg = `url("/assets/user/login/login-bg.jpg")`
+  const bg = `url("http://ou77rcnh8.bkt.clouddn.com/static/login-bg.jpg")`
   return (
-    <div className='login-wrapper' style={{backgroundImage: `url("/assets/user/login/login-bg.jpg")`}}>
+    <div className='login-wrapper' style={{backgroundImage: bg}}>
       <div className='form'>
         <div className='login-title'>
           <span className='login-title-main'>全国大学生电子设计竞赛</span>

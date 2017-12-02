@@ -7,7 +7,11 @@ export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'joinedTeams',
   state: {
     contests: [],
-    content: [],
+    content: {
+      fail: [],
+      success: [],
+      update: []
+    },
     selects: [],
   },
   subscriptions: {

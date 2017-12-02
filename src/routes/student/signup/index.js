@@ -9,11 +9,21 @@ import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
 const FormItem = Form.Item
 
-const StudentSignUpManage = ({location, app, login, studentSignUp, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {user} = app
+const StudentSignUpManage = ({location, studentContest, app, login, studentSignUp, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+  let {user} = app
   const {table: schools} = login
   const {contest = [], info = {}} = studentSignUp
   const {query} = location
+  const {tableSignUp} = studentContest
+  if (query.signed) {
+    const signUpArr = tableSignUp.map(item => item.id)
+    const index = signUpArr.indexOf(+query.contest_id)
+    user = {
+      ...user,
+      ...tableSignUp[index],
+      teamName: tableSignUp[index].team_name
+    }
+  }
   const onSubmitClick = e => {
     e.preventDefault()
     validateFieldsAndScroll((errors, values) => {
@@ -56,10 +66,9 @@ const StudentSignUpManage = ({location, app, login, studentSignUp, dispatch, for
       <Form className='form-content'>
         <Row className='sign-up-header'>
           <Col offset={6}>
-            <h2>报名：{query.title}</h2>
+            <h2>{query.signed ? '修改：' : '报名：'}{query.title}</h2>
           </Col>
         </Row>
-
         {
           FormItemRender({
             value: 'schoolId',
@@ -80,7 +89,7 @@ const StudentSignUpManage = ({location, app, login, studentSignUp, dispatch, for
             <Col offset={6}>
               <Button
                 type='primary' className='student-submit-button'
-                onClick={onSubmitClick}>提交</Button>
+                onClick={onSubmitClick}>{query.signed ? '修改' : '报名'}</Button>
             </Col>
           </Row>
         </FormItem>
@@ -89,8 +98,9 @@ const StudentSignUpManage = ({location, app, login, studentSignUp, dispatch, for
   )
 }
 
-export default connect(({app, login, studentSignUp}) => ({
+export default connect(({app, login, studentSignUp, studentContest}) => ({
   app,
   login,
-  studentSignUp
+  studentSignUp,
+  studentContest
 }))(Form.create()(StudentSignUpManage))

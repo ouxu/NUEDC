@@ -13,9 +13,7 @@ const GuidePage = ({}) => {
   const {title = '', created_at = '', content = ''} = guide
   return (
     <div>
-      <div className='news-content-header' style={{
-        background: '#24BABC'
-      }}>
+      <div className='news-content-header'>
         <TweenOne
           animation={{y: '+=30', opacity: 0, type: 'from'}}
           component='h1'

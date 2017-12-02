@@ -8,6 +8,7 @@ import './index.less'
 import showItemConfig from './showItem.json'
 
 class ShowItems extends React.Component {
+
   render () {
     const {showItems = [], title, subTitle} = showItemConfig
     const demoToChildren = showItems.map((item, i) => {

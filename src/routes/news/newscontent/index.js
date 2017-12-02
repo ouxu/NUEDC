@@ -11,7 +11,7 @@ import { connect } from 'dva'
 
 const NewsPage = ({newsContent}) => {
   const {modalContent = {}} = newsContent
-  const {current, pre = [], next = []} = modalContent
+  const {current = {}, pre = [], next = []} = modalContent
   const {title = '', created_at = '', content = ''} = current
   const prePassage = pre[0] || {id: ''}
   const nextPassage = next[0] || {id: ''}

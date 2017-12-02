@@ -4,14 +4,14 @@
 import React from 'react'
 import { Alert, Button, Icon, Select, Table, Tooltip } from 'antd'
 import './index.less'
-import { Link, routerRedux } from 'dva/router'
+import { routerRedux } from 'dva/router'
 import { urlEncode } from '../../../utils'
 import { connect } from 'dva'
 
 const SchoolResultManage = ({school, location, schoolResult, dispatch}) => {
   const {table, tableCount} = schoolResult
   const {query} = location
-  const {initQuery, contests} = school
+  const {query: initQuery, contests} = school
   const pagination = {
     pageSize: +query.size || 50,
     current: +query.page || 1,
@@ -38,10 +38,15 @@ const SchoolResultManage = ({school, location, schoolResult, dispatch}) => {
   const onOptionChange = (value) => {
     let newQuery = {
       ...initQuery,
-      schoolResult: {...query, contest_id: value || undefined}
+      schoolResult: {...query, page: undefined, size: undefined, contest_id: value || undefined}
     }
     dispatch({type: 'school/saveQuery', payload: newQuery})
-    dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({...query, contest_id: value || undefined})))
+    dispatch(routerRedux.push(`/school/schoolResult?` + urlEncode({
+        ...query,
+        page: undefined,
+        size: undefined,
+        contest_id: value || undefined
+      })))
   }
   const excelOut = () => {
     let newQuery = {

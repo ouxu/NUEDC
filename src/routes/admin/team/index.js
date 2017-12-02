@@ -14,7 +14,7 @@ const {confirm} = Modal
 
 const ContestRecordManage = ({location, teamManage, adminContestRecord, contest, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableCount} = adminContestRecord
-  const {table: tableContest = []} = contest
+  const {table: tableContest = [], query: initQuery} = contest
   const {table: tableSchool = []} = login
   const {query} = location
   const dataFlag = !!JSON.stringify(query.contest_id)
@@ -103,9 +103,19 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
     pageSizeOptions: ['20', '50', '100'],
     showSizeChanger: true,
     onShowSizeChange: (current, pageSize) => {
+      let newQuery = {
+        ...initQuery,
+        team: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/admin/team?` + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
+      let newQuery = {
+        ...initQuery,
+        team: {...query, page: current}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/admin/team?` + urlEncode({...query, page: current})))
     },
     showTotal: () => (
@@ -150,13 +160,25 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
             showSearch
             style={{width: 260}}
             placeholder='选择竞赛'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
+              let newQuery = {
+                ...initQuery,
+                team: {
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  contest_id: value || undefined
+                }
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
               dispatch(routerRedux.push(`/admin/team?` + urlEncode({
                   ...query,
+                  page: undefined,
+                  size: undefined,
                   contest_id: value || undefined
                 })))
             }}
-            allowClear
             value={query.contest_id || undefined}
           >
             {tableContest.map(item => (
@@ -168,7 +190,22 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
             style={{width: 100}}
             placeholder='报名状态'
             onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/team?` + urlEncode({...query, status: value || undefined})))
+              let newQuery = {
+                ...initQuery,
+                team: {
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  status: value || undefined
+                }
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/admin/team?` + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  status: value || undefined
+                })))
             }}
             allowClear
             value={query.status || undefined}
@@ -183,8 +220,24 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
             showSearch
             style={{width: 260}}
             placeholder='学校'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/team?` + urlEncode({...query, school_id: value || undefined})))
+              let newQuery = {
+                ...initQuery,
+                team: {
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  school_id: value || undefined
+                }
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/admin/team?` + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  school_id: value || undefined
+                })))
             }}
             allowClear
             value={query.school_id || undefined}
@@ -198,13 +251,30 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
         </div>
         <Button
           type='primary'
-          onClick={() => dispatch(routerRedux.push('/admin/team?' + urlEncode({
-              ...query,
-              contest_id: undefined,
-              status: undefined,
-              result: undefined,
-              school_id: undefined
-            })))}>
+          onClick={
+            () => {
+              let newQuery = {
+                ...initQuery,
+                team: {
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  status: undefined,
+                  result: undefined,
+                  school_id: undefined
+                }
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push('/admin/team?' + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  status: undefined,
+                  result: undefined,
+                  school_id: undefined
+                })))
+            }
+          }>
           重置筛选
         </Button>
       </div>
@@ -230,7 +300,6 @@ const ContestRecordManage = ({location, teamManage, adminContestRecord, contest,
           showIcon
         />
       )}
-
       <Modal
         title='修改队伍信息'
         visible={modal}

@@ -6,12 +6,13 @@ import { routerRedux } from 'dva/router'
 export default modelExtend(modalModel, inputModel, {
   namespace: 'adminNewsEdit',
   state: {
-    content: undefined
+    content: '</br> </br>'
   },
   subscriptions: {
     contestSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
         if (pathname === '/admin/notices/edit' || pathname === '/admin/news/edit') {
+          dispatch({type: 'reset'})
           if (query.id) {
             dispatch({type: 'fetchMessage', payload: {pathname, query}})
           }
@@ -32,7 +33,6 @@ export default modelExtend(modalModel, inputModel, {
         const {current: {title, content}} = data.data
         yield put({type: 'contentChange', payload: content})
         yield put({type: 'onInputChange', payload: title})
-
       }
     },
     * update ({payload}, {call, put, select}) {
@@ -71,10 +71,16 @@ export default modelExtend(modalModel, inputModel, {
   },
   reducers: {
     contentChange (state, {payload: content}) {
-      console.log(content)
       return {
         ...state,
         content
+      }
+    },
+    reset (state, {}) {
+      return {
+        ...state,
+        content: '',
+        input: ''
       }
     }
   }

@@ -12,7 +12,8 @@ import { RecordingManage, RecordingModel } from './recording/route'
 import { PrivilegeManage, PrivilegeModel } from './privilege/route'
 import { TeamAdminManage, TeamAdminModel } from './team/route'
 import { AdminNews, AdminNewsModel, NewsEdit, NewsEditModel } from './news/route'
-import {GuideAdmin} from './guide/route'
+import { GuideAdmin } from './guide/route'
+import { AdminInfo, AdminInfoModel } from './password/route'
 
 export {
   AdminPage,
@@ -26,5 +27,6 @@ export {
   AdminNews, AdminNewsModel,
   NewsEdit, NewsEditModel,
   TeamAdminManage, TeamAdminModel,
+  AdminInfo, AdminInfoModel,
   GuideAdmin
 }

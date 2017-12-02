@@ -19,6 +19,7 @@ export default {
       }
     },
     'production': {
+      'publicPath': 'http://ou77rcnh8.bkt.clouddn.com/nuedc-fe/',
       'extraBabelPlugins': [
         'transform-runtime',
         'transform-decorators-legacy',
@@ -26,8 +27,11 @@ export default {
       ],
       'autoprefixer': {
         'browsers': [
-          'iOS >= 8', 'Android >= 4'
+          'iOS >= 8', 'Android >= 4', 'ie >=9'
         ]
+      },
+      "define": {
+        "__CDN__": "http://ou77rcnh8.bkt.clouddn.com/nuedc-fe/"
       }
     }
   }

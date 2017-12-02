@@ -2,7 +2,7 @@
  * Created by out_xu on 17/7/13.
  */
 import React from 'react'
-import { Alert, Button, Form, Input, Modal, Table, Tag } from 'antd'
+import { Alert, Button, DatePicker, Form, Input, Modal, Table, Tag } from 'antd'
 import { commonConfig, resultCheckConfig, statusConfig } from './formConfig'
 import './index.less'
 import { Link, routerRedux } from 'dva/router'
@@ -22,7 +22,8 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           register_start_time,
           register_end_time,
           problem_start_time,
-          problem_end_time
+          problem_end_time,
+          submit_end_time
         } = record
         payload = {
           ...record,
@@ -34,7 +35,8 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           problemTimes: [
             moment(problem_start_time, 'YYYY-MM-DD HH:mm:ss'),
             moment(problem_end_time, 'YYYY-MM-DD HH:mm:ss')
-          ]
+          ],
+          submit_end_time: moment(submit_end_time, 'YYYY-MM-DD HH:mm:ss')
         }
         dispatch({type: 'contest/updateModalContent', payload: payload})
         dispatch({type: 'contest/showModal', payload: 'update'})
@@ -93,7 +95,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       }
       const {
         title = '', description = '', add_on = '', registerTimes = [], problemTimes = '', can_register = '',
-        can_select_problem = ''
+        can_select_problem = '', submit_end_time = '', prefix = ''
       } = values
       let payload = {}
 
@@ -109,15 +111,27 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
           title,
           description,
           add_on,
-          register_start_time: registerTimes[0].format('YYYY-MM-DD HH:mm:ss'),
-          register_end_time: registerTimes[1].format('YYYY-MM-DD HH:mm:ss'),
-          problem_start_time: problemTimes[0].format('YYYY-MM-DD HH:mm:ss'),
-          problem_end_time: problemTimes[1].format('YYYY-MM-DD HH:mm:ss')
+          prefix,
+          register_start_time: registerTimes[0].format('YYYY-MM-DD HH:00:00'),
+          register_end_time: registerTimes[1].format('YYYY-MM-DD HH:00:00'),
+          problem_start_time: problemTimes[0].format('YYYY-MM-DD HH:00:00'),
+          problem_end_time: problemTimes[1].format('YYYY-MM-DD HH:00:00'),
+          submit_end_time: submit_end_time.format('YYYY-MM-DD HH:00:00')
         }
       }
 
       dispatch({type: `contest/${modal}`, payload: payload})
     })
+  }
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 6}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 16}
+    }
   }
   const status = [{
     color: color.green,
@@ -154,10 +168,13 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       key: 'result_check',
       width: 50
     },
+    {title: '参赛编号前缀', dataIndex: 'prefix', key: 'prefix', width: 100},
+
     {title: '报名开始时间', dataIndex: 'register_start_time', key: 'register_start_time', width: 170},
     {title: '报名结束时间', dataIndex: 'register_end_time', key: 'register_end_time', width: 170},
     {title: '选题开始时间', dataIndex: 'problem_start_time', key: 'problem_start_time', width: 170},
     {title: '选题结束时间', dataIndex: 'problem_end_time', key: 'problem_end_time', width: 170},
+    {title: '作品提交截止时间', dataIndex: 'submit_end_time', key: 'submit_end_time', width: 170},
     {
       title: '操作',
       render: (record) => {
@@ -212,7 +229,7 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
       )}
       <Table
         columns={columns} bordered
-        dataSource={table} scroll={{x: 1300}}
+        dataSource={table} scroll={{x: 1600}}
         pagination={false} rowKey={record => record.id}
         expandedRowRender={record => (
           <div className='expanded-row'>
@@ -228,7 +245,29 @@ const ContestManage = ({contest, dispatch, form: {getFieldDecorator, validateFie
         key={'' + modal}
       >
         <Form className='form-content'>
-          {(modal === 'update' || modal === 'create') && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))}
+          {
+            (modal === 'update' || modal === 'create') && commonConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]}))
+          }
+          {(modal === 'update' || modal === 'create') && (
+            <Form.Item
+              label='提交截止时间'
+              {...formItemLayout}
+              key='submit_end_time'
+              extra='用于控制最后的作品提交确认时间'
+            >
+              {getFieldDecorator('submit_end_time', {
+                rules: [{required: true, message: '请选择'}],
+                initialValue: modalContent['submit_end_time']
+              })(
+                <DatePicker
+                  style={{width: '100%'}}
+                  showTime={{format: 'HH:00'}}
+                  format='YYYY-MM-DD HH:00'
+                  renderExtraFooter={() => 'extra footer'}
+                />
+              )}
+            </Form.Item>
+          )}
           {modal === 'status' && statusConfig.map(config => FormItemRender(config, getFieldDecorator, {
             initialValue: '' + modalContent[config.value]
           }))}

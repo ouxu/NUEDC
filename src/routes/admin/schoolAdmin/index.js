@@ -13,10 +13,11 @@ import { color, urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
-const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
+const SchoolAdminManage = ({location, adminSchoolAdmin, contest, dispatch, login, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminSchoolAdmin
   const {table: schoolTable = []} = login
   const {query} = location
+  const {query: initQuery} = contest
   const onCreateClick = e => {
     e.preventDefault()
     if (!modalContent.from) {
@@ -105,10 +106,20 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
     showSizeChanger: true,
     pageSizeOptions: ['20', '50', '100'],
     onShowSizeChange: (current, pageSize) => {
+      let newQuery = {
+        ...initQuery,
+        schoolAdmin: {...query, page: current, size: pageSize}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
       dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, page: current, size: pageSize})))
     },
     onChange: (current) => {
-      dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, page: current, size: tableSize})))
+      let newQuery = {
+        ...initQuery,
+        schoolAdmin: {...query, page: current}
+      }
+      dispatch({type: 'contest/saveQuery', payload: newQuery})
+      dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, page: current})))
     }
   }
   const formItemLayout = {
@@ -132,7 +143,20 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             value={query.school_id || undefined}
             onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({...query, school_id: value || undefined})))
+              let newQuery = {
+                ...initQuery,
+                schoolAdmin: {
+                  page: undefined,
+                  size: undefined,
+                  school_id: value || undefined
+                }
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/admin/schoolAdmin?` + urlEncode({
+                  page: undefined,
+                  size: undefined,
+                  school_id: value || undefined
+                })))
             }}
             allowClear
           >
@@ -142,10 +166,18 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
               </Select.Option>
             ))}
           </Select>
-          <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/schoolAdmin?' + urlEncode({
-              ...query,
-              school_id: undefined
-            })))}>
+          <Button type='primary' onClick={() => {
+            let newQuery = {
+              ...initQuery,
+              schoolAdmin: {
+                page: 1,
+                size: undefined,
+                school_id: undefined
+              }
+            }
+            dispatch({type: 'contest/saveQuery', payload: newQuery})
+            dispatch(routerRedux.push('/admin/schoolAdmin'))
+          }}>
             重置筛选
           </Button>
         </div>
@@ -196,9 +228,10 @@ const SchoolAdminManage = ({location, adminSchoolAdmin, dispatch, login, form: {
   )
 }
 
-export default connect(({app, loading, login, adminSchoolAdmin}) => ({
+export default connect(({app, loading, contest, login, adminSchoolAdmin}) => ({
   app,
   loading,
   login,
+  contest,
   adminSchoolAdmin
 }))(Form.create()(SchoolAdminManage))

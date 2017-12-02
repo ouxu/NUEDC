@@ -109,6 +109,24 @@ const editConfig = [
       }
     ]
   }, {
+    value: 'problem_submit',
+    label: '提交评审状态',
+    formType: 1,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请选择提交评审状态'
+    },
+    options: [
+      {
+        value: '未提交',
+        label: '未提交'
+      }, {
+        value: '已提交',
+        label: '已提交'
+      }
+    ]
+  }, {
     value: 'result',
     label: '获奖情况',
     formType: 0,

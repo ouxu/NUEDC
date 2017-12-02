@@ -94,18 +94,18 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
     {
       title: (
         <Tooltip placement='bottom' title='空白代表队伍尚未选题'>
-          <span> 队伍编号 <Icon type='question-circle-o' /></span>
+          <span> 参赛编号 <Icon type='question-circle-o' /></span>
         </Tooltip>
       ),
       dataIndex: 'team_code',
       key: 'team_code',
-      width: 100
+      width: 90
     },
     {title: '队名', dataIndex: 'team_name', key: 'team_name', width: 200},
-    {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name'},
-    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 100},
-    {title: '指导老师', dataIndex: 'teacher', key: 'teacher', width: 250},
+    {title: '所属学校名称', dataIndex: 'school_name', key: 'school_name', width: 200},
+    {title: '学校等级', dataIndex: 'school_level', key: 'school_level', width: 80},
     {title: '联系电话', dataIndex: 'contact_mobile', key: 'contact_mobile', width: 150},
+    {title: '指导老师', dataIndex: 'teacher', key: 'teacher'},
     {
       title: (
         <Tooltip title='空白代表未选题'>
@@ -116,7 +116,8 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
       key: 'problem_selected',
       width: 250
     },
-    {title: '比赛结果', dataIndex: 'result', key: 'result', width: 100, fixed: 'right'},
+    {title: '提交评审', dataIndex: 'problem_submit', key: 'problem_submit', width: 80, fixed: 'right'},
+    {title: '比赛结果', dataIndex: 'result', key: 'result', width: 80, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -178,14 +179,19 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
                 ...initQuery,
                 recording: {
                   ...query,
+                  page: undefined,
+                  size: undefined,
                   contest_id: value || undefined
                 }
               }
               dispatch({type: 'contest/saveQuery', payload: newQuery})
               dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
-                  ...query,
-                  contest_id: value || undefined
-                })))
+                    ...query,
+                    page: undefined,
+                    size: undefined,
+                    contest_id: value || undefined
+                  }
+                )))
             }}
             value={query.contest_id}
           >
@@ -197,8 +203,19 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
             showSearch
             style={{width: 200}}
             placeholder='学校'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
-              dispatch(routerRedux.push(`/admin/recording?` + urlEncode({...query, school_id: value || undefined})))
+              let newQuery = {
+                ...initQuery,
+                recording: {...query, page: undefined, size: undefined, school_id: value || undefined}
+              }
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/admin/recording?` + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  school_id: value || undefined
+                })))
             }}
             allowClear
             value={query.school_id || undefined}
@@ -209,13 +226,23 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
               </Select.Option>
             ))}
           </Select>
-          <Button type='primary' onClick={() => dispatch(routerRedux.push('/admin/recording?' + urlEncode({
-              ...query,
-              contest_id: undefined,
-              status: undefined,
-              result: undefined,
-              school_id: undefined
-            })))}>
+          <Button type='primary' onClick={() => {
+            let newQuery = {
+              ...initQuery,
+              recording: {
+                ...query,
+                result: undefined,
+                school_id: undefined
+              }
+            }
+            dispatch({type: 'contest/saveQuery', payload: newQuery})
+            dispatch(routerRedux.push('/admin/recording?' + urlEncode({
+                ...query,
+                status: undefined,
+                result: undefined,
+                school_id: undefined
+              })))
+          }}>
             重置筛选
           </Button>
         </div>
@@ -246,7 +273,7 @@ const RecordingManage = ({location, recording, contest, adminContestRecord, logi
               {!alert && alertRender(contestInfo)}
               <Table
                 columns={columns} bordered
-                dataSource={table} scroll={{x: 1500, y: window.screen.availHeight - 350}}
+                dataSource={table} scroll={{x: 1500, y: window.screen.availHeight - 250}}
                 pagination={pagination} rowKey={record => record.id}
               />
             </div>

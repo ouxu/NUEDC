@@ -18,13 +18,15 @@ const ContestManage = ({app, studentContest, dispatch}) => {
     border: 0
   }
   const SignUpContest = (item) => {
-    const {id: contest_id, title} = item
-    dispatch(routerRedux.push(`/student/signup?` + urlEncode({contest_id, title})))
+    const {id: contest_id, title, signed} = item
+    dispatch(routerRedux.push(`/student/signup?` + urlEncode({contest_id, title, signed})))
   }
+
   const selectProblem = (item) => {
     const {id: contest_id} = item
     dispatch(routerRedux.push(`/student/problem?` + urlEncode({contest_id})))
   }
+
   const onMenuClick = (key, record) => {
     const status = [{
       color: color.blue,
@@ -111,22 +113,26 @@ const ContestManage = ({app, studentContest, dispatch}) => {
     <div className='contest'>
       <Collapse bordered={false} defaultActiveKey={['signUp', 'canRegister']}>
         <Panel header='可报名竞赛' key='canRegister' style={customPanelStyle}>
-          {table.length===0&&(<span>暂无可报名的竞赛</span>)}
+          {table.length === 0 && (<span>暂无可报名的竞赛</span>)}
           <Row type='flex' gutter={12}>
             {table.map(item => {
               let extra
-              if (item.can_register === 1) {
-                extra = (<Tag color={color.blue} onClick={() => SignUpContest(item)}>点击报名本竞赛</Tag>)
-              } else if (item.can_register === -1) {
-                if (newDate(item.register_start_time) > Date.now()) {
-                  extra = (<Tag>报名尚未开始</Tag>)
-                } else if (newDate(item.register_end_time) > Date.now()) {
-                  extra = (<Tag color={color.blue} onClick={() => SignUpContest(item)}>点击报名本竞赛</Tag>)
-                } else {
-                  extra = (<Tag disabled>报名已结束</Tag>)
-                }
+              if (item.signed) {
+                extra = (<Tag color={color.green} onClick={() => SignUpContest(item)}>修改报名信息</Tag>)
               } else {
-                extra = (<Tag disabled>报名已关闭</Tag>)
+                if (item.can_register === 1) {
+                  extra = (<Tag color={color.blue} onClick={() => SignUpContest(item)}>点击报名本竞赛</Tag>)
+                } else if (item.can_register === -1) {
+                  if (newDate(item.register_start_time) > Date.now()) {
+                    extra = (<Tag>报名尚未开始</Tag>)
+                  } else if (newDate(item.register_end_time) > Date.now()) {
+                    extra = (<Tag color={color.blue} onClick={() => SignUpContest(item)}>点击报名本竞赛</Tag>)
+                  } else {
+                    extra = (<Tag disabled>报名已结束</Tag>)
+                  }
+                } else {
+                  extra = (<Tag disabled>报名已关闭</Tag>)
+                }
               }
               return (
                 <Col
@@ -154,7 +160,7 @@ const ContestManage = ({app, studentContest, dispatch}) => {
           </Row>
         </Panel>
         <Panel header='已报名竞赛' key='signUp' style={customPanelStyle}>
-          {table.length===0&&(<span>暂未报名竞赛</span>)}
+          {tableSignUp.length === 0 && (<span>暂未报名竞赛</span>)}
           <Row type='flex' gutter={12}>
             {tableSignUp.map(item => {
               let extra

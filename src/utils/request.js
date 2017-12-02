@@ -31,10 +31,24 @@ const fetch = options => {
       return myAxios.patch(url, data)
     case 'export':
       return myAxios.get(url, {
+        params: data,
         responseType: 'blob'
       })
     default:
       return myAxios(options)
+  }
+}
+
+const downFile = (blob, fileName) => {
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, fileName)
+  } else {
+    let link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = fileName
+    link.target = '_blank'
+    link.click()
+    window.URL.revokeObjectURL(link.href)
   }
 }
 
@@ -43,12 +57,7 @@ export default async options => {
     const res = await fetch(options)
 
     if (options.method === 'export') {
-      let a = document.createElement('a')
-      let url = window.URL.createObjectURL(res.data)
-      a.download = options.filename
-      a.href = url
-      a.click()
-      window.URL.revokeObjectURL(url)
+      downFile(res.data, options.filename)
       return {
         code: 0
       }
@@ -56,7 +65,9 @@ export default async options => {
 
     const {data} = res
 
-    if (data.code !== 0) {
+    if (data.code === 20004) {
+      return data
+    } else if (data.code !== 0) {
       codeHelper(data.code)
     }
     return data

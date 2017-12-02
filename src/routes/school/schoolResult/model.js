@@ -20,7 +20,6 @@ export default modelExtend(modalModel, tableModel, {
   effects: {
     * fetchResultTable ({payload}, {call, put, select}) {
       const {contest_id, result_info, page = 1, size = 50} = payload
-
       if (contest_id === 'none') return
       const query = {
         page: page,

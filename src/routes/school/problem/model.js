@@ -5,19 +5,22 @@
 import modelExtend from 'dva-model-extend'
 import { alertModel, modalModel, tableModel } from '../../../models/modelExtend'
 import { message } from 'antd'
+import { API, newDate } from '../../../utils'
 import { check, fetchProblems, fetchTable, update } from './service'
+
 export default modelExtend(modalModel, tableModel, alertModel, {
   namespace: 'schoolProblem',
   state: {
     failed: [],
     status: '未审核',
     problems: [],
-    selects: []
+    selects: [],
+    selectKeys: []
   },
   subscriptions: {
     schoolProblemSubscriber ({dispatch, history}) {
       return history.listen(({pathname, query}) => {
-        const match = pathname === '/school/problem'
+        const match = pathname === '/school/problem' || pathname === '/school/problemList'
         if (match) {
           dispatch({type: 'fetchTable', payload: query})
         }
@@ -26,15 +29,21 @@ export default modelExtend(modalModel, tableModel, alertModel, {
   },
   effects: {
     * fetchTable ({payload}, {call, put, select}) {
+      const query = payload
       const {contest_id, status, page = 1, size = 50} = payload
       if (contest_id === 'none') return
-      const query = {
-        page: page,
-        size: size,
-        contest_id,
-        status: status || undefined
-      }
+      const {contests = []} = yield select(({school}) => school)
+      let canSelect = []
+      contests.forEach(item => {
+        if (item.can_select_problem === 1) {
+          canSelect.push(item)
+        } else if (newDate(item.problem_start_time) < Date.now()) {
+          canSelect.push(item)
+        }
+      })
+
       const {data: {count = '', teams = []}, code} = yield call(fetchTable, query)
+
       const data = yield call(fetchProblems, contest_id)
       if (code === 0) {
         const tableConfig = {
@@ -53,7 +62,7 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         yield put({type: 'setTableConfig', payload: {}})
       }
       if (data.code === 0) {
-        const table = data.problem_list.reverse().map((item, i) => ({
+        const table = data.problem_list.map((item, i) => ({
           ...item,
           fakeId: i + 1
         }))
@@ -85,7 +94,6 @@ export default modelExtend(modalModel, tableModel, alertModel, {
           yield put({type: 'schoolProblem/showAlert'})
         } else {
           yield put({type: 'fetchTable', payload: query})
-
         }
       }
     },
@@ -101,6 +109,27 @@ export default modelExtend(modalModel, tableModel, alertModel, {
         }
         yield put({type: 'fetchTable', payload: query})
       }
+    },
+    * preview ({payload}, {put, call}) {
+      const params = {
+        token: window.localStorage.getItem('nuedcToken')
+      }
+      let url = API.getContestProblemFile.replace(':id', payload.id) + '?' + urlEncode(params)
+      let a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.click()
+    },
+    * download ({payload}, {put, call}) {
+      const params = {
+        token: window.localStorage.getItem('nuedcToken'),
+        download: 1
+      }
+      let url = API.getContestProblemFile.replace(':id', payload.id) + '?' + urlEncode(params)
+      let a = document.createElement('a')
+      a.href = url
+      a.target = '_blank'
+      a.click()
     },
   },
   reducers: {
@@ -126,6 +155,12 @@ export default modelExtend(modalModel, tableModel, alertModel, {
       return {
         ...state,
         selects
+      }
+    },
+    updateSelectKeys (state, {payload: selectKeys}) {
+      return {
+        ...state,
+        selectKeys
       }
     },
     saveFailed (state, {payload}) {

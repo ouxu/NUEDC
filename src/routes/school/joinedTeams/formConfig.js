@@ -62,6 +62,7 @@ const editConfig = [
     label: '队长手机号',
     formType: 0,
     contentType: 'string',
+    extra: '作为学生登录账号，默认密码：NUEDC2017',
     rules: {
       required: true,
       requiredMessage: '请输入队伍队长的手机号',

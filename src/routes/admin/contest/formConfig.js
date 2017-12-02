@@ -1,7 +1,7 @@
 /**
  * Created by out_xu on 17/6/28.
  */
-import {verify} from '../../../utils'
+import { verify } from '../../../utils'
 const commonConfig = [
   {
     value: 'title',
@@ -23,6 +23,19 @@ const commonConfig = [
       required: true,
       requiredMessage: '请输入竞赛描述'
     }
+  }, {
+    value: 'prefix',
+    label: '参赛编号前缀',
+    formType: 0,
+    contentType: 'string',
+    extra: '用于生成参赛编号',
+    rules: {
+      required: true,
+      requiredMessage: '请输入参赛编号前缀',
+      pattern: /^[A-Za-z]$/,
+      patternMessage: '用于生成参赛编号，仅限一位英文字符'
+    },
+    hasFeedback: false
   }, {
     value: 'registerTimes',
     label: '竞赛报名时间',

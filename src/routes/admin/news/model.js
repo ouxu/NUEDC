@@ -41,7 +41,6 @@ export default modelExtend(modalModel, tableModel, {
       }
     },
     * preview ({payload}, {call, put, select}) {
-      console.log(payload)
       const {query, record} = payload
       let uri = ''
       if (record.type === 0) {

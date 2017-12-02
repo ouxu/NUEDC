@@ -55,7 +55,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     {
       title: (
         <Tooltip placement='bottom' title='空白代表队伍尚未选题'>
-          <span> 题目编号 <Icon type='question-circle-o' /></span>
+          <span> 参赛编号 <Icon type='question-circle-o' /> </span>
         </Tooltip>
       ),
       dataIndex: 'team_code',
@@ -89,6 +89,7 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
     {title: '评奖时间', dataIndex: 'result_at', key: 'result_at', width: 150},
     {title: '报名时间', dataIndex: 'created_at', key: 'created_at', width: 150},
     {title: '上次编辑时间', dataIndex: 'updated_at', key: 'updated_at', width: 150},
+    {title: '提交评审', dataIndex: 'problem_submit', key: 'problem_submit', width: 80, fixed: 'right'},
     {
       title: '操作',
       render: (record) => {
@@ -161,10 +162,15 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             onChange={(value) => {
               let newQuery = {
                 ...initQuery,
-                contestRecord: {...query, contest_id: value}
+                contestRecord: {...query, page: undefined, size: undefined, contest_id: value}
               }
-              dispatch({type: 'admin/saveQuery', payload: newQuery})
-              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({...query, contest_id: value})))
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  contest_id: value
+                })))
             }}
             value={query.contest_id || undefined}
           >
@@ -179,10 +185,15 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             onChange={(value) => {
               let newQuery = {
                 ...initQuery,
-                contestRecord: {...query, status: value || undefined}
+                contestRecord: {...query, page: undefined, size: undefined, status: value || undefined}
               }
-              dispatch({type: 'admin/saveQuery', payload: newQuery})
-              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({...query, status: value || undefined})))
+              dispatch({type: 'contest/saveQuery', payload: newQuery})
+              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  status: value || undefined
+                })))
             }}
             allowClear
             value={query.status || undefined}
@@ -198,13 +209,19 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
             showSearch
             style={{width: 260}}
             placeholder='学校'
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             onChange={(value) => {
               let newQuery = {
                 ...initQuery,
-                contestRecord: {...query, school_id: value || undefined}
+                contestRecord: {...query, page: undefined, size: undefined, school_id: value || undefined}
               }
               dispatch({type: 'admin/saveQuery', payload: newQuery})
-              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({...query, school_id: value || undefined})))
+              dispatch(routerRedux.push(`/admin/contestRecord?` + urlEncode({
+                  ...query,
+                  page: undefined,
+                  size: undefined,
+                  school_id: value || undefined
+                })))
             }}
             allowClear
             value={query.school_id || undefined}
@@ -215,27 +232,25 @@ const ContestRecordManage = ({location, adminContestRecord, contest, login, disp
               </Select.Option>
             ))}
           </Select>
-        </div>
-        <Button type='primary' onClick={() => {
-          let newQuery = {
-            ...initQuery,
-            contestRecord: {
-              ...query,
-              status: undefined,
-              result: undefined,
-              school_id: undefined
+          <Button type='primary' onClick={() => {
+            let newQuery = {
+              ...initQuery,
+              contestRecord: {
+                contest_id: query.contest_id
+              }
             }
+            dispatch({type: 'contest/saveQuery', payload: newQuery})
+            dispatch(routerRedux.push('/admin/contestRecord?' + urlEncode({
+                contest_id: query.contest_id
+              })))
           }
-          dispatch({type: 'admin/saveQuery', payload: newQuery})
-          dispatch(routerRedux.push('/admin/contestRecord?' + urlEncode({
-              ...query,
-              status: undefined,
-              result: undefined,
-              school_id: undefined
-            })))
-        }
-        }>
-          重置筛选</Button>
+          }>重置筛选</Button>
+
+        </div>
+        <Button type='primary'
+          onClick={() => dispatch({type: 'adminContestRecord/downloadExcel', payload: query})}>
+          导出记录
+        </Button>
       </div>
       {
         query.contest_id !== 'none' ? (

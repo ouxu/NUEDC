@@ -4,12 +4,12 @@ import TweenOne from 'rc-tween-one'
 import { Link } from 'dva/router'
 import './index.less'
 import { connect } from 'dva'
-
+import img from './img/1.jpg'
 const ShowItems = ({news, dispatch}) => {
   const {modalContent} = news
   const {messages = []} = modalContent
   const demoToChildren = messages.map((item, i) => {
-    const {img = '/assets/home/showItem/1.jpg', id, title, created_at} = item
+    const {id, title, created_at} = item
     return (
       <li key={i}>
         <Link to={'/news/' + id}>

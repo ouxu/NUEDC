@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { modalModel, tableModel } from '../../../models/modelExtend'
-import { fetchTable, remove, update } from './service'
+import { downloadExcel, fetchTable, remove, update } from './service'
 import { message } from 'antd'
 export default modelExtend(modalModel, tableModel, {
   namespace: 'adminContestRecord',
@@ -42,6 +42,9 @@ export default modelExtend(modalModel, tableModel, {
         yield put({type: 'setTable', payload: table})
         yield put({type: 'setTableConfig', payload: tableConfig})
       }
+    },
+    * downloadExcel ({payload}, {call}) {
+      yield call(downloadExcel, {filename: '参赛记录列表.xlsx'}, payload)
     },
     * update ({payload}, {call, put, select}) {
       const {id} = yield select(({adminContestRecord}) => adminContestRecord.modalContent)

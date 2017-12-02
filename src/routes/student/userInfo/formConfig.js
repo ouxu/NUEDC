@@ -27,7 +27,7 @@ const showConfig = [
   }, {
     value: 'sex',
     label: '性别',
-    disabled: true
+    disabled: false
   }, {
     value: 'add_on',
     label: '备注信息',
