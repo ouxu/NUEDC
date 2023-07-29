@@ -4,7 +4,7 @@
   "iconFontCSS": "/app/iconfont.css",
   "iconFontJS": "/app/iconfont.js",
   "logoSrc": "/app/favicon.ico",
-  "baseURL": "http://nuedc.hrsoft.net/api",
+  "baseURL": "http://nuedc-be.acmclub.cn/api",
   "api": {
     "userLogin": "/user/login",
     "user": "/user/:id",

@@ -9,7 +9,7 @@ const query = async () => {
 }
 const exportF = async ({filename}) => {
   return request({
-    url: 'http://nuedc.hrsoft.net/sysadmin/contest-record/export',
+    url: 'http://nuedc-be.acmclub.cn/sysadmin/contest-record/export',
     method: 'export',
     token: true,
     filename

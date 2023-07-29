@@ -29,6 +29,38 @@ const editConfig = [
     },
     hasFeedback: false
   }, {
+    value: 'member1',
+    label: '成员1姓名',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: false,
+      requiredMessage: '请输入成员1姓名',
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member1_major',
+    label: '成员1专业',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member1_year',
+    label: '成员1入学年份',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      pattern: verify.number,
+      patternMessage: '请勿输入非数字'
+    },
+    hasFeedback: false
+  }, {
     value: 'member2',
     label: '成员2姓名',
     formType: 0,
@@ -41,6 +73,26 @@ const editConfig = [
     },
     hasFeedback: false
   }, {
+    value: 'member2_major',
+    label: '成员2专业',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member2_year',
+    label: '成员2入学年份',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      pattern: verify.number,
+      patternMessage: '请勿输入非数字'
+    },
+    hasFeedback: false
+  }, {
     value: 'member3',
     label: '成员3姓名',
     formType: 0,
@@ -50,6 +102,26 @@ const editConfig = [
       requiredMessage: '请输入成员3姓名',
       pattern: verify.chinese,
       patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member3_major',
+    label: '成员3专业',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      pattern: verify.chinese,
+      patternMessage: '请勿输入非中文字符'
+    },
+    hasFeedback: false
+  }, {
+    value: 'member3_year',
+    label: '成员3入学年份',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      pattern: verify.number,
+      patternMessage: '请勿输入非数字'
     },
     hasFeedback: false
   }, {

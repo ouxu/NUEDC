@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import { Button, Col, Form, Row } from 'antd'
-import { userConfig } from '../signup/formConfig'
+import { userConfig } from './formConfig'
 import './index.less'
 import FormItemRender from '../../../components/FormItemRender/'
 import { connect } from 'dva'
@@ -15,14 +15,25 @@ const StudentSignUpManage = ({location, studentContest, app, login, studentSignU
   const {contest = [], info = {}} = studentSignUp
   const {query} = location
   const {tableSignUp} = studentContest
-  if (query.signed) {
+  if (query.signed && tableSignUp.length) {
     const signUpArr = tableSignUp.map(item => item.id)
     const index = signUpArr.indexOf(+query.contest_id)
+    const record = tableSignUp[index];
+    console.log(tableSignUp[index])
     user = {
       ...user,
-      ...tableSignUp[index],
-      teamName: tableSignUp[index].team_name
+      ...record,
+      teamName: record.team_name,
+      name: record.member1,
+      member1Major: record.member1_major,
+      member1Year: record.member1_year,
+      member2Major: record.member2_major,
+      member2Year: record.member2_year,
+      member3Major: record.member3_major,
+      member3Year: record.member3_year,
     }
+  } else {
+    user.name = ""
   }
   const onSubmitClick = e => {
     e.preventDefault()
@@ -31,6 +42,7 @@ const StudentSignUpManage = ({location, studentContest, app, login, studentSignU
         return
       }
       const {email, member2, member3, name, mobile, schoolId, teacher, teamName} = values
+      const {member1Major, member1Year, member2Major, member2Year, member3Major, member3Year} = values
       let schoolName = '', schoolLevel = ''
       schools.forEach(item => {
         if (item.id === +schoolId) {
@@ -49,7 +61,8 @@ const StudentSignUpManage = ({location, studentContest, app, login, studentSignU
         teacher,
         schoolId,
         schoolName,
-        schoolLevel
+        schoolLevel,
+        member1Major, member1Year, member2Major, member2Year, member3Major, member3Year
       }
       dispatch({type: 'studentSignUp/signUpContest', payload: body})
     })

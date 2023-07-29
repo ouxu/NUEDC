@@ -6,14 +6,12 @@ import { Button, Form, Modal, Table } from 'antd'
 import { connect } from 'dva'
 import './index.less'
 import { routerRedux } from 'dva/router'
-import FormItemRender from '../../../components/FormItemRender/'
-import { editConfig } from './formConfig'
 import { urlEncode } from '../../../utils'
 import DropOption from '../../../components/DropOption'
 const {confirm} = Modal
 
 const NewsManage = ({location, adminNews, contest, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
-  const {modal = false, modalContent = {}, table, tableSize, tableCount, tablePage} = adminNews
+  const {table, tableSize, tableCount, tablePage} = adminNews
   const {query, pathname} = location
   const {query: initQuery} = contest
   const isNews = pathname === '/admin/news'
@@ -122,17 +120,6 @@ const NewsManage = ({location, adminNews, contest, dispatch, form: {getFieldDeco
         scroll={{x: 768, y: window.screen.availHeight - 350}}
         pagination={pagination} rowKey={record => record.id}
       />
-      <Modal
-        title='修改队伍信息'
-        visible={modal === 'edit'}
-        onCancel={() => dispatch({type: 'adminNews/hideModal'})}
-        onOk={onModalOk}
-        key={'' + modal}
-      >
-        <Form className='form-content'>
-          {modal === 'edit' && editConfig.map(config => FormItemRender(config, getFieldDecorator, {initialValue: modalContent[config.value]})) }
-        </Form>
-      </Modal>
     </div>
   )
 }

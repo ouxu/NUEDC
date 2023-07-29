@@ -1,8 +1,9 @@
 dist
 node_modules
-yarn.lock
 npm-debug.log
 .idea/
 .DS_Store
 package-lock.json
 gulpfile.js
+.vscode
+publishConfig.js

@@ -106,7 +106,7 @@ class Edit extends React.Component {
               okText: '复制',
               onOk () {
                 // const url = window.prompt('请输入图片 URL')
-                const url = 'http://nuedc.hrsoft.net/storage/upload/093025a8340d8e30b0e536b843de94e7.jpeg'
+                const url = 'http://nuedc-be.acmclub.cn/storage/upload/093025a8340d8e30b0e536b843de94e7.jpeg'
 
                 if (url) pell.exec('insertImage', ensureHTTP(url))
               },
