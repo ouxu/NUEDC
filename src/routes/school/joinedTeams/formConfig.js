@@ -27,24 +27,98 @@ const editConfig = [
       patternMessage: ''
     }
   }, {
+    value: 'member1_major',
+    res: 'member1_major',
+    label: '队长专业',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入专业',
+      pattern: '',
+      patternMessage: ''
+    }
+  }, {
+    value: 'member1_year',
+    res: 'member1_year',
+    label: '队长入学年份',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入入学年份',
+      pattern: '',
+      patternMessage: ''
+    }
+  }, {
     value: 'member2',
+    res: 'member2',
     label: '成员1',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入成员1的姓名',
+      requiredMessage: '请输入您的队友的姓名',
+      pattern: '',
+      patternMessage: ''
+    }
+  }, {
+    value: 'member2_major',
+    res: 'member2_major',
+    label: '成员1专业',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入专业',
+      pattern: '',
+      patternMessage: ''
+    }
+  }, {
+    value: 'member2_year',
+    res: 'member2_year',
+    label: '成员1入学年份 ',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入入学年份',
       pattern: '',
       patternMessage: ''
     }
   }, {
     value: 'member3',
+    res: 'member3',
     label: '成员2',
     formType: 0,
     contentType: 'string',
     rules: {
       required: true,
-      requiredMessage: '请输入成员2的姓名',
+      requiredMessage: '请输入您的队友的姓名',
+      pattern: '',
+      patternMessage: ''
+    }
+  }, {
+    value: 'member3_major',
+    res: 'member3_major',
+    label: '成员2专业',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入专业',
+      pattern: '',
+      patternMessage: ''
+    }
+  }, {
+    value: 'member3_year',
+    res: 'member3_year',
+    label: '成员2入学年份',
+    formType: 0,
+    contentType: 'string',
+    rules: {
+      required: true,
+      requiredMessage: '请输入入学年份',
       pattern: '',
       patternMessage: ''
     }
@@ -62,7 +136,6 @@ const editConfig = [
     label: '队长手机号',
     formType: 0,
     contentType: 'string',
-    extra: '作为学生登录账号，默认密码：NUEDC2017',
     rules: {
       required: true,
       requiredMessage: '请输入队伍队长的手机号',

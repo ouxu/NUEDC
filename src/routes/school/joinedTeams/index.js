@@ -13,6 +13,7 @@ import { connect } from 'dva'
 const confirm = Modal.confirm
 const JoinedTeamsManage = ({location, app, joinedTeams, school, login, dispatch, form: {getFieldDecorator, validateFieldsAndScroll}}) => {
   const {modal = false, table, content, modalContent, tableCount, alert, selects = []} = joinedTeams
+  console.log(modalContent)
   const {query} = location
   const {fail = [], success = [], update = []} = content
   const {contests, query: initQuery} = school
